@@ -1040,12 +1040,30 @@ function pdfItemsComerciales(mysqli $conexion, array $cotizacion, array $detalle
          * evitar renglones excesivamente altos o texto truncado. */
         $descripcionControlPdf = preg_replace('/[,; ]*Gabinete aproximado\b.*$/iu', '', $descripcionControlPdf) ?? $descripcionControlPdf;
         $descripcionControlPdf = rtrim(trim($descripcionControlPdf), " ,;/.") . '.';
+        $descripcionControlFormateada = pdfTextoMinusculas($descripcionControlPdf);
+        $descripcionCentralOriginal = preg_match('/^Control\b/ui', $descripcionBaseCongelada)
+            ? $descripcionBaseCongelada : $descripcionControlPdf;
+        if (preg_match('/\bcentral\s+([^,;]+?)(?=,|;|\.$|$)/iu', $descripcionCentralOriginal, $centralEncontrada)) {
+            $nombreCentral = trim($centralEncontrada[1]);
+            $nombresCentrales = array('MORIS' => 'Moris', 'ROJAS' => 'Rojas', 'OMAR' => 'Omar', 'GMV' => 'GMV');
+            if (preg_match('/^otra:\s*(.*)$/iu', $nombreCentral, $otraEncontrada)) {
+                $nombreCentral = 'Otra: ' . $otraEncontrada[1];
+            } else {
+                $nombreCentral = $nombresCentrales[strtoupper($nombreCentral)] ?? $nombreCentral;
+            }
+            $descripcionControlFormateada = preg_replace_callback(
+                '/\bcentral\s+[^,;]+?(?=,|;|\.$|$)/iu',
+                static function () use ($nombreCentral) { return 'central ' . $nombreCentral; },
+                $descripcionControlFormateada,
+                1
+            ) ?? $descripcionControlFormateada;
+        }
 
         $items[] = array(
             'modulo' => 'CONTROL',
             'cantidad' => $cantidad,
             'codigo' => $base['codigo'],
-            'descripcion' => pdfTextoMinusculas($descripcionControlPdf),
+            'descripcion' => $descripcionControlFormateada,
             'unitario' => $subtotalControl / $cantidad,
             'total' => $subtotalControl,
         );

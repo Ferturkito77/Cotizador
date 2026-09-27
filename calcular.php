@@ -1862,7 +1862,13 @@ $tiposConReguladorDescripcion = array(4, 5, 6, 7);
 
 if ($esHidraulicoDescripcion) {
     $partesDescripcionControl[] = 'para equipo hidráulico';
-    if ($centralNombre !== '') $partesDescripcionControl[] = 'central ' . ucfirst(strtolower($centralNombre));
+    if ($centralNombre !== '') {
+        $nombresCentrales = array('MORIS' => 'Moris', 'ROJAS' => 'Rojas', 'OMAR' => 'Omar', 'GMV' => 'GMV');
+        $nombreCentralDescripcion = (int)$centralCatalogo['central_es_otra'] === 1
+            ? 'Otra: ' . $centralOtraNombre
+            : ($nombresCentrales[strtoupper($centralNombre)] ?? $centralNombre);
+        $partesDescripcionControl[] = 'central ' . $nombreCentralDescripcion;
+    }
 } elseif (in_array((int)$idTipo, $tiposConReguladorDescripcion, true) && $nombreSubtipo !== '') {
     $textoRegulador = 'regulador ' . $textoSinAcentos($nombreSubtipo);
     if ($corrienteDescripcion !== '' && (float)$corrienteDescripcion > 0) {
