@@ -322,7 +322,9 @@ function agruparBotoneraCabinaPresentacion(array $detalles, array $datosFormular
             $nom=trim((string)($nomenclaturasPorBotonera[$i]??'')); if($nom==='')$nom='A CONFIRMAR';
             $partesNom[]='Coche '.($i+1).': '.$nom;
         }
-        if($partesNom) $desc .= ' · '.implode(' / ',$partesNom);
+        if(count($partesNom)===1 && $paradasTotales>0) {
+            $desc=preg_replace('/\b'.(int)$paradasTotales.'P\b/u', (int)$paradasTotales.'P ('.strtoupper($nomenclaturasPorBotonera[0] ?: 'A CONFIRMAR').'),', $desc, 1);
+        } elseif($partesNom) $desc .= ' · '.implode(' / ',$partesNom);
     }
     if($medidasPorBotonera){
         $partesMed=array();
@@ -355,6 +357,10 @@ function agruparBotoneraCabinaPresentacion(array $detalles, array $datosFormular
             }
         }
     }
+    $desc = preg_replace('/\s*×\s*1(?:[,.]0+)?/u', '', $desc);
+    $desc = preg_replace('/\s*-\s*electronico\b/iu', '', $desc);
+    $desc = str_ireplace(array('modelo rond metal', 'tapa acero', '31mm', 'pb al 4'), array('modelo Rond Metal', 'Tapa Acero', '31 mm', 'PB al 4'), $desc);
+    $desc = str_replace('. · ', ' · ', $desc);
     if ($desc !== '') $desc .= '.';
 
     $base['modulo'] = 'SENALIZACION';

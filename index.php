@@ -4441,6 +4441,36 @@ function filaEspecialV33(clave,concepto,codigo,cantidad,precio,precioBase,clase)
   f.dataset.v460Preview=esPreview?'1':'0';f.dataset.seleccionado=esPreview?'0':'1';f.style.display='grid';if(clase)f.classList.add(clase);return f;
 }
 function quitarEspecialV33(clave){const f=document.querySelector('#items_especiales_accesorios_v33 [data-especial-clave="'+clave+'"]');if(f){f.dataset.seleccionado='0';f.style.display='none';}}
+let sirenaEcoMidiSolicitud=0;
+async function sincronizarSirenaEcoMidi(){
+  const solicitud=++sirenaEcoMidiSolicitud;
+  const rescate=document.getElementById('id_rescate')?.selectedOptions?.[0];
+  const activo=!!document.getElementById('incluir_control')?.checked && rescate?.dataset.clave==='HID_ECO_MIDI';
+  const cantidad=Math.max(1,parseInt(document.getElementById('cantidad_equipos')?.value||'1',10)||1);
+  document.querySelectorAll('#items_accesorios .item-modular').forEach(f=>{
+    if(String(f.querySelector('[data-campo="codigo"]')?.value||'').trim().toUpperCase()!=='6PS593' || f.querySelector('[data-campo="concepto"]')?.value!=='Sirena automática Eco Midi Supra')return;
+    f.dataset.seleccionado=activo?'1':'0';f.style.display=activo?'':'none';
+    if(activo){const q=f.querySelector('[data-campo="cantidad"]');if(q)q.value=String(cantidad);}
+  });
+  if(!activo){quitarEspecialV33('SIRENA_ECO_MIDI');actualizarResumenDocumento();return;}
+  const existente=[...document.querySelectorAll('#items_accesorios .item-modular,#items_repuestos .repuesto-producto')].some(f=>f.dataset.seleccionado!=='0' && String(f.querySelector('[data-campo="codigo"]')?.value||'').trim().toUpperCase()==='6PS593');
+  if(existente){quitarEspecialV33('SIRENA_ECO_MIDI');actualizarResumenDocumento();return;}
+  try{
+    const lista=document.getElementById('lista_id')?.value||'0';
+    const respuesta=await fetch('buscar_repuestos.php?'+new URLSearchParams({q:'6PS593',lista_id:lista}),{cache:'no-store'});
+    if(!respuesta.ok)return;
+    const datos=await respuesta.json();
+    if(solicitud!==sirenaEcoMidiSolicitud)return;
+    const producto=(datos.resultados||[]).find(p=>String(p.codigo||'').trim().toUpperCase()==='6PS593'&&p.costo_disponible);
+    if(!producto)return;
+    filaEspecialV33('SIRENA_ECO_MIDI','Sirena automática Eco Midi Supra','6PS593',cantidad,Math.ceil(Number(producto.precio_30)),Number(producto.precio_base));
+    const fila=document.querySelector('#items_especiales_accesorios_v33 [data-especial-clave="SIRENA_ECO_MIDI"]');
+    if(fila)fila.querySelector('[data-campo="descripcion"]').value='Sirena De A0710';
+    actualizarResumenDocumento();
+  }catch(e){console.warn('Sirena Eco Midi Supra:',e);}
+}
+document.addEventListener('change',e=>{if(e.target?.matches('#id_rescate,#id_tipo_control,#id_subtipo,#cantidad_equipos,#incluir_control,#lista_id'))sincronizarSirenaEcoMidi();});
+window.addEventListener('load',sincronizarSirenaEcoMidi);
 function autoSeleccionarCatalogoV33(clave,cantidad,activar){const card=document.querySelector('.accesorio-catalogo-card[data-clave="'+clave+'"]');if(!card)return;const ch=card.querySelector('.accesorio-catalogo-check');const fila=card.querySelector('.item-modular');if(!ch||!fila)return;if(activar){if(fila.dataset.manualNoV33==='1')return;const eraAuto=fila.dataset.autoV33==='1';if(!ch.checked){window.autoSeleccionandoV33=true;ch.checked=true;toggleAccesorioCatalogo(ch);window.autoSeleccionandoV33=false;fila.dataset.autoV33='1';}const q=fila.querySelector('[data-campo="cantidad"]');if(q&&Number(cantidad)>0&&!eraAuto)q.value=String(cantidad);if(q&&Number(cantidad)>0&&clave==='ALARMA_EMERGENCIA_12V'&&fila.dataset.cantidadManualV33!=='1')q.value=String(cantidad);fila.dataset.autoV33='1';}else if(fila.dataset.autoV33==='1'){window.autoSeleccionandoV33=true;ch.checked=false;toggleAccesorioCatalogo(ch);window.autoSeleccionandoV33=false;fila.dataset.autoV33='0';fila.dataset.manualNoV33='0';}}
 function sincronizarAlarmaEmergenciaDesdeSenalizacionV203(){
   // v217: la relación ya no está definida en JavaScript; se carga de automatizaciones_cotizador.
@@ -4603,7 +4633,7 @@ function actualizarEspecialesAccesorios(){
  const pesEstado=document.getElementById('pesador_estado');
  if(pc){
    const base=precioEspV33(pc)*utilidadAccV224('PESADOR_CARGA'),factorPesador=factorDescuentosAccesorios();
-   if(base>0){filaEspecialV33('PESADOR','Pesador de carga',pc,1,Math.ceil(base*factorPesador),base);if(pesEstado)pesEstado.textContent=pc+' · $ '+Math.ceil(base*factorPesador).toLocaleString('es-AR');}
+   if(base>0){const variante=document.getElementById('pesador_tipo')?.selectedOptions?.[0]?.dataset.tipo||pc;filaEspecialV33('PESADOR','Pesador de carga '+variante,pc,1,Math.ceil(base*factorPesador),base);if(pesEstado)pesEstado.textContent=pc+' · $ '+Math.ceil(base*factorPesador).toLocaleString('es-AR');}
    else{quitarEspecialV33('PESADOR');if(pesEstado)pesEstado.textContent='El código '+pc+' no tiene costo en la base Bejerman seleccionada.';}
  }else{quitarEspecialV33('PESADOR');if(pesEstado)pesEstado.textContent='Seleccione el tipo de pesador.';}
  // v169: Control de accesos se valoriza exclusivamente en Señalización -> Botonera de cabina.

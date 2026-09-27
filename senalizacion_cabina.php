@@ -595,10 +595,20 @@ function senalAgregarLinea(&$lineas, $conexion, $listaId, $concepto, $codigo, $d
     $prod=senalProductoValorizado($conexion,$listaId,$codigo);
     if(!$prod){$cc=senalCodigoCotizacion($conexion,$codigo);throw new Exception('El codigo '.$codigo.' ('.$concepto.') se cotiza con '.$cc.' y no tiene precio valido en la base seleccionada.');}
     $coeficiente=(float)$coeficiente;if($coeficiente<=0)$coeficiente=1.0;$unitAjustado=$bonificado?0.0:(float)ceil((float)$prod['unitario']*$coeficiente);
+    $detalleCoefFormula = $detalleCoef;
+    if ($concepto === 'Pulsador exterior simple' && stripos($descripcion, 'ROND METAL') !== false) {
+        $descripcion = preg_replace('/^Pulsador exterior simple - ROND METAL(?: - Medida (.+))?$/iu', 'Pulsador simple - Rond Metal - Medida $1', $descripcion);
+        $descripcion = preg_replace('/Medida\s*$/u', 'Medida a confirmar', $descripcion);
+        $descripcion = preg_replace('/A CONFIRMAR/iu', 'a confirmar', $descripcion);
+        $detalleCoef = preg_replace('/\s*×\s*1(?:[,.]0+)?$/u', '', $detalleCoef);
+        $detalleCoef = str_ireplace('ACERO', 'Acero', $detalleCoef);
+        $descripcion .= ' · ' . $detalleCoef . '.';
+        $detalleCoef = '';
+    }
     $lineas[]=array(
         'modulo'=>'SENALIZACION','concepto'=>$concepto,'codigo'=>$codigo,'descripcion'=>$descripcion.($detalleCoef!==''?' · '.$detalleCoef:''),
         'cantidad'=>$cantidad,'unitario'=>$unitAjustado,
-        'formula'=>($formula!==''?$formula:($cantidad.' unidad(es)')).($detalleCoef!==''?' · '.$detalleCoef:'').($bonificado?' · BONIFICADO':''),
+        'formula'=>($formula!==''?$formula:($cantidad.' unidad(es)')).($detalleCoefFormula!==''?' · '.$detalleCoefFormula:'').($bonificado?' · BONIFICADO':''),
         'total'=>$unitAjustado*$cantidad,
         'precio_referencia'=>$unitAjustado,'bonificado'=>(bool)$bonificado,
         'costo'=>(float)$prod['costo'],'utilidad'=>(float)$prod['utilidad'],
@@ -650,6 +660,15 @@ function senalAgregarLineaPulsadorConIndicador(&$lineas,$conexion,$listaId,$conc
     $historico=!empty($p['precio_historico']) || !empty($i['precio_historico']);
     $descripcion='Modelo pulsador: '.trim((string)$modeloPulsador).' · Indicador: '.trim((string)$modeloIndicador);
     if($detalleTecnico!=='') $descripcion.=' · '.$detalleTecnico;if($detalleCoef!=='')$descripcion.=' · '.$detalleCoef;
+    if ($concepto === 'Pulsador exterior simple + IP' && stripos($detalleTecnico, 'ROND METAL') !== false) {
+        $medida = 'a confirmar';
+        if (preg_match('/Medida\s+([^·]+)/iu', $detalleTecnico, $m)) $medida = strtolower(trim($m[1]));
+        $indicador = preg_replace('/\b31\s*mm\b/iu', '31 mm', trim((string)$modeloIndicador));
+        $indicador = preg_replace('/\s*-\s*electronico\b/iu', '', $indicador);
+        $indicador = preg_replace('/\bBLANCO\b/iu', 'blanco', $indicador);
+        $tapa = preg_replace('/\s*×\s*1(?:[,.]0+)?$/u', '', $detalleCoef);
+        $descripcion = 'Pulsador simple - Rond Metal + Indicador ' . $indicador . ' · Medida ' . $medida . ' · ' . str_ireplace('ACERO', 'Acero', $tapa) . '.';
+    }
     $lineas[]=array(
         'modulo'=>'SENALIZACION','concepto'=>$concepto,
         'codigo'=>$codigoPulsador.' + '.$codigoIndicador,

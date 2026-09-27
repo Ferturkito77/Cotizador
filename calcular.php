@@ -13,6 +13,7 @@ require_once 'control_parametros.php';
 require_once 'parametros_sistema.php';
 require_once 'documentos_pdf.php';
 require_once 'modulos_libres.php';
+require_once 'repuestos_costos.php';
 require_once 'documentos_modulares.php';
 require_once 'senalizacion_cabina.php';
 require_once 'documentos_eventos.php';
@@ -1721,6 +1722,28 @@ $subtotalFijoUnitario = $precioBase
     + $precioPuertaCabinaMc;
 $subtotalFijosEquipos = $subtotalFijoUnitario * $cantidadEquipos;
 try { $lineasModulosLibres = obtenerLineasModulosLibres($_POST); } catch (Throwable $e) { volverConError($e->getMessage()); }
+$retornoEcoMidi = !empty($_POST['incluir_control']) && ($rescateSeleccionado['rescate_clave'] ?? '') === 'HID_ECO_MIDI';
+foreach ($lineasModulosLibres as $i => $linea) {
+    if (strtoupper(trim((string)$linea['codigo'])) === '6PS593' && ($retornoEcoMidi || $linea['concepto'] === 'Sirena automática Eco Midi Supra')) unset($lineasModulosLibres[$i]);
+}
+if ($retornoEcoMidi) {
+    $stSirena = $conexion->prepare("SELECT descripcion, utilidad, factor_descuento_30 FROM productos_repuestos WHERE UPPER(TRIM(codigo))='6PS593' AND habilitado=1 LIMIT 1");
+    if (!$stSirena) volverConError('No se pudo consultar la sirena 6PS593 en Repuestos.');
+    $stSirena->execute(); $productoSirena = $stSirena->get_result()->fetch_assoc(); $stSirena->close();
+    if (!$productoSirena) volverConError('La sirena 6PS593 no está disponible en Repuestos.');
+    $listaVigenteSirena = obtenerListaVigente($conexion);
+    $sirenaHistorica = $listaId !== (int)($listaVigenteSirena['lista_id'] ?? 0);
+    if ($sirenaHistorica) {
+        $precioSirena = precioExactoDeLista($conexion, $listaId, '6PS593');
+        $costoSirena = (float)($precioSirena['precios_costo'] ?? 0);
+    } else {
+        $contextoSirena = repCostoCargarContexto($conexion, 0);
+        $costoSirena = repCostoDeCodigo('6PS593', $contextoSirena);
+    }
+    if ($costoSirena <= 0) volverConError('La sirena 6PS593 no tiene costo vigente en la base seleccionada.');
+    $unitarioSirena = ceil($costoSirena * ($sirenaHistorica ? 1.0 : (float)$productoSirena['utilidad']) * (float)$productoSirena['factor_descuento_30']);
+    $lineasModulosLibres[] = array('modulo'=>'ACCESORIOS','concepto'=>'Sirena automática Eco Midi Supra','codigo'=>'6PS593','descripcion'=>'Sirena De A0710','cantidad'=>$cantidadEquipos,'unitario'=>$unitarioSirena,'formula'=>'1 sirena por equipo × '.$cantidadEquipos.' equipo(s)','total'=>$unitarioSirena*$cantidadEquipos);
+}
 $precioModulosLibresTotal = 0.0; foreach ($lineasModulosLibres as $lm) $precioModulosLibresTotal += (float)$lm['total'];
 $subtotal = $subtotalFijosEquipos
     + $precioAdicionalParadas
@@ -1838,8 +1861,8 @@ $esHidraulicoDescripcion = ((int)$idTipo === 3);
 $tiposConReguladorDescripcion = array(4, 5, 6, 7);
 
 if ($esHidraulicoDescripcion) {
-    $partesDescripcionControl[] = 'para equipo hidraulico';
-    if ($centralNombre !== '') $partesDescripcionControl[] = 'central ' . $textoSinAcentos($centralNombre);
+    $partesDescripcionControl[] = 'para equipo hidráulico';
+    if ($centralNombre !== '') $partesDescripcionControl[] = 'central ' . ucfirst(strtolower($centralNombre));
 } elseif (in_array((int)$idTipo, $tiposConReguladorDescripcion, true) && $nombreSubtipo !== '') {
     $textoRegulador = 'regulador ' . $textoSinAcentos($nombreSubtipo);
     if ($corrienteDescripcion !== '' && (float)$corrienteDescripcion > 0) {
@@ -1850,18 +1873,20 @@ if ($esHidraulicoDescripcion) {
     $partesDescripcionControl[] = $textoSinAcentos($nombreSubtipo);
 }
 
-if ($contactorDescripcion !== '' && (float)$contactorDescripcion > 0) $partesDescripcionControl[] = 'contactor de ' . $contactorDescripcion . ' A';
+if ($contactorDescripcion !== '' && (float)$contactorDescripcion > 0) $partesDescripcionControl[] = 'contactor de ' . $contactorDescripcion . 'A';
 if ($potenciaDescripcion !== '') $partesDescripcionControl[] = 'potencia ' . $potenciaDescripcion . ' HP';
-if ($tensionDescripcion !== '') $partesDescripcionControl[] = 'alimentacion ' . $textoSinAcentos($tensionDescripcion);
+if ($tensionDescripcion !== '') $partesDescripcionControl[] = 'alimentación ' . strtoupper($tensionDescripcion);
 if (!$esHidraulicoDescripcion && $velocidadDescripcion !== '' && (float)$velocidadCalculo > 0) $partesDescripcionControl[] = 'velocidad ' . $velocidadDescripcion . ' m/min';
 if ($paradasDescripcion !== '') $partesDescripcionControl[] = 'para ' . $paradasDescripcion . ' paradas';
 $partesNomenclaturaControl = array();
 foreach ($paradasPorEquipo as $iNom => $pNom) {
     $nomControl = trim((string)($nomenclaturasPorEquipo[$iNom] ?? ''));
     if ($nomControl === '') $nomControl = 'A CONFIRMAR';
-    $partesNomenclaturaControl[] = 'Coche ' . ($iNom + 1) . ': ' . $pNom . ' paradas [' . $textoSinAcentos($nomControl) . ']';
+    $partesNomenclaturaControl[] = count($paradasPorEquipo) === 1
+        ? '[' . strtoupper($nomControl) . ']'
+        : 'Coche ' . ($iNom + 1) . ': ' . $pNom . ' paradas [' . strtoupper($nomControl) . ']';
 }
-if ($partesNomenclaturaControl) $partesDescripcionControl[] = 'nomenclatura ' . implode(' / ', $partesNomenclaturaControl);
+if ($partesNomenclaturaControl) $partesDescripcionControl[] = implode(' / ', $partesNomenclaturaControl);
 if ($puertaCabinaDescripcion !== '') $partesDescripcionControl[] = 'puerta de cabina ' . strtolower($textoSinAcentos($puertaCabinaDescripcion));
 if ($puertaPisosDescripcion !== '') $partesDescripcionControl[] = 'puertas de piso ' . strtolower($textoSinAcentos($puertaPisosDescripcion));
 $partesDescripcionControl[] = $textoSinAcentos($comunicacionDescripcion);
@@ -1913,6 +1938,11 @@ foreach ($partesDescripcionControl as $parteDescripcion) {
     $partesUnicasDescripcion[] = $parteDescripcion;
 }
 $descripcionComercialControl = implode(', ', $partesUnicasDescripcion) . '.';
+$descripcionComercialControl = preg_replace_callback('/\btermico de motor\s+telem\.?\s*(\d+\s*\/\s*\d+)\s*(?:p\/hid\s*\d+\s*hp)?/iu', static function($m) {
+    return 'térmico de motor Telem. ' . preg_replace('/\s+/', '', $m[1]) . 'A';
+}, $descripcionComercialControl);
+$descripcionComercialControl = preg_replace('/contactor de potencial o corte fza motriz\s*(\d+)\s*amp/iu', 'contactor de potencial $1A', $descripcionComercialControl);
+$descripcionComercialControl = str_ireplace(array('puerta de cabina automatica vf/electr.', 'puertas de piso todas automaticas', 'comunicacion serie en cabina', 'adic retorno automatico por bateria de gel', 'protector inv y falta de fase 3x380 temp por ptc'), array('puerta de cabina automática VF/Electr.', 'puertas de piso todas automáticas', 'comunicación serie en cabina', 'adic. retorno automático por batería de gel', 'protector inv. y falta de fase 3X380, temp. por PTC'), $descripcionComercialControl);
 $agregarSnapshot('Base',$equipo['control_codigo']??'',$descripcionComercialControl,$cantidadEquipos,$precioBase,$cantidadEquipos.' equipo(s)',$precioBase*$cantidadEquipos);
 if ($rescateSeleccionado && $precioRescateTotal > 0) {
     $formulaRescateComercial = array();
