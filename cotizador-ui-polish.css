@@ -1,0 +1,797 @@
+/* AUTOMAC v448 - Pulido visual conservador. No modifica estructura ni calculos. */
+:root{scroll-behavior:smooth}
+button,input,select,textarea,a{transition:box-shadow .14s ease,transform .08s ease,opacity .14s ease}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid rgba(15,95,156,.25);outline-offset:2px}
+button:disabled,input:disabled,select:disabled,textarea:disabled{cursor:not-allowed;opacity:.68}
+button:not(:disabled):active,.btn:not([aria-disabled="true"]):active{transform:translateY(1px)}
+input,select,textarea{max-width:100%}
+img,svg{max-width:100%}
+[hidden]{display:none!important}
+@media (max-width:979px){
+  body{overflow-x:hidden}
+  .cotizador-flujo-wrap,#v302_workspace{max-width:100%;min-width:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation-duration:.001ms!important;animation-iteration-count:1!important}
+}
+
+
+/* v463 - Accesorios: flujo continuo con apariencia del modulo Control */
+#accesorios_editor_contextual .control-seccion:not(#acc_panel_descuentos){display:none!important}
+.accesorios-flujo-v463 .accesorios-recorrido-v463{display:grid;gap:12px;margin-top:12px}
+.accesorios-flujo-v463 .accesorios-seccion-v463{margin:0;border:1px solid #d9e2ea;border-radius:8px;background:#fff;overflow:hidden}
+.accesorios-flujo-v463 .accesorios-seccion-v463>.control-seccion-cuerpo{display:block!important;padding:14px 16px 16px}
+.accesorios-flujo-v463 .accesorios-titulo-fijo-v463{cursor:default;background:#f7f9fb;border-bottom:1px solid #e3e9ee}
+.accesorios-flujo-v463 .accesorios-titulo-fijo-v463:hover{background:#f7f9fb}
+.accesorios-flujo-v463 .accesorios-pasos-v463 a{pointer-events:auto}
+.accesorios-flujo-v463 .accesorios-selector-v463{margin:0}
+.accesorios-flujo-v463 .accesorios-datos-internos-v463{display:none!important}
+.accesorios-flujo-v463 .accesorio-config-inline-v463{margin-top:12px;padding-top:12px;border-top:1px solid #e3e9ee}
+.accesorios-flujo-v463 .accesorio-config-inline-v463 .control-seccion-cuerpo{padding:0!important;display:block!important}
+.accesorios-flujo-v463 .accesorio-config-inline-v463 .accesorio-especial-bloque{display:block}
+.accesorios-flujo-v463 .accesorios-limites-v463{display:grid;grid-template-columns:minmax(280px,1fr) 140px;gap:12px;align-items:end}
+.accesorios-flujo-v463 .acciones-linea-v463{justify-content:flex-start;margin-top:10px}
+.accesorios-flujo-v463 #acc_panel_cable_mallado .cable-mallado-grid-v459{grid-template-columns:minmax(140px,.75fr) minmax(180px,1fr) minmax(180px,1fr) minmax(140px,.8fr)}
+.accesorios-flujo-v463 #acc_panel_cable_mallado .cable-mallado-grid-v459 label:nth-child(4){order:-4}
+.accesorios-flujo-v463 #acc_panel_cable_mallado .cable-mallado-grid-v459 label:nth-child(3){order:-3}
+.accesorios-flujo-v463 #acc_panel_cable_mallado .cable-mallado-grid-v459 label:nth-child(2){order:-2}
+.accesorios-flujo-v463 #acc_panel_cable_mallado .cable-mallado-grid-v459 label:nth-child(1){order:-1}
+.accesorios-flujo-v463 .configurable-acciones-v460 .btn-cancelar-config-v460{display:none!important}
+.accesorios-flujo-v463 .accesorios-editor-secundario-v463{margin-top:10px}
+.accesorios-flujo-v463 .accesorios-editor-secundario-v463 #acc_panel_descuentos.v201-editor-activo{display:block!important}
+@media(max-width:850px){.accesorios-flujo-v463 .accesorios-limites-v463{grid-template-columns:1fr}.accesorios-flujo-v463 #acc_panel_cable_mallado .cable-mallado-grid-v459{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.accesorios-flujo-v463 #acc_panel_cable_mallado .cable-mallado-grid-v459{grid-template-columns:1fr}}
+
+/* v466 - Accesorios seleccionados: apariencia compacta tipo Senalizacion */
+.accesorios-flujo-v463 .accesorios-selector-resumen{
+  border:1px solid #d9e2ea;
+  border-radius:8px;
+  overflow:hidden;
+  background:#fff;
+  margin-top:12px;
+}
+.accesorios-flujo-v463 .accesorios-selector-resumen-titulo{
+  padding:8px 10px;
+  background:#eef4f2;
+  border-bottom:1px solid #d9e2ea;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  color:#304554;
+}
+.accesorios-flujo-v463 #accesorios_selector_lista{
+  display:block;
+  padding:0;
+}
+.accesorios-flujo-v463 .accesorios-selector-fila-v459{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  padding:9px 10px;
+  border:0;
+  border-bottom:1px solid #e7edf1;
+  border-radius:0;
+  background:#fff;
+  box-shadow:none;
+}
+.accesorios-flujo-v463 .accesorios-selector-fila-v459:last-child{border-bottom:0}
+.accesorios-flujo-v463 .accesorio-check-v459{display:none!important}
+.accesorios-flujo-v463 .accesorio-info-v459{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.accesorios-flujo-v463 .accesorio-info-v459 strong{
+  display:block;
+  font-size:12px;
+  line-height:1.25;
+  color:#263b4a;
+}
+.accesorios-flujo-v463 .accesorio-info-v459 small{
+  display:block;
+  font-size:10px;
+  line-height:1.25;
+  color:#71808b;
+  white-space:normal;
+}
+.accesorios-flujo-v463 .accesorios-selector-fila-v459>.acciones{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center;
+  justify-content:flex-end;
+  gap:6px;
+  width:auto!important;
+  min-width:0!important;
+  margin:0!important;
+}
+.accesorios-flujo-v463 .accesorios-selector-fila-v459 .btn-modificar-v459,
+.accesorios-flujo-v463 .accesorios-selector-fila-v459 .btn-quitar-v459{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  width:auto!important;
+  min-width:58px;
+  height:30px;
+  margin:0!important;
+  padding:0 10px!important;
+  border-radius:6px!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+.accesorios-flujo-v463 .accesorios-selector-fila-v459 .btn-modificar-v459{
+  background:#e8f0f5!important;
+  color:#26465d!important;
+  border:1px solid #cbd9e2!important;
+}
+.accesorios-flujo-v463 .accesorios-selector-fila-v459 .btn-quitar-v459{
+  background:#fff2f0!important;
+  color:#a33b2f!important;
+  border:1px solid #eccdc8!important;
+}
+.accesorios-flujo-v463 .accesorios-selector-vacio{
+  padding:10px;
+  font-size:11px;
+  color:#768691;
+}
+@media(max-width:650px){
+  .accesorios-flujo-v463 .accesorios-selector-fila-v459{grid-template-columns:1fr}
+  .accesorios-flujo-v463 .accesorios-selector-fila-v459>.acciones{justify-content:flex-start}
+}
+
+/* v467 - Accesorios: acciones compactas y verdes, alineadas con Control */
+.accesorios-flujo-v463 .configurable-acciones-v460,
+.accesorios-flujo-v463 .accesorios-selector-acciones{
+  display:flex!important;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:flex-start!important;
+  gap:8px!important;
+  margin-top:10px;
+}
+.accesorios-flujo-v463 .btn-confirmar-config-v460,
+.accesorios-flujo-v463 #btn_accesorio_agregar{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  width:auto!important;
+  min-width:92px!important;
+  max-width:max-content!important;
+  min-height:34px!important;
+  height:34px!important;
+  padding:0 15px!important;
+  margin:0!important;
+  border:1px solid #137846!important;
+  border-radius:6px!important;
+  background:#16834d!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  box-shadow:none!important;
+}
+.accesorios-flujo-v463 .btn-confirmar-config-v460:hover,
+.accesorios-flujo-v463 #btn_accesorio_agregar:hover{
+  background:#116d3f!important;
+  border-color:#116d3f!important;
+}
+.accesorios-flujo-v463 .btn-item-manual-accesorio{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  width:auto!important;
+  min-width:108px!important;
+  max-width:max-content!important;
+  height:34px!important;
+  padding:0 14px!important;
+  margin:0!important;
+  border-radius:6px!important;
+  background:#eef3f7!important;
+  color:#315064!important;
+  border:1px solid #ced9e1!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  box-shadow:none!important;
+}
+.accesorios-flujo-v463 .acciones-linea-v463{margin-top:10px!important}
+@media(max-width:560px){
+  .accesorios-flujo-v463 .btn-confirmar-config-v460,
+  .accesorios-flujo-v463 #btn_accesorio_agregar,
+  .accesorios-flujo-v463 .btn-item-manual-accesorio{width:auto!important;max-width:100%!important}
+}
+
+
+/* ---- automac-v468-senalizacion-config-rapida ---- */
+body.ui-v453 #modulo_senalizacion #v344_step_base > .v344-step-head{margin-bottom:6px!important;}
+body.ui-v453 #modulo_senalizacion #v344_step_base > .v344-step-head .v344-step-title{font-size:10px!important;font-weight:800!important;text-transform:uppercase!important;letter-spacing:.02em!important;color:#36546b!important;}
+body.ui-v453 #modulo_senalizacion #v415_template_slot{margin-bottom:7px!important;}
+body.ui-v453 #modulo_senalizacion #v415_template_slot #selector_plantillas_senalizacion{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:7px 8px!important;align-items:end!important;margin:0!important;padding:8px 9px!important;border:1px solid #dce5ea!important;border-radius:9px!important;background:#f8fafb!important;}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion .v468-plantilla-label-oculto{display:none!important;}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion .senal-plantilla-campo{margin:0!important;min-width:0!important;}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion select{margin:0!important;}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion > button{width:auto!important;min-width:78px!important;height:32px!important;padding:0 14px!important;margin:0!important;background:#17804f!important;border-color:#17804f!important;color:#fff!important;border-radius:6px!important;font-size:10px!important;font-weight:800!important;}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion .senal-plantilla-links{grid-column:1/-1!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin:0!important;font-size:8.5px!important;line-height:1.25!important;color:#758493!important;}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion .senal-plantilla-links a{font-size:8.5px!important;font-weight:800!important;color:#17663d!important;white-space:nowrap!important;}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion .senal-plantilla-estado{grid-column:1/-1!important;margin:0!important;font-size:8.5px!important;}
+body.ui-v453 #modulo_senalizacion #v344_control_link{margin-top:0!important;}
+@media(max-width:760px){body.ui-v453 #modulo_senalizacion #v415_template_slot #selector_plantillas_senalizacion{grid-template-columns:1fr!important;}body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion > button{justify-self:start!important;}}
+
+/* ---- automac-v470-configuracion-rapida-senalizacion ---- */
+/* Igual visualmente a Configuración rápida de Control, sin encabezado de paso duplicado. */
+body.ui-v453 #modulo_senalizacion #v344_step_base.v470-config-rapida > .v344-step-head{display:none!important;}
+body.ui-v453 #modulo_senalizacion #v344_step_base.v470-config-rapida{padding-top:0!important;}
+body.ui-v453 #modulo_senalizacion #v415_template_slot{margin:0 0 7px!important;}
+body.ui-v453 #modulo_senalizacion #v415_template_slot #selector_plantillas_senalizacion.v470-senal-config-rapida{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:6px!important;
+  align-items:end!important;
+  margin:0!important;
+  padding:7px!important;
+  border:1px solid #d8e6df!important;
+  border-radius:9px!important;
+  background:#f6fbf8!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida .senal-plantilla-campo{
+  min-width:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida label[for="senal_plantilla_rapida"]{
+  display:block!important;margin:0 0 4px!important;padding:0!important;font-size:9px!important;font-weight:900!important;
+  color:#526474!important;text-transform:uppercase!important;letter-spacing:.35px!important;line-height:1.15!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida select#senal_plantilla_rapida{
+  width:100%!important;height:34px!important;min-height:34px!important;margin:0!important;padding:5px 8px!important;
+  font-size:10.5px!important;font-weight:600!important;border:1px solid #c7d5cf!important;border-radius:7px!important;background:#fff!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida > button.selector-plantillas-aplicar{
+  justify-self:start!important;width:auto!important;min-width:86px!important;height:34px!important;min-height:34px!important;
+  margin:0!important;padding:5px 13px!important;border-radius:7px!important;background:#176b45!important;border-color:#176b45!important;
+  color:#fff!important;font-size:10px!important;font-weight:900!important;box-shadow:none!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida > button.selector-plantillas-aplicar:hover{
+  background:#0f5132!important;border-color:#0f5132!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida .senal-plantilla-links{
+  grid-column:1!important;display:flex!important;justify-content:space-between!important;gap:8px!important;align-items:center!important;
+  margin:0!important;font-size:9px!important;line-height:1.2!important;color:#667085!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida .senal-plantilla-links a{
+  font-size:9px!important;font-weight:700!important;color:#185c37!important;text-decoration:none!important;white-space:nowrap!important;
+}
+body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida .senal-plantilla-estado{
+  grid-column:1!important;margin:0!important;font-size:8.5px!important;
+}
+@media(max-width:560px){
+ body.ui-v453 #modulo_senalizacion #selector_plantillas_senalizacion.v470-senal-config-rapida .senal-plantilla-links{align-items:flex-start!important;flex-direction:column!important;}
+}
+
+
+/* ---- automac-v479-control-accesos-dentro-seleccionados ---- */
+body.ui-v453 #modulo_senalizacion #v327_botonera_selected{
+  overflow:hidden!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area{
+  width:auto!important;
+  max-width:calc(100% - 14px)!important;
+  margin:7px!important;
+  padding:8px!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+  border:1px solid #d7e6dd!important;
+  border-radius:8px!important;
+  background:#f8fcfa!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area.v349-visible{
+  display:block!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area>.v349-config-block{
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area>.v349-config-block.v349-visible{
+  display:grid!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169{
+  grid-template-columns:minmax(150px,1.35fr) minmax(105px,.8fr) minmax(105px,.8fr)!important;
+  gap:7px!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169 .senal-especial-titulo-v169{
+  min-width:0!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169 label{
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169 select,
+body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169 input{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:1280px){
+  body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169 .senal-especial-titulo-v169{
+    grid-column:1/-1!important;
+  }
+}
+@media(max-width:760px){
+  body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169{
+    grid-template-columns:1fr!important;
+  }
+  body.ui-v453 #modulo_senalizacion #v349_config_area .senal-control-acceso-v169 .senal-especial-titulo-v169{
+    grid-column:auto!important;
+  }
+}
+
+
+/* ---- automac-v481-control-accesos-guardar-resumen ---- */
+body.ui-v453 #modulo_senalizacion .senal-control-acceso-acciones-v481{
+  grid-column:1/-1!important;display:flex!important;justify-content:flex-start!important;align-items:center!important;margin-top:2px!important;
+}
+body.ui-v453 #modulo_senalizacion .senal-control-acceso-guardar-v481{
+  width:auto!important;min-width:122px!important;height:31px!important;min-height:31px!important;padding:5px 11px!important;margin:0!important;
+  border:1px solid #16834d!important;border-radius:6px!important;background:#16834d!important;color:#fff!important;font-size:9px!important;font-weight:900!important;
+}
+body.ui-v453 #modulo_senalizacion .senal-control-acceso-guardar-v481:hover{background:#126c40!important;border-color:#126c40!important;}
+body.ui-v453 #modulo_senalizacion #v327_botonera_rows .v349-info small{white-space:normal!important;line-height:1.2!important;}
+
+
+/* v482 - Contenedores: Accesorios abierto en escritorio, igual que Control y Señalización */
+@media (min-width:1100px){
+  body.ui-v220 #modulo_accesorios .control-seccion > .control-seccion-cuerpo{
+    display:block!important;
+  }
+  body.ui-v220 #modulo_accesorios #acc_panel_descuentos{
+    display:block!important;
+    margin-top:0!important;
+  }
+  body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo{
+    border-bottom:1px solid #dfe7ed!important;
+  }
+  body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-cuerpo{
+    display:block!important;
+  }
+}
+
+/* v483 - Uniformar cabeceras de Condiciones comerciales en Control, Señalización y Accesorios */
+body.ui-v220 #modulo_control #control_paso_descuentos > .control-seccion-titulo,
+body.ui-v220 #modulo_senalizacion .control-seccion > .control-seccion-titulo,
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  width:100%!important;
+  min-height:42px!important;
+  padding:9px 12px!important;
+  box-sizing:border-box!important;
+}
+
+body.ui-v220 #modulo_control #control_paso_descuentos > .control-seccion-titulo .control-titulo-texto,
+body.ui-v220 #modulo_senalizacion .control-seccion > .control-seccion-titulo .control-titulo-texto,
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo .control-titulo-texto{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  min-width:0!important;
+  flex:1 1 auto!important;
+  gap:1px!important;
+}
+
+body.ui-v220 #modulo_control #control_paso_descuentos > .control-seccion-titulo .control-titulo-texto > strong,
+body.ui-v220 #modulo_senalizacion .control-seccion > .control-seccion-titulo .control-titulo-texto > strong,
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo .control-titulo-texto > strong{
+  font-size:12.5px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  color:#1d3f5f!important;
+}
+
+body.ui-v220 #modulo_control #control_paso_descuentos > .control-seccion-titulo .control-titulo-texto > small,
+body.ui-v220 #modulo_senalizacion .control-seccion > .control-seccion-titulo .control-titulo-texto > small,
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo .control-titulo-texto > small{
+  font-size:10px!important;
+  line-height:1.15!important;
+  color:#7690a3!important;
+  margin:0!important;
+}
+
+body.ui-v220 #modulo_control #control_paso_descuentos > .control-seccion-titulo .control-seccion-acciones,
+body.ui-v220 #modulo_senalizacion .control-seccion > .control-seccion-titulo .control-seccion-acciones,
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo .control-seccion-acciones{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  margin-left:auto!important;
+  flex:0 0 auto!important;
+}
+
+body.ui-v220 #modulo_control #control_paso_descuentos > .control-seccion-titulo .control-tag,
+body.ui-v220 #modulo_senalizacion .control-seccion > .control-seccion-titulo .control-tag,
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo .control-tag{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:74px!important;
+  height:22px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  letter-spacing:.02em!important;
+  white-space:nowrap!important;
+}
+
+body.ui-v220 #modulo_control #control_paso_descuentos > .control-seccion-titulo .control-toggle,
+body.ui-v220 #modulo_senalizacion .control-seccion > .control-seccion-titulo .control-toggle,
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos > .control-seccion-titulo .control-toggle{
+  width:20px!important;
+  min-width:20px!important;
+  text-align:center!important;
+  opacity:.85!important;
+}
+
+/* En accesorios dejamos el bloque visualmente igual a los otros dos */
+body.ui-v220 #modulo_accesorios #acc_panel_descuentos{
+  margin-top:0!important;
+}
+
+/* v484 - Condiciones comerciales: misma cabecera en Control, Senalizacion y Accesorios */
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo,
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  min-height:42px!important;
+  padding:8px 10px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  background:#eef3f6!important;
+  border-top:0!important;
+  border-right:0!important;
+  border-bottom:1px solid #d7e1e8!important;
+  border-radius:8px 8px 0 0!important;
+}
+
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo{
+  border-left:4px solid #174e72!important;
+}
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo{
+  border-left:4px solid #15945a!important;
+}
+
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo .control-titulo-texto,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo .senal-titulo-texto,
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo .control-titulo-texto{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  gap:1px!important;
+  margin:0!important;
+}
+
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo strong,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo strong,
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo strong{
+  color:#193d59!important;
+  font-size:12px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+  margin:0!important;
+}
+
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo small,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo small,
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo small{
+  display:none!important;
+}
+
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo .control-seccion-acciones,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo .senal-seccion-acciones,
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo .control-seccion-acciones{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:6px!important;
+  margin-left:auto!important;
+  flex:0 0 auto!important;
+}
+
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo .control-tag,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo .senal-precio-tag,
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo .control-tag{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:auto!important;
+  min-width:72px!important;
+  height:20px!important;
+  padding:0 8px!important;
+  box-sizing:border-box!important;
+  border:1px solid #bedfc9!important;
+  border-radius:999px!important;
+  background:#eaf7ee!important;
+  color:#137744!important;
+  font-size:8px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.02em!important;
+  white-space:nowrap!important;
+  opacity:1!important;
+}
+
+body.ui-v220 #control_paso_descuentos > .control-seccion-titulo .control-toggle,
+body.ui-v220 #senal_paso_comercial > .senal-seccion-titulo .senal-toggle-icon,
+body.ui-v220 #acc_panel_descuentos > .control-seccion-titulo .control-toggle{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:20px!important;
+  min-width:20px!important;
+  height:20px!important;
+  margin:0!important;
+  color:#587083!important;
+  opacity:.9!important;
+}
+
+/* Mantener los tres cuerpos abiertos en escritorio */
+@media (min-width:1100px){
+  body.ui-v220 #control_paso_descuentos > .control-seccion-cuerpo,
+  body.ui-v220 #senal_paso_comercial > #senal_paso_comercial_cuerpo,
+  body.ui-v220 #acc_panel_descuentos > .control-seccion-cuerpo{
+    display:block!important;
+  }
+}
+
+/* v485 - Condiciones comerciales iguales en los tres modulos */
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  min-height:42px!important;
+  padding:9px 12px!important;
+  box-sizing:border-box!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo .senal-titulo-texto{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  align-items:flex-start!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  gap:1px!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo .senal-titulo-texto strong{
+  font-size:12.5px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  color:#1d3f5f!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo .senal-titulo-texto small{
+  font-size:10px!important;
+  line-height:1.15!important;
+  color:#7690a3!important;
+  margin:0!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo .senal-seccion-acciones{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  margin-left:auto!important;
+  flex:0 0 auto!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo .senal-precio-tag{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:74px!important;
+  height:22px!important;
+  padding:0 10px!important;
+  border-radius:999px!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo .senal-toggle-icon{
+  width:20px!important;
+  min-width:20px!important;
+  text-align:center!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_comercial_cuerpo.senal-descuentos-cuerpo-v485{
+  display:block!important;
+  padding:9px!important;
+}
+body.ui-v220 #modulo_senalizacion .senal-descuentos-grid-v485{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+  width:100%!important;
+}
+body.ui-v220 #modulo_senalizacion .senal-descuentos-grid-v485 .campo{
+  min-width:0!important;
+  margin:0!important;
+}
+body.ui-v220 #modulo_senalizacion .senal-descuentos-grid-v485 input{
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+@media(max-width:760px){
+  body.ui-v220 #modulo_senalizacion .senal-descuentos-grid-v485{grid-template-columns:1fr!important;}
+}
+
+
+/* v486 - Flujo claro de Señalización: plantilla o manual -> indicador -> accesorios */
+body.ui-v220 #modulo_senalizacion .senal-flujo-cabina-v486{
+  background:#f5faf7!important;
+  border-color:#cfe3d7!important;
+}
+body.ui-v220 #modulo_senalizacion .senal-flujo-cabina-v486 p{
+  max-width:920px!important;
+}
+body.ui-v220 #modulo_senalizacion .senal-seccion-titulo-fijo-v486{
+  cursor:default!important;
+  border-bottom:1px solid #dfe7ed!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_indicador > .senal-seccion-cuerpo{
+  display:grid!important;
+}
+body.ui-v220 #modulo_senalizacion #senal_paso_base > .senal-seccion-cuerpo,
+body.ui-v220 #modulo_senalizacion #senal_paso_indicador > .senal-seccion-cuerpo,
+body.ui-v220 #modulo_senalizacion #senal_paso_adicionales > .senal-seccion-cuerpo{
+  visibility:visible!important;
+}
+
+/* v487 - Flujo visible de Señalización: los bloques principales quedan abiertos y en orden de trabajo */
+@media (min-width:1100px){
+  body.ui-v220 #modulo_senalizacion .senal-macro-nav{display:none!important;}
+  body.ui-v220 #modulo_senalizacion .senal-contenedor-macro-cuerpo,
+  body.ui-v220 #modulo_senalizacion #senal_paso_base_cuerpo,
+  body.ui-v220 #modulo_senalizacion #senal_paso_indicador_cuerpo,
+  body.ui-v220 #modulo_senalizacion #senal_paso_adicionales_cuerpo,
+  body.ui-v220 #modulo_senalizacion #senal_paso_comercial_cuerpo{
+    display:block!important;
+  }
+  body.ui-v220 #modulo_senalizacion .senal-contenedor-macro{
+    margin-top:12px!important;
+    border:1px solid #d9e3ea!important;
+    border-radius:9px!important;
+    overflow:hidden!important;
+    background:#fff!important;
+  }
+  body.ui-v220 #modulo_senalizacion .senal-contenedor-macro-cabecera{
+    cursor:default!important;
+    border-bottom:1px solid #dfe7ed!important;
+  }
+  body.ui-v220 #modulo_senalizacion .senal-contenedor-macro-cabecera .senal-macro-toggle-icon{
+    display:none!important;
+  }
+  body.ui-v220 #modulo_senalizacion #senal_paso_base,
+  body.ui-v220 #modulo_senalizacion #senal_paso_indicador,
+  body.ui-v220 #modulo_senalizacion #senal_paso_adicionales,
+  body.ui-v220 #modulo_senalizacion #senal_paso_comercial{
+    margin-top:10px!important;
+  }
+  body.ui-v220 #modulo_senalizacion #senal_paso_base > .senal-seccion-titulo,
+  body.ui-v220 #modulo_senalizacion #senal_paso_adicionales > .senal-seccion-titulo,
+  body.ui-v220 #modulo_senalizacion #senal_paso_comercial > .senal-seccion-titulo{
+    cursor:default!important;
+  }
+  body.ui-v220 #modulo_senalizacion #senal_paso_base .senal-toggle-icon,
+  body.ui-v220 #modulo_senalizacion #senal_paso_adicionales .senal-toggle-icon,
+  body.ui-v220 #modulo_senalizacion #senal_paso_comercial .senal-toggle-icon{
+    display:none!important;
+  }
+  body.ui-v220 #modulo_senalizacion .senal-flujo-cabina-v486{
+    margin-bottom:8px!important;
+  }
+}
+
+/* v496 - Tipografia uniforme final del cotizador.
+   Este archivo se carga despues de cotizador-ui.css, por eso la unificacion
+   debe vivir aqui para prevalecer sobre los estilos compactos historicos. */
+body.ui-v453 #v302_board select,
+body.ui-v453 #v302_board input[type="text"],
+body.ui-v453 #v302_board input[type="number"],
+body.ui-v453 #v302_board input[type="search"],
+body.ui-v453 #v302_board input[type="email"],
+body.ui-v453 #v302_board input[type="tel"],
+body.ui-v453 #v302_board input[type="date"],
+body.ui-v453 #v302_board textarea,
+body.ui-v453 #modulo_control select,
+body.ui-v453 #modulo_control input:not([type="checkbox"]):not([type="radio"]),
+body.ui-v453 #modulo_control textarea,
+body.ui-v453 #modulo_senalizacion select,
+body.ui-v453 #modulo_senalizacion input:not([type="checkbox"]):not([type="radio"]),
+body.ui-v453 #modulo_senalizacion textarea,
+body.ui-v453 #modulo_accesorios select,
+body.ui-v453 #modulo_accesorios input:not([type="checkbox"]):not([type="radio"]),
+body.ui-v453 #modulo_accesorios textarea,
+body.ui-v453 #modulo_iep select,
+body.ui-v453 #modulo_iep input:not([type="checkbox"]):not([type="radio"]),
+body.ui-v453 #modulo_iep textarea,
+body.ui-v453 #modulo_repuestos select,
+body.ui-v453 #modulo_repuestos input:not([type="checkbox"]):not([type="radio"]),
+body.ui-v453 #modulo_repuestos textarea {
+  font-family: inherit !important;
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+}
+
+body.ui-v453 #v302_board select,
+body.ui-v453 #modulo_control select,
+body.ui-v453 #modulo_senalizacion select,
+body.ui-v453 #modulo_accesorios select,
+body.ui-v453 #modulo_iep select,
+body.ui-v453 #modulo_repuestos select {
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 8px 11px !important;
+  font-weight: 600 !important;
+}
+
+body.ui-v453 #v302_board select option,
+body.ui-v453 #modulo_control select option,
+body.ui-v453 #modulo_senalizacion select option,
+body.ui-v453 #modulo_accesorios select option,
+body.ui-v453 #modulo_iep select option,
+body.ui-v453 #modulo_repuestos select option {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+body.ui-v453 #v302_board input::placeholder,
+body.ui-v453 #v302_board textarea::placeholder,
+body.ui-v453 #modulo_control input::placeholder,
+body.ui-v453 #modulo_control textarea::placeholder,
+body.ui-v453 #modulo_senalizacion input::placeholder,
+body.ui-v453 #modulo_senalizacion textarea::placeholder,
+body.ui-v453 #modulo_accesorios input::placeholder,
+body.ui-v453 #modulo_accesorios textarea::placeholder,
+body.ui-v453 #modulo_iep input::placeholder,
+body.ui-v453 #modulo_iep textarea::placeholder,
+body.ui-v453 #modulo_repuestos input::placeholder,
+body.ui-v453 #modulo_repuestos textarea::placeholder {
+  font-size: 16px !important;
+  opacity: 1 !important;
+}
+
+body.ui-v453 #v302_board .campo > label,
+body.ui-v453 #modulo_control .campo > label,
+body.ui-v453 #modulo_senalizacion .campo > label,
+body.ui-v453 #modulo_accesorios .campo > label,
+body.ui-v453 #modulo_iep .campo > label,
+body.ui-v453 #modulo_repuestos .campo > label {
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  font-weight: 800 !important;
+}

@@ -1,0 +1,425 @@
+/* AUTOMAC V1.5 - Plantillas / workspace. Scoped to the quote editor.
+   Retires UI-02 presentation; keeps the system menu and commercial functions. */
+html { --v15-top:80px!important; --v15-nav:68px!important; }
+body.v15-workbench { background:#f3f6f9!important; color:#233548!important; overflow-x:clip!important; overflow-y:visible!important; font-family:Arial,Helvetica,sans-serif!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout { display:block!important; grid-template-columns:none!important; max-width:1560px!important; width:100%!important; padding:14px 22px 36px!important; margin:0 auto!important; box-sizing:border-box!important; overflow:visible!important; font-family:Arial,Helvetica,sans-serif!important; font-size:15px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_cabecera { display:flex!important; position:static!important; justify-content:space-between!important; align-items:center!important; gap:16px!important; margin:0 0 14px!important; padding:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_cabecera h2 { display:block!important; margin:0 0 4px!important; padding:0!important; font-size:24px!important; font-weight:700!important; color:#20364c!important; line-height:1.25!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_cabecera p { display:block!important; margin:0!important; font-size:13px!important; color:#627487!important; line-height:1.35!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-badge { flex-shrink:0!important; background:#e8f0fa!important; color:#2463a4!important; border:1px solid #cfdef0!important; border-radius:20px!important; padding:7px 12px!important; font-size:12px!important; font-weight:700!important; white-space:nowrap!important; }
+/* Client suggestions use their own layer above the module bar.
+   The header must not trap them in a lower stacking context. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales { display:block!important; position:relative!important; top:auto!important; left:auto!important; right:auto!important; width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; margin:0 0 12px!important; padding:13px 16px!important; background:#fff!important; border:1px solid #dce4ec!important; border-radius:10px!important; box-shadow:none!important; box-sizing:border-box!important; z-index:auto!important; backdrop-filter:none!important; -webkit-backdrop-filter:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales .cabecera-cotizacion-titulo { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales .cabecera-cotizacion-grid { display:grid!important; grid-template-columns:1.1fr .85fr 1.1fr 1.15fr!important; gap:12px!important; align-items:start!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales .campo { min-width:0!important; margin:0!important; padding:0!important; background:transparent!important; border:0!important; width:auto!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales label { display:block!important; font-size:12px!important; text-transform:none!important; letter-spacing:0!important; font-weight:700!important; color:#506579!important; margin:0 0 6px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales input, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales select { height:40px!important; min-height:40px!important; width:100%!important; font-family:inherit!important; font-size:14px!important; padding:8px 10px!important; border:1px solid #ccd7e1!important; border-radius:5px!important; color:#243a50!important; box-sizing:border-box!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales .cliente-ayuda, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales .lista-general>.ayuda, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #detalle_base_bejerman { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales .aviso-cliente-obligatorio.visible { grid-column:1/-1!important; display:flex!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #revision_editor_slot { grid-column:1/-1!important; width:100%!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion { display:block!important; position:sticky!important; top:var(--v15-top)!important; left:auto!important; right:auto!important; width:100%!important; max-width:none!important; height:auto!important; min-height:0!important; max-height:none!important; margin:0 0 18px!important; padding:0!important; background:#f3f6f9!important; border:0!important; border-radius:0!important; box-shadow:none!important; z-index:55!important; overflow:visible!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .navegacion-cotizacion-lista { display:grid!important; grid-template-columns:repeat(5,minmax(0,1fr))!important; gap:0!important; padding:4px!important; border:1px solid #d7e1eb!important; border-radius:8px!important; background:#fff!important; overflow:visible!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .cotizador-modulo-btn { display:flex!important; position:relative!important; min-width:0!important; min-height:55px!important; height:auto!important; margin:0!important; padding:8px 12px!important; gap:9px!important; border:0!important; border-radius:5px!important; background:transparent!important; color:#42576b!important; text-align:left!important; box-shadow:none!important; cursor:pointer!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .cotizador-modulo-btn.activo { background:#eaf2fd!important; box-shadow:inset 0 -2px 0 #2376d7!important; color:#165fb7!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .cotizador-modulo-btn[data-v15-state="ok"] { background:#eaf8f0!important; color:#14623a!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .cotizador-modulo-btn[data-v15-state="pending"] { background:#fff7e2!important; color:#785811!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .cotizador-modulo-btn[data-v15-state="error"] { background:#fff0ef!important; color:#a53530!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .nav-numero { display:flex!important; justify-content:center!important; align-items:center!important; width:28px!important; height:28px!important; min-width:28px!important; border-radius:6px!important; background:#edf1f5!important; color:inherit!important; font-size:13px!important; font-weight:700!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .nav-contenido { display:flex!important; flex-direction:column!important; min-width:0!important; gap:3px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .nav-texto { font-size:14px!important; font-weight:700!important; line-height:1.2!important; color:inherit!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .nav-estado { font-size:11px!important; line-height:1.2!important; font-weight:600!important; color:inherit!important; white-space:normal!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .nav-descripcion, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .nav-importe, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .v146-nav-actions { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-workspace { display:grid!important; grid-template-columns:minmax(0,1fr) 310px!important; align-items:start!important; gap:22px!important; width:100%!important; position:relative!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-main { min-width:0!important; width:100%!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-sidebar { display:block!important; position:sticky!important; top:calc(var(--v15-top) + var(--v15-nav) + 15px)!important; width:100%!important; min-width:0!important; max-height:calc(100vh - var(--v15-top) - var(--v15-nav) - 30px)!important; overflow:auto!important; scrollbar-width:thin!important; border:1px solid #d6e1eb!important; border-radius:10px!important; background:#fff!important; box-shadow:0 3px 12px rgba(30,57,86,.04)!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main>.modulo-cotizador { position:relative!important; margin:0!important; padding:0!important; border:0!important; border-radius:0!important; height:auto!important; min-height:0!important; max-height:none!important; width:100%!important; background:transparent!important; box-shadow:none!important; overflow:visible!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v193-module-body { display:block!important; margin:0!important; padding:0!important; height:auto!important; max-height:none!important; overflow:visible!important; background:transparent!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-retired-form, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-source, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-obsolete-label { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-module-head { display:flex!important; justify-content:space-between!important; align-items:center!important; gap:14px!important; padding:0 2px 13px!important; margin:0!important; position:static!important; background:transparent!important; border:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-kicker { display:block!important; font-size:10px!important; letter-spacing:1.1px!important; color:#69819a!important; font-weight:700!important; margin-bottom:5px!important; line-height:1.3!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-module-head h2 { margin:0!important; font-size:21px!important; font-weight:700!important; color:#1e3852!important; line-height:1.25!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-module-state { display:inline-flex!important; flex-shrink:0!important; gap:5px!important; align-items:center!important; padding:6px 9px!important; border-radius:16px!important; background:#e7edf3!important; color:#647587!important; font-size:12px!important; line-height:1.3!important; font-weight:600!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-module-state[data-state="ok"] { color:#187447!important; background:#e3f6eb!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-module-state[data-state="pending"] { color:#886114!important; background:#fff1c9!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-module-state[data-state="error"] { color:#a53831!important; background:#ffebe8!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template { border:1px solid #c4d9ef!important; border-radius:10px!important; background:#f1f7ff!important; margin:0 0 16px!important; padding:15px 16px 11px!important; box-sizing:border-box!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-head { display:flex!important; align-items:center!important; justify-content:space-between!important; gap:14px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-current { font-size:16px!important; line-height:1.3!important; display:block!important; color:#224c74!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template .v15-kicker { color:#3674ac!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-catalog { margin-top:12px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-search { width:100%!important; min-height:38px!important; padding:8px 10px!important; font-family:inherit!important; font-size:14px!important; background:#fff!important; border:1px solid #c8d9ea!important; border-radius:6px!important; box-sizing:border-box!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-list { display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:9px!important; margin-top:10px!important; max-height:250px!important; overflow:auto!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-option { display:flex!important; flex-direction:column!important; align-items:flex-start!important; min-height:112px!important; height:auto!important; gap:7px!important; padding:12px!important; border:1px solid #cddfed!important; border-radius:7px!important; background:#fff!important; color:#264760!important; text-align:left!important; font:inherit!important; box-shadow:none!important; cursor:pointer!important; width:100%!important; margin:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-option:hover { border-color:#277bd0!important; background:#fbfdff!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-code { display:inline-block!important; background:#e8f0fa!important; color:#2068ab!important; border-radius:4px!important; padding:3px 7px!important; font-size:11px!important; font-weight:700!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-option strong { font-size:13px!important; line-height:1.4!important; font-weight:600!important; word-break:normal!important; white-space:normal!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-use { color:#2177c6!important; font-size:12px!important; font-weight:600!important; margin-top:auto!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-foot { display:flex!important; justify-content:space-between!important; gap:10px!important; margin-top:11px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-note { font-size:12px!important; color:#587491!important; margin-top:9px!important; line-height:1.35!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-btn { font:inherit!important; font-size:13px!important; font-weight:600!important; padding:9px 13px!important; border:1px solid #216fc3!important; border-radius:5px!important; background:#216fc3!important; color:#fff!important; height:auto!important; min-height:36px!important; width:auto!important; margin:0!important; cursor:pointer!important; white-space:nowrap!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-btn-outline { background:#fff!important; color:#2069b6!important; border-color:#b9cee4!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-link { color:#266fac!important; background:transparent!important; border:0!important; padding:0!important; margin:0!important; min-height:0!important; height:auto!important; width:auto!important; text-decoration:none!important; font:inherit!important; font-size:12px!important; font-weight:600!important; cursor:pointer!important; box-shadow:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-card { background:#fff!important; border:1px solid #d9e3ec!important; border-radius:10px!important; padding:16px!important; margin:0 0 14px!important; box-shadow:none!important; box-sizing:border-box!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-card>h3 { margin:0 0 7px!important; color:#28415a!important; font-size:16px!important; line-height:1.3!important; font-weight:700!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-help { font-size:12px!important; color:#6b7d8e!important; line-height:1.45!important; margin:0 0 12px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-job-fields { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:12px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-job-fields #grupo_observacion_bateria, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-job-fields #equipos_contenedor, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-job-fields #grupo_mismas_paradas { grid-column:1/-1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main .campo { border:0!important; border-radius:0!important; margin:0!important; padding:0!important; min-width:0!important; width:auto!important; background:transparent!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main .campo>label, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main label[for] { display:block!important; font-size:13px!important; font-weight:600!important; color:#4b6379!important; line-height:1.35!important; letter-spacing:0!important; text-transform:none!important; margin:0 0 5px!important; padding:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]), html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main select, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main textarea { font-family:inherit!important; font-size:15px!important; line-height:1.35!important; font-weight:400!important; color:#263f53!important; background:#fff!important; border:1px solid #cbd8e3!important; border-radius:5px!important; min-height:40px!important; height:40px!important; padding:8px 10px!important; width:100%!important; min-width:0!important; max-width:100%!important; box-sizing:border-box!important; letter-spacing:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main textarea { min-height:75px!important; height:auto!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main input::placeholder, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main textarea::placeholder { font-size:14px!important; color:#8a9bab!important; font-weight:400!important; opacity:1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main select option { font-family:inherit!important; font-size:15px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main input[type="checkbox"], html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main input[type="radio"] { width:16px!important; height:16px!important; min-height:0!important; margin:0 6px 0 0!important; padding:0!important; flex-shrink:0!important; accent-color:#2176c8!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main .ayuda, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_main small { font-size:12px!important; line-height:1.4!important; color:#6c8093!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #equipos_contenedor { display:grid!important; grid-template-columns:1fr!important; gap:10px!important; width:100%!important; padding:0!important; margin:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #equipos_contenedor .equipo-card { display:grid!important; grid-template-columns:100px minmax(0,1fr)!important; gap:8px 12px!important; padding:12px!important; border:1px solid #e0e8ef!important; border-radius:7px!important; background:#f9fbfd!important; margin:0!important; width:100%!important; box-sizing:border-box!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #equipos_contenedor .equipo-card h3 { grid-column:1/-1!important; margin:0!important; padding:0!important; font-size:13px!important; color:#40617e!important; background:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #equipos_contenedor .equipo-card .campo { min-width:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #equipos_contenedor .equipo-card small { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-config-overview { display:grid!important; grid-template-columns:repeat(4,minmax(0,1fr))!important; gap:13px 14px!important; margin:12px 0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-overview-item { min-width:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-overview-item>span { font-size:11px!important; color:#73879a!important; display:block!important; margin:0 0 4px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-overview-item>strong { display:block!important; font-size:13px!important; font-weight:600!important; color:#304b64!important; line-height:1.35!important; overflow-wrap:anywhere!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-overview-item.v15-missing>strong { font-weight:400!important; color:#9a7a35!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details { display:block!important; border:1px solid #dae3ed!important; border-radius:8px!important; background:#fff!important; margin:0 0 14px!important; overflow:visible!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-card>.v15-details { margin:13px -1px 0!important; border:0!important; border-top:1px solid #e0e7ee!important; border-radius:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details>summary { display:flex!important; align-items:center!important; flex-wrap:wrap!important; gap:6px 12px!important; padding:13px 15px!important; color:#335673!important; font-size:14px!important; font-weight:600!important; cursor:pointer!important; list-style:none!important; outline-offset:3px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details>summary:before { content:'+'!important; display:inline-block!important; flex-shrink:0!important; color:#2676bd!important; font-size:19px!important; width:14px!important; line-height:1!important; font-weight:400!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details[open]>summary:before { content:'-'!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details>summary>small { color:#8091a1!important; font-size:11px!important; font-weight:400!important; margin-left:auto!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details:not([open])>:not(summary) { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details .control-seccion { margin:0!important; border:0!important; border-radius:0!important; background:transparent!important; box-shadow:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-config-section>.control-seccion-titulo { padding:10px 0 8px!important; margin:0!important; background:transparent!important; border:0!important; font-size:13px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-config-section .control-seccion-cuerpo { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:13px!important; padding:8px 0 16px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-config-section .campo-adicional-ancho { grid-column:1/-1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #control_paso_config>.control-seccion-cuerpo>.ayuda { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .control-titulo-texto strong { color:#36536e!important; font-size:14px!important; font-weight:700!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .control-titulo-texto small, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .control-tag, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .control-toggle { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-additional-card>.control-seccion-titulo { border:0!important; padding:0 0 13px!important; margin:0!important; background:transparent!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-additional-card>.control-seccion-titulo strong { font-size:16px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-additional-card>.control-seccion-cuerpo { display:block!important; padding:0!important; margin:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-add-panel, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v327_botonera_panel { width:100%!important; padding:0!important; margin:0!important; background:transparent!important; border:0!important; border-radius:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-add-row, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v327-add { display:grid!important; grid-template-columns:minmax(0,1fr) 105px!important; align-items:end!important; gap:10px!important; padding:0!important; margin:0 0 13px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-add-row label, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v327-add label { font-size:12px!important; color:#536d86!important; margin:0 0 5px!important; display:block!important; font-weight:600!important; text-transform:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-add-row button, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v327-add button { min-height:40px!important; height:40px!important; width:auto!important; padding:8px 13px!important; font-size:14px!important; font-weight:600!important; color:#fff!important; background:#2376cc!important; border:1px solid #2376cc!important; border-radius:5px!important; margin:0!important; cursor:pointer!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v327_botonera_selected { background:#fff!important; border:1px solid #e0e7ef!important; border-radius:7px!important; margin:0 0 12px!important; overflow:hidden!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected-head, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v327-selected-head { padding:8px 11px!important; background:#f4f7fa!important; color:#6a8094!important; font-size:11px!important; text-transform:uppercase!important; letter-spacing:.5px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected-empty, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v327-empty, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-empty { font-size:13px!important; color:#7e90a0!important; padding:13px 11px!important; text-align:left!important; margin:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected-row { display:grid!important; grid-template-columns:minmax(0,1fr) auto!important; gap:5px 10px!important; padding:11px!important; border-bottom:1px solid #e5ebf1!important; align-items:center!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected-row strong { font-size:13px!important; font-weight:600!important; color:#324e67!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected-actions { grid-column:2!important; grid-row:1/3!important; display:flex!important; gap:6px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected-actions button { min-height:0!important; height:auto!important; width:auto!important; margin:0!important; padding:5px 8px!important; border:1px solid #cbdbe8!important; border-radius:4px!important; color:#2a70af!important; background:#fff!important; font-size:11px!important; font-weight:600!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v325-selected-actions .v325-remove { color:#a14f4a!important; border-color:#ecd6d4!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-line-status { grid-column:1!important; font-size:11px!important; font-weight:400!important; color:#987222!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-line-status[data-state="ok"] { color:#298454!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-extra-fields { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; gap:13px!important; padding:12px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-extra-fields>.adicionales-manuales, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-extra-fields>.campo-adicional-ancho { grid-column:1/-1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-additional-card .v15-details { margin-bottom:0!important; border-color:#e3eaf1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-commercial { margin:0 0 14px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-commercial #control_paso_descuentos>.control-seccion-titulo { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-commercial .control-seccion-cuerpo { padding:12px 15px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .descuentos-grid { display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:12px!important; }
+/* Signal keeps the same form controls and template application routine. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v346_tech_panel { display:block!important; padding:0!important; margin:0!important; background:none!important; border:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v346_tech_panel #senal_paso_base_cuerpo { display:block!important; padding:6px 0 10px!important; margin:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v346_tech_panel .senal-base-renglon { display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr))!important; align-items:start!important; gap:12px!important; margin:0 0 12px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_control_link { padding:10px 0!important; margin:0!important; border:0!important; background:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_control_link .senal-sync-inline { display:flex!important; font-size:12px!important; align-items:center!important; margin:0!important; color:#56718a!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_edit_tech, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v365_tipo_control_senal, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_botonera_simple, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #senal_datos_comunes { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_step_indicator { display:block!important; padding:16px!important; margin-bottom:14px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v344-step-head { display:flex!important; align-items:center!important; justify-content:space-between!important; gap:10px!important; margin-bottom:10px!important; background:none!important; border:0!important; padding:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v344-step-num { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v344-step-title { font-size:16px!important; color:#28415a!important; font-weight:700!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_indicator_row { display:grid!important; grid-template-columns:minmax(0,1fr) 120px!important; gap:12px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_indicator_toggle { background:transparent!important; color:#2f70ac!important; border:0!important; font-size:12px!important; font-weight:600!important; padding:0!important; width:auto!important; height:auto!important; min-height:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v327_botonera_panel.v15-card { padding:16px!important; margin:0 0 14px!important; background:#fff!important; border:1px solid #d9e3ec!important; border-radius:10px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v327_botonera_panel .v327-head { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v327_botonera_rows .v348-row, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v327_botonera_rows .v348-item, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v327_botonera_rows .v327-row { font-size:13px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-signal-optional>.senal-contenedor-macro, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-signal-optional>.senal-seccion { border:0!important; border-radius:0!important; margin:0!important; background:transparent!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-signal-optional .senal-contenedor-macro-cabecera, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-signal-optional #senal_paso_comercial>.senal-seccion-titulo { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-signal-optional .senal-contenedor-macro-cuerpo, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-signal-optional .senal-seccion-cuerpo { padding:12px 16px!important; }
+/* One real summary, with original emission buttons and original validation. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador { display:block!important; position:static!important; width:100%!important; min-width:0!important; max-width:none!important; height:auto!important; min-height:0!important; max-height:none!important; margin:0!important; padding:18px!important; inset:auto!important; transform:none!important; visibility:visible!important; opacity:1!important; pointer-events:auto!important; background:#fff!important; border:0!important; border-radius:0!important; box-shadow:none!important; box-sizing:border-box!important; overflow:visible!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .resumen-documento { padding:0!important; margin:0!important; border:0!important; background:transparent!important; border-radius:0!important; position:static!important; box-shadow:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .panel-calculo-cabecera { display:block!important; background:transparent!important; color:#264360!important; margin:0 0 14px!important; padding:0!important; border:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .panel-calculo-cabecera h3 { margin:0 0 5px!important; font-size:17px!important; color:#24425e!important; letter-spacing:0!important; line-height:1.3!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .panel-resumen-ayuda { font-size:12px!important; color:#728598!important; line-height:1.4!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .panel-calculo-cerrar { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-emission-status { font-size:12px!important; font-weight:600!important; border-radius:6px!important; padding:10px!important; margin-bottom:12px!important; color:#647d94!important; background:#f0f4f8!important; line-height:1.35!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-emission-status[data-state="pending"] { color:#896315!important; background:#fff4d5!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-emission-status[data-state="ok"] { color:#167845!important; background:#e9f8ef!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .v15-summary-row { display:grid!important; grid-template-columns:minmax(0,1fr) auto 24px!important; gap:7px!important; align-items:center!important; padding:11px 0!important; margin:0!important; border-bottom:1px solid #e5ebf1!important; background:transparent!important; border-radius:0!important; color:#3e5a72!important; font-size:13px!important; box-shadow:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-row>span:first-child { font-size:13px!important; color:#3e5a72!important; font-weight:500!important; line-height:1.4!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-source-value { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-value { text-align:right!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-row-amount { display:block!important; font-size:13px!important; font-weight:700!important; color:#284b66!important; white-space:nowrap!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-row-state { display:block!important; font-size:10px!important; line-height:1.3!important; margin-top:3px!important; color:#8b99a8!important; max-width:98px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout [data-state="ok"] .v15-row-state { color:#268957!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout [data-state="error"] .v15-row-state { color:#ae473d!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout [data-state="pending"] .v15-row-state { color:#a7812f!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-edit { min-height:0!important; width:auto!important; height:auto!important; margin:0!important; padding:0!important; border:0!important; color:#357bb8!important; background:transparent!important; font-size:10px!important; font-weight:500!important; cursor:pointer!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-total { display:block!important; margin:16px 0!important; padding:15px!important; border:1px solid #cee6d8!important; border-radius:8px!important; background:#eff9f3!important; color:#236747!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-total>span { font-size:12px!important; display:block!important; font-weight:600!important; margin:0 0 9px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-total>strong { display:block!important; font-size:27px!important; line-height:1.15!important; font-weight:700!important; color:#13794a!important; letter-spacing:-.6px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-total>small { display:block!important; margin-top:10px!important; font-size:11px!important; color:#608475!important; line-height:1.35!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-alerts { margin:0 0 13px!important; padding:10px!important; border:1px solid #efdfb0!important; border-radius:6px!important; background:#fffaf0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-alerts p { font-size:11px!important; line-height:1.4!important; color:#866b2e!important; margin:0 0 7px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .resumen-acciones { display:flex!important; flex-direction:column!important; gap:8px!important; margin:12px 0!important; padding:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .resumen-acciones button { display:block!important; width:100%!important; min-height:41px!important; height:auto!important; padding:10px 12px!important; border:0!important; border-radius:6px!important; font-family:inherit!important; font-size:13px!important; font-weight:600!important; color:#fff!important; background:#2478ca!important; margin:0!important; cursor:pointer!important; line-height:1.35!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .resumen-acciones button[data-emision="pedido"] { color:#277351!important; background:#edf7f1!important; border:1px solid #bddcc9!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .resumen-acciones button:disabled { opacity:.5!important; cursor:not-allowed!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .resumen-total-general { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .v15-detalle-toggle { display:block!important; width:100%!important; padding:9px 8px!important; border:1px solid #d9e3ec!important; border-radius:6px!important; color:#4c6c87!important; background:#f9fbfd!important; font-family:inherit!important; font-size:12px!important; margin:10px 0 0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-detalle-calculo { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-detalle-calculo.abierto { display:block!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #resultado_calculo { width:100%!important; min-width:0!important; min-height:400px!important; border:0!important; }
+/* Independent modules retain their data and events. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_accesorios>.v193-module-body, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos>.v193-module-body, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_iep>.v193-module-body { background:#fff!important; border:1px solid #d9e3ec!important; border-radius:10px!important; padding:16px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .repuestos-filtros, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .repuestos-busqueda { display:block!important; min-width:0!important; width:100%!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-iep-note { background:#faf7fe!important; border:1px solid #ded3ee!important; border-radius:7px!important; padding:13px!important; font-size:13px!important; color:#776288!important; margin-bottom:15px!important; }
+/* Retired chrome, never the top menu or the commercial agenda. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .control-cabecera, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .control-pasos, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .control-guia, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v129-module-head, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v193-module-head, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v304-module-header, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .cotizador-flujo-wrap, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .flujo-cotizacion, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .cotizador-contexto-actual, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-estado-global, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v129-actionbar, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .modulo-inclusion, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .acciones-cotizacion, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_barra_revision, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v307_resumen, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v312_calcular_control { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #form_cotizador:has([name="plantilla_id"]) .acciones-cotizacion { display:block!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #v310_resumen_toggle, html body.v15-workbench.automac-app.ui-v150.ui-v453 #toggle_panel_presupuesto, html body.v15-workbench.automac-app.ui-v150.ui-v453 .v129-actionbar, html body.v15-workbench.automac-app.ui-v150.ui-v453 #v15_barra_revision { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout [hidden] { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout button:focus-visible, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout a:focus-visible, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout summary:focus-visible { outline:2px solid #2169b8!important; outline-offset:3px!important; }
+@media (max-width:1150px) {
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout { padding-left:14px!important; padding-right:14px!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-workspace { grid-template-columns:minmax(0,1fr) 280px!important; gap:14px!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-config-overview { grid-template-columns:repeat(3,minmax(0,1fr))!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-list { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .cotizador-modulo-btn { padding:8px!important; }
+}
+@media (max-width:979px) {
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-workspace { grid-template-columns:1fr!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-sidebar { position:static!important; max-height:none!important; overflow:visible!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #datos_generales .cabecera-cotizacion-grid { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .navegacion-cotizacion-lista { display:flex!important; overflow-x:auto!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #navegacion_cotizacion .cotizador-modulo-btn { min-width:145px!important; flex:1 0 145px!important; }
+}
+@media (max-width:600px) {
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout { padding:12px 10px 24px!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_cabecera h2 { font-size:20px!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_cabecera p { display:none!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-head { align-items:start!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-list { grid-template-columns:1fr!important; max-height:230px!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-option { min-height:0!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-job-fields, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-config-section .control-seccion-cuerpo, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-extra-fields { grid-template-columns:1fr!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-config-overview { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v346_tech_panel .senal-base-renglon { grid-template-columns:repeat(2,minmax(0,1fr))!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-details>summary>small { display:none!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-module-head h2 { font-size:18px!important; }
+}
+/* Explicit placement avoids V1's global form/button grid declarations. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #form_cotizador, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #form_senalizacion { display:block!important; grid-template-columns:none!important; gap:0!important; width:100%!important; padding:0!important; margin:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-option { grid-column:auto!important; grid-row:auto!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-row::before, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-row::after { content:none!important; display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-row>span:first-child { grid-column:1!important; grid-row:1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-value { grid-column:2!important; grid-row:1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-edit { grid-column:3!important; grid-row:1!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-template-head .v15-btn { grid-column:auto!important; grid-row:auto!important; }
+
+/* Compact permanent summary and no duplicate template confirmation. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_control .v193-module-body>.mensaje { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador { padding:16px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .panel-calculo-cabecera { margin-bottom:10px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-emission-status { padding:8px 10px!important; margin-bottom:8px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-total { margin:10px 0!important; padding:12px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-total>span { margin-bottom:5px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-total>small { margin-top:6px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .v15-summary-row { padding:8px 0!important; min-height:43px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-alerts { margin:0 0 6px!important; padding:8px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-summary-alerts p:last-child { margin-bottom:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #panel_calculo_cotizador .resumen-acciones button { min-height:36px!important; padding:8px 10px!important; }
+
+/* Signal quantities stay visible, technical fields remain within the original
+   cabin enable/disable boundary. The original controls are never cloned. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .modulo-cotizador { scroll-margin-top:calc(var(--v15-top) + var(--v15-nav) + 14px)!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .flujo-acciones, html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-retired-cabina { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #senal_datos_cabina_v181 { margin:0!important; padding:0!important; border:0!important; background:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #senal_datos_cabina_v181>.senal-cabecera { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-cabin-choice { display:block!important; padding:10px 14px!important; margin:0 0 14px!important; background:#fff!important; border:1px solid #d9e3ec!important; border-radius:8px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-cabin-choice .senal-option-card { display:flex!important; align-items:flex-start!important; gap:8px!important; margin:0!important; padding:0!important; border:0!important; background:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-cabin-choice .senal-option-card input { margin-top:2px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-cabin-choice strong { font-size:13px!important; font-weight:600!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout .v15-cabin-choice small { display:block!important; font-size:11px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-base-renglon-sync { display:grid!important; grid-template-columns:100px minmax(0,1fr)!important; gap:14px!important; width:100%!important; margin:0!important; padding:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-paradas-destacado { grid-column:auto!important; margin:0!important; padding:10px!important; border:1px solid #e0e7ef!important; background:#f8fbfe!important; border-radius:6px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-coches-titulo { font-size:12px!important; padding:0 0 8px!important; background:none!important; border:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-coches-titulo small { display:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-coches-titulo>span { font-size:10px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-paradas-grid { display:grid!important; grid-template-columns:1fr!important; gap:8px!important; padding:0!important; margin:0!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-coche-card { padding:6px!important; margin:0!important; background:none!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-coche-card-grid { display:grid!important; grid-template-columns:80px minmax(0,1fr) minmax(0,1fr)!important; gap:9px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job #v344_control_link { padding:0 0 10px!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v344_indicator_row { align-items:start!important; }
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job #v344_control_link .senal-sync-inline { font-size:12px!important; }
+@media (max-width:650px) {
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-base-renglon-sync { grid-template-columns:1fr!important; }
+ html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #v15_signal_job .senal-coche-card-grid { grid-template-columns:1fr!important; }
+}
+
+/* RP01 - Repuestos: one readable product per record instead of squeezing nine
+   fixed-width columns beside the summary. Same table cells, data and buttons.
+   Never force display on resultados_repuestos: V1 hides it after selection. */
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos {
+  position:relative!important; inset:auto!important; transform:none!important; width:100%!important; min-width:0!important; max-width:100%!important; max-height:none!important; overflow:visible!important; margin:14px 0!important; z-index:20!important; background:#fff!important; border:1px solid #d3dee8!important; border-radius:8px!important; box-shadow:none!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos[style*="display: none"],
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos[style*="display:none"] {
+  display:none!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuestos-resultados-cabecera {
+  position:static!important; display:flex!important; flex-wrap:wrap!important; align-items:center!important; justify-content:space-between!important; gap:8px!important; padding:11px 12px!important; font-size:14px!important; line-height:1.4!important; background:#f5f8fb!important; border-bottom:1px solid #dce5ed!important; border-radius:7px 7px 0 0!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuestos-resultados-cabecera strong {
+  font-size:15px!important; line-height:1.4!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuestos-resultados-contador {
+  font-size:12px!important; line-height:1.4!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuestos-tabla-scroll {
+  width:100%!important; min-width:0!important; max-width:100%!important; max-height:520px!important; max-height:clamp(280px,65vh,560px)!important; overflow-x:hidden!important; overflow-y:auto!important; padding:10px!important; box-sizing:border-box!important; background:#f6f8fa!important; overscroll-behavior-y:contain;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos table.repuestos-tabla-busqueda {
+  position:relative!important; display:block!important; table-layout:auto!important; width:100%!important; min-width:0!important; max-width:100%!important; margin:0!important; padding:0!important; border:0!important; border-spacing:0!important; background:transparent!important; font-size:14px!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuestos-tabla-busqueda thead {
+  position:absolute!important; width:1px!important; min-width:0!important; max-width:1px!important; height:1px!important; padding:0!important; margin:0!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; clip-path:inset(50%)!important; border:0!important; white-space:nowrap!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuestos-tabla-busqueda thead th {
+  position:static!important; width:auto!important; min-width:0!important; max-width:none!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuestos-tabla-busqueda tbody {
+  display:grid!important; grid-template-columns:minmax(0,1fr)!important; gap:10px!important; width:100%!important; min-width:0!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila {
+  display:grid!important; grid-template-columns:repeat(3,minmax(0,1fr)) minmax(80px,.7fr) minmax(100px,.85fr)!important; gap:7px 9px!important; align-items:start!important; width:100%!important; min-width:0!important; height:auto!important; padding:12px!important; margin:0!important; box-sizing:border-box!important; border:1px solid #d4e0eb!important; border-radius:7px!important; background:#fff!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > td {
+  display:block!important; position:static!important; float:none!important; width:auto!important; min-width:0!important; max-width:100%!important; height:auto!important; min-height:0!important; max-height:none!important; margin:0!important; padding:0!important; box-sizing:border-box!important; border:0!important; border-radius:0!important; background:transparent!important; box-shadow:none!important; color:#233b50!important; font-family:Arial,Helvetica,sans-serif!important; font-size:14px!important; font-weight:400!important; line-height:1.45!important; text-align:left!important; white-space:normal!important; overflow:visible!important; text-overflow:clip!important; overflow-wrap:anywhere!important; word-break:normal!important; grid-column:auto!important; grid-row:auto!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > td::before,
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > td::after {
+  content:none; position:static!important; float:none!important; width:auto!important; height:auto!important; margin:0!important; padding:0!important; border:0!important; background:transparent!important; transform:none!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-code {
+  grid-column:1!important; grid-row:1!important; font-size:15px!important; font-weight:700!important; color:#20536e!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-desc {
+  grid-column:2 / -1!important; grid-row:1!important; font-size:15px!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-cat {
+  grid-column:1 / 5!important; grid-row:2!important; font-size:13px!important; color:#566c80!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-iva {
+  grid-column:5!important; grid-row:2!important; font-size:13px!important; text-align:right!important; color:#566c80!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-cat::before {
+  content:"Categor\00ed a: "!important; display:inline!important; font-size:13px!important; font-weight:600!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-iva::before {
+  content:"IVA: "!important; display:inline!important; font-size:13px!important; font-weight:600!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-price {
+  grid-row:3!important; align-self:stretch!important; padding:8px!important; background:#f3f6f9!important; border:1px solid #e1e8ef!important; border-radius:5px!important; font-size:15px!important; font-weight:700!important; font-variant-numeric:tabular-nums!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .precio-col-0 {
+  grid-column:1!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .precio-col-0::before {
+  content:"Precio"!important; display:block!important; margin-bottom:5px!important; color:#536c81!important; font-size:12px!important; font-weight:600!important; line-height:1.3!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .precio-col-15 {
+  grid-column:2!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .precio-col-15::before {
+  content:"Con 15%"!important; display:block!important; margin-bottom:5px!important; color:#536c81!important; font-size:12px!important; font-weight:600!important; line-height:1.3!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .precio-col-30 {
+  grid-column:3!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .precio-col-30::before {
+  content:"Con 30%"!important; display:block!important; margin-bottom:5px!important; color:#536c81!important; font-size:12px!important; font-weight:600!important; line-height:1.3!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .precio-col.descuento-activo {
+  background:#e7f5ed!important; border-color:#9ecdb5!important; color:#165b39!important; box-shadow:inset 0 0 0 1px #c1e1d0!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > td:nth-child(7) {
+  grid-column:4!important; grid-row:3!important; align-self:end!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > td:nth-child(7)::before {
+  content:"Cantidad"!important; display:block!important; margin-bottom:5px!important; color:#536c81!important; font-size:12px!important; font-weight:600!important; line-height:1.3!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-accion {
+  grid-column:5!important; grid-row:3!important; align-self:end!important; padding:0!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila .repuesto-cantidad-busqueda {
+  display:block!important; width:100%!important; min-width:0!important; max-width:100%!important; height:40px!important; min-height:40px!important; margin:0!important; padding:7px!important; font-family:inherit!important; font-size:16px!important; line-height:1.3!important; text-align:center!important; box-sizing:border-box!important; background:#fff!important; border:1px solid #bdcbd8!important; border-radius:5px!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila .repuesto-agregar {
+  display:flex!important; align-items:center!important; justify-content:center!important; width:100%!important; min-width:0!important; max-width:100%!important; height:40px!important; min-height:40px!important; margin:0!important; padding:7px!important; font-family:inherit!important; font-size:14px!important; font-weight:700!important; line-height:1.3!important; white-space:normal!important; border-radius:5px!important; box-sizing:border-box!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila .repuesto-agregar:focus-visible,
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila .repuesto-cantidad-busqueda:focus-visible {
+  outline:2px solid #216fc3!important; outline-offset:2px!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .rep-origen {
+  display:inline-block!important; position:static!important; margin:0 0 0 5px!important; padding:2px 5px!important; max-width:100%!important; font-size:11px!important; line-height:1.4!important; white-space:normal!important; overflow-wrap:anywhere!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .rep-formula-mini,
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos .repuesto-advertencia {
+  display:block!important; position:static!important; width:auto!important; min-width:0!important; max-width:100%!important; max-height:none!important; margin:4px 0 0!important; padding:0!important; font-size:13px!important; line-height:1.45!important; white-space:normal!important; overflow:visible!important; overflow-wrap:anywhere!important; word-break:normal!important; text-overflow:clip!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuestos-vacio-busqueda,
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuestos-vacio-busqueda > td {
+  display:block!important; width:100%!important; min-width:0!important; height:auto!important; min-height:0!important; max-height:none!important; box-sizing:border-box!important; font-size:14px!important; line-height:1.5!important; white-space:normal!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuestos-vacio-busqueda > td {
+  padding:16px!important; text-align:left!important;
+}
+
+@media (max-width:1150px) {
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila {
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-cat {
+  grid-column:1 / 3!important; grid-row:2!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-iva {
+  grid-column:3!important; grid-row:2!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > td:nth-child(7) {
+  grid-column:1!important; grid-row:4!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-accion {
+  grid-column:2 / 4!important; grid-row:4!important;
+}
+}
+
+@media (max-width:520px) {
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila {
+  padding:10px!important; gap:8px 6px!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-code {
+  grid-column:1 / -1!important; grid-row:1!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-desc {
+  grid-column:1 / -1!important; grid-row:2!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-cat {
+  grid-row:3!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-iva {
+  grid-row:3!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-price {
+  grid-row:4!important; padding:7px 5px!important; font-size:14px!important;
+}
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > td:nth-child(7),
+html body.v15-workbench.automac-app.ui-v150.ui-v453 #cotizador_layout #modulo_repuestos #resultados_repuestos tr.repuesto-resultado-fila > .rep-accion {
+  grid-row:5!important;
+}
+}
