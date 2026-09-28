@@ -1146,7 +1146,7 @@ function pdfItemsComerciales(mysqli $conexion, array $cotizacion, array $detalle
                 'concepto' => (string)($d['concepto'] ?? ''),
                 'cantidad' => (float)$d['cantidad'],
                 'codigo' => (string)$d['codigo'],
-                'descripcion' => pdfTextoMinusculas(pdfSinAcentos(trim((string)$d['descripcion']))),
+                'descripcion' => descripcionPresentacionRondMetal(pdfTextoMinusculas(pdfSinAcentos(trim((string)$d['descripcion'])))),
                 'unitario' => (float)$d['precio_unitario'],
                 'total' => (float)$d['importe_total'],
             );

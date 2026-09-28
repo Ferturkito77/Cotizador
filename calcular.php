@@ -2259,7 +2259,7 @@ if ($modoPanel) {
     <?php foreach ($detallesCalculoPanel as $detallePanel): ?>
         <div class="detalle">
             <div class="detalle-titulo"><?= escapar($detallePanel['concepto']) ?><?php if ($detallePanel['codigo'] !== ''): ?> — <?= escapar($detallePanel['codigo']) ?><?php endif; ?></div>
-            <?php if ($detallePanel['descripcion'] !== ''): ?><div class="detalle-meta"><?= escapar($detallePanel['descripcion']) ?></div><?php endif; ?>
+            <?php if ($detallePanel['descripcion'] !== ''): ?><div class="detalle-meta"><?= escapar(descripcionPresentacionRondMetal($detallePanel['descripcion'])) ?></div><?php endif; ?>
             <div class="detalle-meta">Cantidad: <?= number_format($detallePanel['cantidad'], 0, ',', '.') ?> | Unitario: $<?= formatoPrecioEntero($detallePanel['unitario']) ?></div>
             <?php if ($detallePanel['formula'] !== ''): ?><div class="detalle-meta">Cálculo: <?= escapar($detallePanel['formula']) ?></div><?php endif; ?>
             <div class="detalle-total">Total: $<?= formatoPrecioEntero($detallePanel['total']) ?></div>

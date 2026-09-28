@@ -275,7 +275,7 @@ function renderPedidosListado(array $filas, string $titulo, string $subtitulo, a
 <?php $detallesActuales = $detallesPorPedido[(int)$x['pedido_id']] ?? array(); ?>
 <?php if (count($detallesActuales) > 0): ?>
 <table><tr><th>Concepto</th><th>Código</th><th>Descripción</th><th>Cantidad</th><th>Precio unitario</th><th>Importe</th></tr>
-<?php foreach ($detallesActuales as $det): ?><tr><td><?= e($det['concepto']) ?></td><td><?= e($det['codigo']) ?></td><td><?= e($det['descripcion']) ?></td><td><?= number_format((float)$det['cantidad'],2,',','.') ?></td><td>$<?= number_format(ceil((float)$det['precio_unitario']),0,',','.') ?></td><td>$<?= number_format(ceil((float)$det['importe_total']),0,',','.') ?></td></tr><?php endforeach; ?>
+<?php foreach ($detallesActuales as $det): ?><tr><td><?= e($det['concepto']) ?></td><td><?= e($det['codigo']) ?></td><td><?= e(descripcionPresentacionRondMetal($det['descripcion'])) ?></td><td><?= number_format((float)$det['cantidad'],2,',','.') ?></td><td>$<?= number_format(ceil((float)$det['precio_unitario']),0,',','.') ?></td><td>$<?= number_format(ceil((float)$det['importe_total']),0,',','.') ?></td></tr><?php endforeach; ?>
 </table>
 <?php else: ?><div class="sin-resultados">Este pedido no tiene renglones guardados en pedidos_detalle.</div><?php endif; ?>
 </td></tr>

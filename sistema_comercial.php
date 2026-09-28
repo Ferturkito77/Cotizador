@@ -260,8 +260,17 @@ function siguienteNumeroDocumento(mysqli $conexion, string $serie): string
  * cliente, pedido y fabricacion presenta un unico renglon compuesto por:
  * BASE + adicional por paradas + indicador de posicion.
  */
+function descripcionPresentacionRondMetal(string $descripcion): string
+{
+    return preg_replace('/\brond\s+metal\b/iu', 'Rond Metal', $descripcion) ?? $descripcion;
+}
+
 function agruparBotoneraCabinaPresentacion(array $detalles, array $datosFormulario = array()): array
 {
+    foreach ($detalles as &$detalle) {
+        $detalle['descripcion'] = descripcionPresentacionRondMetal((string)($detalle['descripcion'] ?? ''));
+    }
+    unset($detalle);
     $norm = static function($v): string {
         $v = strtoupper(trim((string)$v));
         $v = strtr($v, array('Á'=>'A','É'=>'E','Í'=>'I','Ó'=>'O','Ú'=>'U','Ü'=>'U','Ñ'=>'N'));
