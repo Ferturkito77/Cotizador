@@ -3727,7 +3727,7 @@ document.addEventListener('DOMContentLoaded',function(){
       if(esCampoTecnicoSinPrecio(ev.target)) return;
       programarCalculoSenalizacion(180);
       actualizarEspecialesAccesorios();
-      if(ev.target.closest&&ev.target.closest('[data-senal-adicional="LUZ DE EMERGENCIA"]')) sincronizarAlarmaEmergenciaDesdeSenalizacionV203();
+      if(ev.target.closest&&ev.target.closest('[data-senal-adicional="LUZ DE EMERGENCIA"]')){sincronizarAlarmaEmergenciaDesdeSenalizacionV203();sincronizarSirenaEcoMidi();}
     });
   }
   const usar=document.getElementById('senal_usar_control');
@@ -4445,12 +4445,15 @@ let sirenaEcoMidiSolicitud=0;
 async function sincronizarSirenaEcoMidi(){
   const solicitud=++sirenaEcoMidiSolicitud;
   const rescate=document.getElementById('id_rescate')?.selectedOptions?.[0];
-  const activo=!!document.getElementById('incluir_control')?.checked && rescate?.dataset.clave==='HID_ECO_MIDI';
+  const luz=document.querySelector('[data-senal-adicional="LUZ DE EMERGENCIA"] input[type="checkbox"]');
+  const activo=!!luz?.checked && !!document.getElementById('incluir_control')?.checked && rescate?.dataset.clave==='HID_ECO_MIDI';
   const cantidad=Math.max(1,parseInt(document.getElementById('cantidad_equipos')?.value||'1',10)||1);
+  let sirenaExistente=false;
   document.querySelectorAll('#items_accesorios .item-modular').forEach(f=>{
-    if(String(f.querySelector('[data-campo="codigo"]')?.value||'').trim().toUpperCase()!=='6PS593' || f.querySelector('[data-campo="concepto"]')?.value!=='Sirena automática Eco Midi Supra')return;
-    f.dataset.seleccionado=activo?'1':'0';f.style.display=activo?'':'none';
-    if(activo){const q=f.querySelector('[data-campo="cantidad"]');if(q)q.value=String(cantidad);}
+    if(String(f.querySelector('[data-campo="codigo"]')?.value||'').trim().toUpperCase()!=='6PS593')return;
+    const seleccionar=activo && !sirenaExistente;
+    f.dataset.seleccionado=seleccionar?'1':'0';f.style.display=seleccionar?'':'none';
+    if(seleccionar){sirenaExistente=true;const q=f.querySelector('[data-campo="cantidad"]');if(q)q.value=String(cantidad);}
   });
   if(!activo){quitarEspecialV33('SIRENA_ECO_MIDI');actualizarResumenDocumento();return;}
   const existente=[...document.querySelectorAll('#items_accesorios .item-modular,#items_repuestos .repuesto-producto')].some(f=>f.dataset.seleccionado!=='0' && String(f.querySelector('[data-campo="codigo"]')?.value||'').trim().toUpperCase()==='6PS593');
@@ -4469,7 +4472,7 @@ async function sincronizarSirenaEcoMidi(){
     actualizarResumenDocumento();
   }catch(e){console.warn('Sirena Eco Midi Supra:',e);}
 }
-document.addEventListener('change',e=>{if(e.target?.matches('#id_rescate,#id_tipo_control,#id_subtipo,#cantidad_equipos,#incluir_control,#lista_id'))sincronizarSirenaEcoMidi();});
+document.addEventListener('change',e=>{if(e.target?.matches('#id_rescate,#id_tipo_control,#id_subtipo,#cantidad_equipos,#incluir_control,#lista_id')){sincronizarSirenaEcoMidi();sincronizarAlarmaEmergenciaDesdeSenalizacionV203();}});
 window.addEventListener('load',sincronizarSirenaEcoMidi);
 function autoSeleccionarCatalogoV33(clave,cantidad,activar){const card=document.querySelector('.accesorio-catalogo-card[data-clave="'+clave+'"]');if(!card)return;const ch=card.querySelector('.accesorio-catalogo-check');const fila=card.querySelector('.item-modular');if(!ch||!fila)return;if(activar){if(fila.dataset.manualNoV33==='1')return;const eraAuto=fila.dataset.autoV33==='1';if(!ch.checked){window.autoSeleccionandoV33=true;ch.checked=true;toggleAccesorioCatalogo(ch);window.autoSeleccionandoV33=false;fila.dataset.autoV33='1';}const q=fila.querySelector('[data-campo="cantidad"]');if(q&&Number(cantidad)>0&&!eraAuto)q.value=String(cantidad);if(q&&Number(cantidad)>0&&clave==='ALARMA_EMERGENCIA_12V'&&fila.dataset.cantidadManualV33!=='1')q.value=String(cantidad);fila.dataset.autoV33='1';}else if(fila.dataset.autoV33==='1'){window.autoSeleccionandoV33=true;ch.checked=false;toggleAccesorioCatalogo(ch);window.autoSeleccionandoV33=false;fila.dataset.autoV33='0';fila.dataset.manualNoV33='0';}}
 function sincronizarAlarmaEmergenciaDesdeSenalizacionV203(){
@@ -4486,7 +4489,9 @@ function sincronizarAlarmaEmergenciaDesdeSenalizacionV203(){
   const fila=card?.querySelector('.item-modular');
   let cantidad=Math.max(1,cantOrigen);
   if(String(regla.modo_cantidad||'MISMA')==='FIJA') cantidad=Math.max(1,Number(regla.cantidad_fija||1));
-  if(luz?.checked && fila && String(regla.accion||'AGREGAR')==='AGREGAR'){
+  const rescate=document.getElementById('id_rescate')?.selectedOptions?.[0];
+  const usarSirena=!!document.getElementById('incluir_control')?.checked && rescate?.dataset.clave==='HID_ECO_MIDI';
+  if(luz?.checked && !usarSirena && fila && String(regla.accion||'AGREGAR')==='AGREGAR'){
     fila.dataset.manualNoV33='0';
     fila.dataset.cantidadManualV33='0';
     autoSeleccionarCatalogoV33(destino,cantidad,true);
@@ -4497,7 +4502,8 @@ function sincronizarAlarmaEmergenciaDesdeSenalizacionV203(){
     const cantidadRapida=document.getElementById('accesorio_selector_cantidad');
     if(selector?.value===destino&&cantidadRapida)cantidadRapida.value=String(cantidad);
     actualizarResumenDocumento();
-  }else if((!luz?.checked || String(regla.accion||'AGREGAR')!=='AGREGAR') && fila?.dataset.autoV33==='1'){
+  }else if((!luz?.checked || usarSirena || String(regla.accion||'AGREGAR')!=='AGREGAR') && fila){
+    if(!luz?.checked || usarSirena) fila.dataset.autoV33='1';
     autoSeleccionarCatalogoV33(destino,1,false);
   }
 }

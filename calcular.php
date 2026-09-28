@@ -1723,10 +1723,26 @@ $subtotalFijoUnitario = $precioBase
 $subtotalFijosEquipos = $subtotalFijoUnitario * $cantidadEquipos;
 try { $lineasModulosLibres = obtenerLineasModulosLibres($_POST); } catch (Throwable $e) { volverConError($e->getMessage()); }
 $retornoEcoMidi = !empty($_POST['incluir_control']) && ($rescateSeleccionado['rescate_clave'] ?? '') === 'HID_ECO_MIDI';
-foreach ($lineasModulosLibres as $i => $linea) {
-    if (strtoupper(trim((string)$linea['codigo'])) === '6PS593' && ($retornoEcoMidi || $linea['concepto'] === 'Sirena automática Eco Midi Supra')) unset($lineasModulosLibres[$i]);
+$luzEmergenciaSeleccionada = false;
+foreach ($senalizacionLineas as $lineaSenalizacion) {
+    if (strtoupper(trim((string)$lineaSenalizacion['codigo'])) === 'A4950C') {
+        $luzEmergenciaSeleccionada = true;
+        break;
+    }
 }
-if ($retornoEcoMidi) {
+$agregarSirenaEcoMidi = $retornoEcoMidi && $luzEmergenciaSeleccionada;
+$alarmaEmergenciaIncluida = false;
+foreach ($lineasModulosLibres as $i => $linea) {
+    if ($linea['modulo'] !== 'ACCESORIOS') continue;
+    $codigoAccesorio = strtoupper(trim((string)$linea['codigo']));
+    if ($codigoAccesorio === '6PS593') {
+        unset($lineasModulosLibres[$i]);
+    } elseif ($codigoAccesorio === 'A0710CS') {
+        if (!$luzEmergenciaSeleccionada || $agregarSirenaEcoMidi || $alarmaEmergenciaIncluida) unset($lineasModulosLibres[$i]);
+        else $alarmaEmergenciaIncluida = true;
+    }
+}
+if ($agregarSirenaEcoMidi) {
     $stSirena = $conexion->prepare("SELECT descripcion, utilidad, factor_descuento_30 FROM productos_repuestos WHERE UPPER(TRIM(codigo))='6PS593' AND habilitado=1 LIMIT 1");
     if (!$stSirena) volverConError('No se pudo consultar la sirena 6PS593 en Repuestos.');
     $stSirena->execute(); $productoSirena = $stSirena->get_result()->fetch_assoc(); $stSirena->close();
