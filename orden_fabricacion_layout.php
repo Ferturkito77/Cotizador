@@ -379,12 +379,12 @@ function ofCabeceraDocumento(PdfAutomac $pdf, float &$y, array $pedido): void
 {
     $numero = numeroDocumentoVisible((string)$pedido['pedido_numero']);
     $revision = (int)($pedido['revision'] ?? 0);
-    $cliente = function_exists('pdfNombreCliente') ? pdfNombreCliente($pedido) : strtoupper(trim((string)$pedido['clientes_nomfantasia']));
+    $cliente = pdfTextoNominal(function_exists('pdfNombreCliente') ? pdfNombreCliente($pedido) : strtoupper(trim((string)$pedido['clientes_nomfantasia'])));
     $referencia = trim((string)($pedido['referencia'] ?? ''));
     $origen = (string)($pedido['cotizacion_numero'] ?? '') !== '' ? numeroDocumentoVisible((string)$pedido['cotizacion_numero']) : 'Pedido directo';
     $fecha = date('d/m/Y', strtotime((string)$pedido['fecha_creacion']));
     $sigla = strtoupper(trim((string)($pedido['clientes_codigo'] ?? '')));
-    $responsable = pdfTextoMinusculas(trim((string)($pedido['responsable_comercial'] ?? '')) ?: '-');
+    $responsable = pdfTextoNominal(trim((string)($pedido['responsable_comercial'] ?? '')) ?: '-');
 
     /* Tarjeta maestra del trabajo. Mantiene todos los datos existentes. */
     $h=86;
@@ -406,7 +406,7 @@ function ofCabeceraDocumento(PdfAutomac $pdf, float &$y, array $pedido): void
     $pdf->text(438,$y-30,pdfTextoMinusculas($origen),8,true);
 
     $pdf->colorText(365,$y-49,'REFERENCIA / OBRA',6,true,83,102,118);
-    $refLines=$pdf->wrap(pdfTextoMinusculas($referencia!==''?$referencia:'-'),180,7);
+    $refLines=$pdf->wrap(pdfTextoNominal($referencia!==''?$referencia:'-'),180,7);
     foreach(array_slice($refLines,0,2) as $i=>$line) $pdf->text(365,$y-64-($i*9),$line,7,$i===0);
 
     $y -= $h + 12;
@@ -491,7 +491,7 @@ function ofDibujarPagina1(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
     $pdf->text(359, $codeY - 13, 'CODIGO PLANO ELECTRICO', 9, true);
     $pdf->line(38, 54, 557, 54, 0.6);
     $responsableComercial = trim((string)($pedido['responsable_comercial'] ?? ''));
-    $pdf->text(42, 39, 'Responsable comercial: ' . pdfTextoMinusculas($responsableComercial !== '' ? $responsableComercial : '____________________'), 8);
+    $pdf->text(42, 39, 'Responsable comercial: ' . pdfTextoNominal($responsableComercial !== '' ? $responsableComercial : '____________________'), 8);
     $pdf->text(300, 39, 'Responsable técnico: ____________________', 8);
     $pdf->text(411, 39, 'UE: ________', 8);
 }
@@ -560,7 +560,7 @@ function ofDibujarPagina2(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
         $y -= $rowH;
     }
     $responsableComercial = trim((string)($pedido['responsable_comercial'] ?? ''));
-    $pdf->text(38, 56, 'Responsable comercial: ' . pdfTextoMinusculas($responsableComercial !== '' ? $responsableComercial : '____________________'), 7);
+    $pdf->text(38, 56, 'Responsable comercial: ' . pdfTextoNominal($responsableComercial !== '' ? $responsableComercial : '____________________'), 7);
     $pdf->text(365, 56, 'Fecha cierre: ____/____/________', 7);
 }
 
@@ -579,7 +579,7 @@ function ofDibujarEtiqueta(PdfAutomac $pdf, float $top, mysqli $conexion, array 
     $y -= 18;
     $pdf->text(44,$y,'Empresa: ' . (function_exists('pdfClienteInterno') ? pdfClienteInterno($pedido) : trim((string)$pedido['clientes_nomfantasia']) . ' (' . strtoupper(trim((string)$pedido['clientes_codigo'])) . ')'),8);
     $y -= 16;
-    $pdf->text(44,$y,'Referencia: ' . pdfTextoMinusculas((string)($pedido['referencia'] ?? '')),8);
+    $pdf->text(44,$y,'Referencia: ' . pdfTextoNominal((string)($pedido['referencia'] ?? '')),8);
     $y -= 18;
     $datos = array(
         'Tipo Control'=>$res['tipo_control'].' '.$res['codigo_control'],
@@ -632,7 +632,7 @@ function ofDibujarOrdenPreparacionSuministros(PdfAutomac $pdf, mysqli $conexion,
         $y = ofTituloPagina($pdf, 'ORDEN DE SUMINISTROS', $subtitulo);
 
         $numero = numeroDocumentoVisible((string)($pedido['pedido_numero'] ?? ''));
-        $cliente = function_exists('pdfNombreCliente') ? pdfNombreCliente($pedido) : strtoupper(trim((string)($pedido['clientes_nomfantasia'] ?? '')));
+        $cliente = pdfTextoNominal(function_exists('pdfNombreCliente') ? pdfNombreCliente($pedido) : strtoupper(trim((string)($pedido['clientes_nomfantasia'] ?? ''))));
         $referencia = trim((string)($pedido['referencia'] ?? ''));
         $origen = trim((string)($pedido['cotizacion_numero'] ?? '')) !== '' ? numeroDocumentoVisible((string)$pedido['cotizacion_numero']) : 'Pedido directo';
         $fecha = !empty($pedido['fecha_creacion']) ? date('d/m/Y', strtotime((string)$pedido['fecha_creacion'])) : '';
@@ -647,14 +647,14 @@ function ofDibujarOrdenPreparacionSuministros(PdfAutomac $pdf, mysqli $conexion,
         $pdf->colorText(390, $y - 13, 'FECHA', 7, true, 93, 111, 123);
         $pdf->text(390, $y - 27, $fecha, 10, true);
         $pdf->colorText(50, $y - 45, 'REFERENCIA', 7, true, 93, 111, 123);
-        $pdf->text(112, $y - 45, pdfTextoMinusculas($referencia !== '' ? $referencia : '-'), 8);
+        $pdf->text(112, $y - 45, pdfTextoNominal($referencia !== '' ? $referencia : '-'), 8);
         $pdf->colorText(330, $y - 45, 'ORIGEN', 7, true, 93, 111, 123);
         $pdf->text(374, $y - 45, pdfTextoMinusculas($origen), 8);
         $sigla = strtoupper(trim((string)($pedido['clientes_codigo'] ?? '')));
         $pdf->colorText(50, $y - 64, 'SIGLA', 7, true, 93, 111, 123);
         $pdf->text(88, $y - 64, $sigla !== '' ? $sigla : '-', 8, true);
         $pdf->colorText(190, $y - 64, 'RESPONSABLE COMERCIAL', 7, true, 93, 111, 123);
-        $pdf->text(320, $y - 64, pdfTextoMinusculas(trim((string)($pedido['responsable_comercial'] ?? '')) ?: '-'), 8);
+        $pdf->text(320, $y - 64, pdfTextoNominal(trim((string)($pedido['responsable_comercial'] ?? '')) ?: '-'), 8);
         $y -= 100;
 
         $pdf->fillColorRect(38, $y - 22, 519, 24, 235, 243, 253);
@@ -727,7 +727,7 @@ function ofDibujarOrdenPreparacionSuministros(PdfAutomac $pdf, mysqli $conexion,
 
     $pdf->line(38,79,557,79,0.6);
     $responsableComercial=trim((string)($pedido['responsable_comercial']??''));
-    $pdf->colorText(42,63,'Responsable comercial',7,true,95,111,122); $pdf->text(42,51,pdfTextoMinusculas($responsableComercial!==''?$responsableComercial:'____________________'),8,true);
+    $pdf->colorText(42,63,'Responsable comercial',7,true,95,111,122); $pdf->text(42,51,pdfTextoNominal($responsableComercial!==''?$responsableComercial:'____________________'),8,true);
     $pdf->colorText(215,63,'Preparado por',7,true,95,111,122); $pdf->text(215,51,'____________________',8);
     $pdf->colorText(365,63,'Controlado por',7,true,95,111,122); $pdf->text(365,51,'____________________',8);
     $pdf->colorText(485,63,'Fecha',7,true,95,111,122); $pdf->text(485,51,'__/__/____',8);
@@ -1054,7 +1054,7 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
     $pdf->text(77,$y-15,'CANTIDAD TOTAL DE BULTOS',8,true); $pdf->text(365,$y-15,'UBICACION EN DEPOSITO',8,true);
     $pdf->line(38,79,557,79,0.6);
     $resp=trim((string)($pedido['responsable_comercial']??''));
-    $pdf->colorText(42,63,'Responsable comercial',7,true,95,111,122); $pdf->text(42,51,pdfTextoMinusculas($resp!==''?$resp:'____________________'),8,true);
+    $pdf->colorText(42,63,'Responsable comercial',7,true,95,111,122); $pdf->text(42,51,pdfTextoNominal($resp!==''?$resp:'____________________'),8,true);
     $pdf->colorText(215,63,'Armado / preparado por',7,true,95,111,122); $pdf->text(215,51,'____________________',8);
     $pdf->colorText(405,63,'Revision',7,true,95,111,122); $pdf->text(405,51,'____________________',8);
     $pdf->colorText(472,28,'Pagina '.$pagina,7,true,95,111,122);

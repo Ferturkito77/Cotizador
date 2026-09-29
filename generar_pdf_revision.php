@@ -91,17 +91,17 @@ if($tipo==='cotizacion'){
 }
 $pdf->text(360,$y,'Fecha de versión: '.date('d/m/Y H:i',strtotime($fechaVersionDocumento)),8,false);
 $y-=16;
-$pdf->text(42,$y,'Cliente: '.pdfNombreCliente($doc),9,false);
+$pdf->text(42,$y,'Cliente: '.pdfTextoNominal(pdfNombreCliente($doc)),9,false);
 $y-=14;
-$pdf->text(42,$y,'Solicitante: '.pdfTextoMinusculas((pdfSolicitanteCliente($doc) ?: '-')),9,false);
+$pdf->text(42,$y,'Solicitante: '.pdfTextoNominal((pdfSolicitanteCliente($doc) ?: '-')),9,false);
 $y-=14;
 $pdf->text(42,$y,'Nro. cliente Bejerman: '.pdfNumeroCliente($doc).'    Telefono: '.pdfTelefonoCliente($doc),8,false);
 $y-=13;
 $pdf->text(42,$y,'Email: '.pdfEmailCliente($doc),8,false);
 $y-=13;
-$pdf->text(42,$y,'Referencia: '.pdfTextoMinusculas(((string)revPdfValor($doc,'referencia','') ?: '-')),9,false);
+$pdf->text(42,$y,'Referencia: '.pdfTextoNominal(((string)revPdfValor($doc,'referencia','') ?: '-')),9,false);
 $y-=15;
-$pdf->text(42,$y,'Responsable comercial: '.pdfTextoMinusculas(((string)revPdfValor($doc,'responsable','') ?: '-')),9,false);
+$pdf->text(42,$y,'Responsable comercial: '.pdfTextoNominal(((string)revPdfValor($doc,'responsable','') ?: '-')),9,false);
 $y-=15;
 $base=trim((string)revPdfValor($doc,'lista_nombre',''));
 if($base!=='') $pdf->text(42,$y,'Base de precios: '.pdfTextoMinusculas($base).(!empty($doc['lista_fecha'])?' - '.$doc['lista_fecha']:''),8,false);

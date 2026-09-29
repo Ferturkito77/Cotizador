@@ -479,22 +479,33 @@ class PdfAutomac
 }
 
 
-function pdfTextoMinusculas(string $texto): string
+function pdfProtegerTokensTecnicos(string $texto, array &$tokensProtegidos, int &$indice): string
 {
-    /*
-     * Formato de lectura para documentos PDF:
-     * - primera letra en mayuscula;
-     * - texto descriptivo en minusculas;
-     * - conserva modelos, codigos y siglas tecnicas que no deben deformarse.
-     *
-     * Se mantiene el nombre historico de la funcion para no romper llamadas
-     * existentes en cotizaciones, pedidos, revisiones y ordenes de fabricacion.
-     */
-    $texto = trim(preg_replace('/\s+/u', ' ', $texto) ?? $texto);
-    if ($texto === '') return '';
+    $marcasCanonicas = array(
+        '/(?<![\pL\pN_])HONEYWELL(?![\pL\pN_])/iu' => 'Honeywell',
+        '/(?<![\pL\pN_])ROND\s+METAL(?![\pL\pN_])/iu' => 'Rond Metal',
+    );
+    foreach ($marcasCanonicas as $patronMarca => $grafiaCanonica) {
+        $texto = preg_replace_callback(
+            $patronMarca,
+            static function () use (&$tokensProtegidos, &$indice, $grafiaCanonica): string {
+                $marca = '__PDFTOK' . $indice++ . '__';
+                $tokensProtegidos[$marca] = $grafiaCanonica;
+                return $marca;
+            },
+            $texto
+        ) ?? $texto;
+    }
 
-    $tokensProtegidos = array();
-    $indice = 0;
+    $texto = preg_replace_callback(
+        '/(?<![\pL\pN_])(?:\p{Lu}\.){2,}(?![\pL\pN_])/u',
+        static function (array $coincidencia) use (&$tokensProtegidos, &$indice): string {
+            $marca = '__PDFTOK' . $indice++ . '__';
+            $tokensProtegidos[$marca] = $coincidencia[0];
+            return $marca;
+        },
+        $texto
+    ) ?? $texto;
 
     $siglas = array(
         'SD','INVT','HP','PA','PM','VF','AC','DC','AR/AC','V5R','V5Z','V5B',
@@ -502,45 +513,99 @@ function pdfTextoMinusculas(string $texto): string
         'PTC','IP','LCD','TFT','USB','GSM','SIM','NFC'
     );
 
-    $textoProtegido = preg_replace_callback(
+    return preg_replace_callback(
         '/(?<![\pL\pN_])[^\s,;:.()]+(?![\pL\pN_])/u',
-        static function (array $m) use (&$tokensProtegidos, &$indice, $siglas): string {
-            $token = $m[0];
+        static function (array $coincidencia) use (&$tokensProtegidos, &$indice, $siglas): string {
+            $token = $coincidencia[0];
             $limpio = trim($token, " \t\n\r\0\x0B,;:.()[]{}");
-            if ($limpio === '') return $token;
+            if ($limpio === '' || preg_match('/^__PDFTOK\d+__$/', $limpio)) return $token;
 
             $mayus = function_exists('mb_strtoupper') ? mb_strtoupper($limpio, 'UTF-8') : strtoupper($limpio);
             $tieneLetra = (bool)preg_match('/\pL/u', $limpio);
             $tieneNumero = (bool)preg_match('/\d/u', $limpio);
-            $esCodigoOMedida = $tieneLetra && $tieneNumero;
-            $esSigla = in_array($mayus, $siglas, true);
-
-            if (!$esCodigoOMedida && !$esSigla) return $token;
+            if (!$tieneLetra || (!$tieneNumero && !in_array($mayus, $siglas, true))) return $token;
 
             $marca = '__PDFTOK' . $indice++ . '__';
             $tokensProtegidos[$marca] = $limpio;
             return str_replace($limpio, $marca, $token);
         },
         $texto
-    );
-    if ($textoProtegido === null) $textoProtegido = $texto;
+    ) ?? $texto;
+}
 
-    $resultado = function_exists('mb_strtolower')
-        ? mb_strtolower($textoProtegido, 'UTF-8')
-        : strtolower($textoProtegido);
-
+function pdfRestaurarTokensProtegidos(string $texto, array $tokensProtegidos): string
+{
     foreach ($tokensProtegidos as $marca => $original) {
-        $resultado = str_replace(strtolower($marca), $original, $resultado);
-        $resultado = str_replace($marca, $original, $resultado);
+        $texto = str_replace(strtolower($marca), $original, $texto);
+        $texto = str_replace($marca, $original, $texto);
+    }
+    return $texto;
+}
+
+function pdfTextoMinusculas(string $texto): string
+{
+    $texto = trim(preg_replace('/\s+/u', ' ', $texto) ?? $texto);
+    if ($texto === '') return '';
+
+    $mayusculas = function_exists('mb_strtoupper') ? mb_strtoupper($texto, 'UTF-8') : strtoupper($texto);
+    $esTodoMayuscula = $texto === $mayusculas;
+    $tokensProtegidos = array();
+    $indice = 0;
+    $textoProtegido = pdfProtegerTokensTecnicos($texto, $tokensProtegidos, $indice);
+
+    if ($esTodoMayuscula) {
+        $resultado = function_exists('mb_strtolower') ? mb_strtolower($textoProtegido, 'UTF-8') : strtolower($textoProtegido);
+        if (function_exists('mb_substr') && function_exists('mb_strtoupper')) {
+            $primera = mb_substr($resultado, 0, 1, 'UTF-8');
+            $resultado = mb_strtoupper($primera, 'UTF-8') . mb_substr($resultado, 1, null, 'UTF-8');
+        } else {
+            $resultado = ucfirst($resultado);
+        }
+    } else {
+        $palabrasMenores = array('A','AL','CON','DE','DEL','EL','EN','LA','LAS','LOS','O','PARA','POR','U','Y');
+        $resultado = preg_replace_callback(
+            '/(?<![\pL\pN_])[\pL][\pL\pM]*(?![\pL\pN_])/u',
+            static function (array $coincidencia) use ($palabrasMenores): string {
+                $palabra = $coincidencia[0];
+                $mayuscula = function_exists('mb_strtoupper') ? mb_strtoupper($palabra, 'UTF-8') : strtoupper($palabra);
+                if ($palabra !== $mayuscula || in_array($mayuscula, $palabrasMenores, true)) return $palabra;
+                if (function_exists('mb_substr') && function_exists('mb_strtoupper') && function_exists('mb_strtolower')) {
+                    return mb_strtoupper(mb_substr($palabra, 0, 1, 'UTF-8'), 'UTF-8')
+                        . mb_strtolower(mb_substr($palabra, 1, null, 'UTF-8'), 'UTF-8');
+                }
+                return ucfirst(strtolower($palabra));
+            },
+            $textoProtegido
+        );
+        if ($resultado === null) $resultado = $textoProtegido;
     }
 
-    if (function_exists('mb_substr') && function_exists('mb_strtoupper')) {
-        $primera = mb_substr($resultado, 0, 1, 'UTF-8');
-        $resto = mb_substr($resultado, 1, null, 'UTF-8');
-        return mb_strtoupper($primera, 'UTF-8') . $resto;
-    }
+    return pdfRestaurarTokensProtegidos($resultado, $tokensProtegidos);
+}
 
-    return ucfirst($resultado);
+function pdfTextoNominal(string $texto): string
+{
+    $texto = trim(preg_replace('/\s+/u', ' ', $texto) ?? $texto);
+    if ($texto === '') return '';
+
+    $tokensProtegidos = array();
+    $indice = 0;
+    $textoProtegido = pdfProtegerTokensTecnicos($texto, $tokensProtegidos, $indice);
+    $resultado = function_exists('mb_strtolower') ? mb_strtolower($textoProtegido, 'UTF-8') : strtolower($textoProtegido);
+    $capitalizado = preg_replace_callback(
+        '/(?<![\pL\pN_])[\pL][\pL\pM]*(?![\pL\pN_])/u',
+        static function (array $coincidencia): string {
+            if (function_exists('mb_substr') && function_exists('mb_strtoupper') && function_exists('mb_strtolower')) {
+                return mb_strtoupper(mb_substr($coincidencia[0], 0, 1, 'UTF-8'), 'UTF-8')
+                    . mb_strtolower(mb_substr($coincidencia[0], 1, null, 'UTF-8'), 'UTF-8');
+            }
+            return ucfirst(strtolower($coincidencia[0]));
+        },
+        $resultado
+    );
+    if ($capitalizado !== null) $resultado = $capitalizado;
+
+    return pdfRestaurarTokensProtegidos($resultado, $tokensProtegidos);
 }
 
 function pdfNombreCliente(array $fila): string
@@ -1314,21 +1379,21 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
 
     /* Cliente + contacto */
     $pdf->colorText($xCliente+8,$top-10,'CLIENTE / CONTACTO',8.1,true,18,50,91);
-    $pdf->text($xCliente+8,$top-24,pdfTextoMinusculas($cliente !== '' ? $cliente : '-'),11.2,true);
+    $pdf->text($xCliente+8,$top-24,pdfTextoNominal($cliente !== '' ? $cliente : '-'),11.2,true);
     $clienteLinea='Bj: '.pdfNumeroCliente($doc);
     $telCliente=pdfTextoMinusculas(pdfTelefonoCliente($doc));
     if($telCliente!=='')$clienteLinea.=' | '.$telCliente;
     $pdf->text($xCliente+8,$top-37,$clienteLinea,7.1);
     $contacto=pdfSolicitanteCliente($doc) ?: '-';
     $email=pdfEmailCliente($doc);
-    $contactoLinea='Contacto: '.pdfTextoMinusculas($contacto);
+    $contactoLinea='Contacto: '.pdfTextoNominal($contacto);
     if($email!=='')$contactoLinea.=' | '.$email;
     $cwrap=$pdf->wrap($contactoLinea,$grupoW-16,5);
     $pdf->text($xCliente+8,$top-46,$cwrap[0]??'',6.9,true);
 
     /* Obra / referencia + revisión o entrega/pago */
     $pdf->colorText($xObra+8,$top-10,$esPedido?'OBRA / ENTREGA / PAGO':'OBRA / REFERENCIA',8.1,true,18,50,91);
-    $refCompleta=pdfTextoMinusculas(((string)$doc['referencia'] ?: '-'));
+    $refCompleta=pdfTextoNominal(((string)$doc['referencia'] ?: '-'));
     $refWrap=$pdf->wrap($refCompleta,$grupoW-16,6);
     $pdf->text($xObra+8,$top-24,$refWrap[0]??'-',10.8,true);
     if($esPedido){
@@ -1345,7 +1410,7 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
         $pdf->text($xObra+8,$top-37,$ow[0]??'',7.1,true);
         if(isset($ow[1]))$pdf->text($xObra+8,$top-46,$ow[1],6.6);
     }else{
-        $pdf->text($xObra+8,$top-37,'Rev. '.$revisionDoc.' | Resp.: '.pdfTextoMinusculas(((string)$doc['ejecutado_por'] ?: '-')),7.1,true);
+        $pdf->text($xObra+8,$top-37,'Rev. '.$revisionDoc.' | Resp.: '.pdfTextoNominal(((string)$doc['ejecutado_por'] ?: '-')),7.1,true);
     }
 
     $y=$top-$hDatos-7;
@@ -1557,10 +1622,10 @@ function generarHojasModificacionPedido(mysqli $conexion, int $pedidoId, int $re
         $pdf->text(42,$y,'COPIA: '.$copia,13,true); $y-=24;
         $pdf->text(42,$y,'Pedido: '.numeroDocumentoVisible((string)$d['pedido_numero']),11,true); $pdf->text(350,$y,'Revisión: '.(int)$revision,11,true); $y-=18;
         $pdf->text(42,$y,'Fecha de modificación: '.date('d/m/Y H:i',strtotime((string)$d['fecha_ultima_modificacion'])),9,false); $y-=16;
-        $pdf->text(42,$y,'Cliente: '.pdfClienteInterno($d),9,false); $y-=16;
-        if($clave==='ADMINISTRACION'){ $pdf->text(42,$y,'Solicitante: '.pdfTextoMinusculas((pdfSolicitanteCliente($d)?:'-')),9,false); $y-=16; }
-        $pdf->text(42,$y,'Obra / referencia: '.((string)$d['referencia']?:'-'),9,false); $y-=16;
-        $pdf->text(42,$y,'Modificado por: '.((string)$d['usuario_modificacion']?:'-'),9,false); $y-=24;
+        $pdf->text(42,$y,'Cliente: '.pdfTextoNominal(pdfClienteInterno($d)),9,false); $y-=16;
+        if($clave==='ADMINISTRACION'){ $pdf->text(42,$y,'Solicitante: '.pdfTextoNominal((pdfSolicitanteCliente($d)?:'-')),9,false); $y-=16; }
+        $pdf->text(42,$y,'Obra / referencia: '.pdfTextoNominal((string)($d['referencia']?:'-')),9,false); $y-=16;
+        $pdf->text(42,$y,'Modificado por: '.pdfTextoNominal((string)($d['usuario_modificacion']?:'-')),9,false); $y-=24;
         $pdf->text(42,$y,'DETALLE DE LA MODIFICACIÓN',11,true); $y-=18;
         foreach($pdf->wrap($motivo,90) as $linea){$pdf->text(48,$y,$linea,10,false);$y-=15;}
         $y-=20; $pdf->line(42,$y,260,$y,.5); $pdf->line(335,$y,553,$y,.5); $y-=14;
@@ -1656,10 +1721,10 @@ function generarHojasModificacionCotizacion(mysqli $conexion, int $cotizacionId,
         $pdf->text(42,$y,'COPIA: '.$copia,13,true); $y-=24;
         $pdf->text(42,$y,'Cotización: '.numeroDocumentoVisible((string)$d['cotizacion_numero']),11,true); $pdf->text(350,$y,etiquetaVersionCotizacion((int)$revisionActual),11,true); $y-=18;
         $pdf->text(42,$y,'Fecha de modificación: '.date('d/m/Y H:i',strtotime($fecha)),9,false); $y-=16;
-        $pdf->text(42,$y,'Cliente: '.pdfClienteInterno($d),9,false); $y-=16;
-        if($clave==='ADMINISTRACION'){ $pdf->text(42,$y,'Solicitante: '.pdfTextoMinusculas((pdfSolicitanteCliente($d)?:'-')),9,false); $y-=16; }
-        $pdf->text(42,$y,'Obra / referencia: '.((string)$d['referencia']?:'-'),9,false); $y-=16;
-        $pdf->text(42,$y,'Modificado por: '.($usuario?:'-'),9,false); $y-=20;
+        $pdf->text(42,$y,'Cliente: '.pdfTextoNominal(pdfClienteInterno($d)),9,false); $y-=16;
+        if($clave==='ADMINISTRACION'){ $pdf->text(42,$y,'Solicitante: '.pdfTextoNominal((pdfSolicitanteCliente($d)?:'-')),9,false); $y-=16; }
+        $pdf->text(42,$y,'Obra / referencia: '.pdfTextoNominal((string)($d['referencia']?:'-')),9,false); $y-=16;
+        $pdf->text(42,$y,'Modificado por: '.pdfTextoNominal($usuario?:'-'),9,false); $y-=20;
         $pdf->fillColorRect(42,$y-25,511,31,244,248,246); $pdf->colorText(50,$y-8,'MÓDULOS MODIFICADOS: '.$textoModulos,9,true,13,99,61); $y-=42;
         $pdf->text(42,$y,'DETALLE DE LA MODIFICACIÓN',11,true); $y-=18;
         foreach($pdf->wrap($motivo,90) as $linea){$pdf->text(48,$y,$linea,10,false);$y-=15;}
