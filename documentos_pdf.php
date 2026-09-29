@@ -1,6 +1,7 @@
 <?php
 /* v38 - Pedido en una linea + Botonera comercial agrupada (base + paradas + indicador). */
 require_once __DIR__ . '/documentos_storage.php';
+require_once __DIR__ . '/services/control_motor.php';
 /**
  * Generación de documentos comerciales PDF sin dependencias externas.
  * Los PDF quedan congelados en /pdf/cotizaciones y /pdf/pedidos.
@@ -694,7 +695,10 @@ function pdfDatosTecnicos(mysqli $conexion, array $cotizacion): array
         'subtipo' => pdfConsultaNombre($conexion, 'subtipos_control', 'ctrlsubtipo_id', 'ctrlsubtipo_name', (int)($f['id_subtipo'] ?? 0)),
         'tension' => pdfConsultaNombre($conexion, 'tensiones', 'tension_id', 'tension_name', (int)($f['id_tension'] ?? 0)),
         'material' => pdfConsultaNombre($conexion, 'materiales_hueco', 'mathueco_id', 'mathueco_name', (int)($f['id_material_hueco'] ?? 0)),
-        'potencia' => trim((string)($f['potencia_hp'] ?? '')),
+        'potencia' => array_key_exists('dato_motor_tipo', $f) ? trim((string)($f['dato_motor_hp_equivalente'] ?? '')) : trim((string)($f['potencia_hp'] ?? '')),
+        'dato_motor_tipo' => strtoupper(trim((string)($f['dato_motor_tipo'] ?? ''))),
+        'dato_motor_valor' => trim((string)($f['dato_motor_valor'] ?? '')),
+        'corriente_requerida' => trim((string)($f['dato_motor_corriente'] ?? '')),
         'velocidad' => trim((string)($f['velocidad_vf'] ?? '')),
         'corriente' => '',
         'contactor' => '',
@@ -776,7 +780,25 @@ function pdfDatosTecnicos(mysqli $conexion, array $cotizacion): array
     $potencia = is_numeric($datos['potencia']) ? (float)$datos['potencia'] : 0.0;
     $encoder = trim((string)($f['encoder'] ?? ''));
 
-    if ($idCpu > 0 && $idTipo > 0 && $idSubtipo > 0 && $idTension > 0 && $potencia >= 0) {
+    if ($idTipo === 4 && array_key_exists('dato_motor_tipo', $f)) {
+        try {
+            $normalizado = normalizarDatoMotorACorriente($f['dato_motor_tipo'], $f['dato_motor_valor'] ?? '', $idTension);
+            $datos['dato_motor_tipo'] = $normalizado['dato_original_tipo'];
+            $datos['dato_motor_valor'] = (string)$normalizado['dato_original_valor'];
+            $datos['corriente_requerida'] = (string)$normalizado['corriente_normalizada'];
+            $datos['potencia'] = $normalizado['hp_equivalente'] === null ? '' : (string)$normalizado['hp_equivalente'];
+            $idCpuMatriz = controlMotorCpuMatriz($conexion, $idCpu);
+            $filaVF = obtenerVariadorSeleccionadoVF($conexion, (int)($f['id_matriz_variador'] ?? 0), $idCpuMatriz, $idSubtipo, $idTension, $encoder, $normalizado['corriente_normalizada']);
+            if ($filaVF) {
+                $datos['corriente'] = trim((string)$filaVF['control_corriente']);
+                $idContactorVF = (int)($filaVF['control_contactor'] ?? 0);
+                if ($idContactorVF > 0) $datos['contactor'] = pdfConsultaNombre($conexion, 'contactores', 'contactor_id', 'contactor_name', $idContactorVF);
+                $datos['subtipo'] = trim((string)$filaVF['ctrlsubtipo_name']);
+            }
+        } catch (Throwable $e) {
+            // El documento conserva las líneas comerciales congeladas aunque falte una fila técnica actual.
+        }
+    } elseif ($idCpu > 0 && $idTipo > 0 && $idSubtipo > 0 && $idTension > 0 && $potencia >= 0) {
         $sqlMatriz = "SELECT m.control_corriente, c.contactor_name
                       FROM matriz_calculos m
                       LEFT JOIN contactores c ON c.contactor_id = m.control_contactor
@@ -857,6 +879,11 @@ function pdfDescripcionControl(array $base, array $t): string
     }
 
     if ($t['contactor'] !== '') $partes[] = 'contactor de ' . $t['contactor'] . ' A';
+    if ($t['dato_motor_tipo'] !== '' && $t['dato_motor_valor'] !== '') {
+        $unidad = $t['dato_motor_tipo'] === 'AMP' ? 'A' : ($t['dato_motor_tipo'] === 'KW' ? 'kW' : 'HP');
+        $partes[] = 'motor informado ' . $t['dato_motor_valor'] . ' ' . $unidad;
+        if ($t['corriente_requerida'] !== '') $partes[] = 'corriente requerida ' . $t['corriente_requerida'] . ' A';
+    }
     if ($t['potencia'] !== '') $partes[] = 'potencia ' . $t['potencia'] . ' HP';
     if ($t['tension'] !== '') $partes[] = 'alimentación ' . $t['tension'];
     if ($t['velocidad'] !== '') $partes[] = 'velocidad ' . $t['velocidad'] . ' m/min';

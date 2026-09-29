@@ -4,6 +4,7 @@ include 'conexion.php';
 require_once 'auth.php';
 asegurarSistemaUsuarios($conexion);
 exigirRoles(array('ADMINISTRADOR','COMERCIAL'));
+require_once __DIR__ . '/services/control_motor.php';
 header('Content-Type: application/json; charset=UTF-8');
 header('Cache-Control: no-store');
 
@@ -11,8 +12,37 @@ $idCpu=(int)($_POST['id_cpu']??0);
 $idTipo=(int)($_POST['id_tipo_control']??0);
 $idSubtipo=(int)($_POST['id_subtipo']??0);
 $idTension=(int)($_POST['id_tension']??0);
+$idTipo=(int)($_POST['id_tipo_control']??0);
+$tipoMotor=strtoupper(trim((string)($_POST['dato_motor_tipo']??'')));
+$valorMotor=$_POST['dato_motor_valor']??'';
+$idMatriz=(int)($_POST['id_matriz_variador']??0);
 $potencia=(float)($_POST['potencia_hp']??0);
 $encoder=!empty($_POST['encoder']) && (string)$_POST['encoder']==='SI'?'SI':'';
+
+if($idTipo===4 && $tipoMotor!==''){
+  try{
+    $normalizado=normalizarDatoMotorACorriente($tipoMotor,$valorMotor,$idTension);
+    $cpuMatriz=controlMotorCpuMatriz($conexion,$idCpu);
+    $variadores=listarVariadoresValidosPorCorrienteVF($conexion,$cpuMatriz,$idSubtipo,$idTension,$encoder,$normalizado['corriente_normalizada']);
+    $seleccionado=$idMatriz>0?obtenerVariadorSeleccionadoVF($conexion,$idMatriz,$cpuMatriz,$idSubtipo,$idTension,$encoder,$normalizado['corriente_normalizada']):null;
+    echo json_encode(array(
+      'ok'=>(bool)$variadores,
+      'dato_original_tipo'=>$normalizado['dato_original_tipo'],
+      'dato_original_valor'=>$normalizado['dato_original_valor'],
+      'hp_equivalente'=>$normalizado['hp_equivalente'],
+      'corriente_normalizada'=>$normalizado['corriente_normalizada'],
+      'corriente'=>$seleccionado?(float)$seleccionado['control_corriente']:0,
+      'codigo'=>$seleccionado?(string)$seleccionado['control_codigo']:'',
+      'variadores'=>$variadores,
+      'matriz_seleccionada'=>$seleccionado?(int)$seleccionado['control_id']:0
+    ),JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+  }catch(Throwable $e){
+    http_response_code(422);
+    echo json_encode(array('ok'=>false,'error'=>$e->getMessage(),'corriente_normalizada'=>0,'variadores'=>array()),JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+  }
+  exit;
+}
+
 if(!$idCpu||!$idTipo||!$idSubtipo||!$idTension||$potencia<=0){echo json_encode(array('ok'=>false,'corriente'=>0));exit;}
 
 /* v118: resolver la CPU de matriz para CLEX/DANGELICA y cualquier CPU heredada. */

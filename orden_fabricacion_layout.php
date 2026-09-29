@@ -252,9 +252,15 @@ function ofResumenTecnico(mysqli $conexion, array $pedido, array $detalles, arra
     $paradasDetalle=$partesParadasNomenclatura?implode(' / ',$partesParadasNomenclatura):$paradas;
     $cantidadEquipos = max(1, (int)($tecnico['cantidad'] ?? 1));
     $encoder = strtoupper(trim((string)($datosFormulario['encoder'] ?? ''))) === 'SI' ? 'Preparado para encoder' : 'Sin encoder';
+    $esDatoMotorVF = (int)($datosFormulario['id_tipo_control'] ?? 0) === 4 && array_key_exists('dato_motor_tipo', $datosFormulario);
+    $unidadDatoMotor = strtoupper((string)($datosFormulario['dato_motor_tipo'] ?? '')) === 'AMP' ? 'A' : (strtoupper((string)($datosFormulario['dato_motor_tipo'] ?? '')) === 'KW' ? 'kW' : 'HP');
+    $datoMotorTexto = $esDatoMotorVF ? trim((string)($datosFormulario['dato_motor_valor'] ?? '')).' '.$unidadDatoMotor : '';
+    $corrienteRequeridaTexto = $esDatoMotorVF ? trim((string)($tecnico['corriente_requerida'] ?? '')) : '';
     $motor = trim(implode(' / ', array_filter(array(
         ($tecnico['tipo'] ?? '') !== '' ? (string)$tecnico['tipo'] : '',
         ($tecnico['subtipo'] ?? '') !== '' ? (string)$tecnico['subtipo'] : '',
+        $datoMotorTexto !== '' ? 'Dato informado '.$datoMotorTexto : '',
+        $corrienteRequeridaTexto !== '' ? 'Requerida '.$corrienteRequeridaTexto.' A' : '',
         ($tecnico['corriente'] ?? '') !== '' ? (string)$tecnico['corriente'] . ' A' : '',
         $encoder,
         ($tecnico['velocidad'] ?? '') !== '' ? (string)$tecnico['velocidad'] . ' m/min' : '',
@@ -291,8 +297,10 @@ function ofResumenTecnico(mysqli $conexion, array $pedido, array $detalles, arra
         'configuracion_especial' => trim((string)($tecnico['configuracion_especial'] ?? 'Normal')) . ((string)($tecnico['programa_tip'] ?? '') !== '' ? ' - ' . trim((string)$tecnico['programa_tip']) : ''),
         'paradas' => $paradasDetalle,
         'motor' => $motor,
-        'potencia' => trim((string)($tecnico['potencia'] ?? '')) !== '' ? trim((string)$tecnico['potencia']) . ' HP' : '',
+        'potencia' => $esDatoMotorVF ? $datoMotorTexto : (trim((string)($tecnico['potencia'] ?? '')) !== '' ? trim((string)$tecnico['potencia']) . ' HP' : ''),
         'corriente' => trim((string)($tecnico['corriente'] ?? '')) !== '' ? trim((string)$tecnico['corriente']) . ' A' : 'Sin confirmar',
+        'corriente_requerida' => $corrienteRequeridaTexto !== '' ? $corrienteRequeridaTexto . ' A' : '',
+        'etiqueta_potencia' => $esDatoMotorVF ? 'Dato del motor' : 'Potencia',
         'contactores' => trim((string)($tecnico['contactor'] ?? '')) !== '' ? trim((string)$tecnico['contactor']) . ' A' : '',
         'termicos' => pdfTextoMinusculas(trim((string)($termico['descripcion'] ?? 'Incluidos segun configuracion'))),
         'puerta_cabina' => $puertaCabina,
@@ -419,7 +427,8 @@ function ofDibujarPagina1(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
         array('Ascensores', $res['cantidad_equipos']),
         array('Maniobra', $res['maniobra']), array('Configuración especial', $res['configuracion_especial']),
         array('Paradas', $res['paradas']), array('Motor / tension', $res['motor']),
-        array('Potencia', $res['potencia']), array('Corriente', $res['corriente']),
+        array($res['etiqueta_potencia'], $res['potencia']), array('Corriente nominal', $res['corriente']),
+        array('Corriente requerida', $res['corriente_requerida']),
         array('Contactores', $res['contactores']), array('Termicos', $res['termicos']),
         array('Puerta cabina', $res['puerta_cabina']), array('Puertas piso', $res['puerta_pisos']),
         array('Apertura operadores', $res['apertura_operadores']), array('Servicios', $res['servicios']),
@@ -504,8 +513,9 @@ function ofDibujarPagina2(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
         'Gabinete MRL' => $res['mrl_gabinete'],
         'Paradas' => $res['paradas'],
         'Tipo y tension de motor' => $res['motor'],
-        'Potencia del motor' => $res['potencia'],
+        $res['etiqueta_potencia'] => $res['potencia'],
         'Corriente nominal' => $res['corriente'],
+        'Corriente requerida' => $res['corriente_requerida'],
         'Contactores' => $res['contactores'],
         'Puerta de cabina' => $res['puerta_cabina'],
         'Puertas de piso' => $res['puerta_pisos'],

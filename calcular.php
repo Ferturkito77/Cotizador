@@ -10,6 +10,7 @@ exigirRoles(array('ADMINISTRADOR','COMERCIAL'));
 $conexion->set_charset('utf8mb4');
 require_once 'sistema_comercial.php';
 require_once 'control_parametros.php';
+require_once __DIR__ . '/services/control_motor.php';
 require_once 'parametros_sistema.php';
 require_once 'documentos_pdf.php';
 require_once 'modulos_libres.php';
@@ -188,6 +189,20 @@ $nomenclaturasEntrada = isset($_POST['nomenclatura_equipo']) && is_array($_POST[
 $paradasPorEquipo = array();
 $nomenclaturasPorEquipo = array();
 $potencia = filter_input(INPUT_POST, 'potencia_hp', FILTER_VALIDATE_FLOAT);
+$motorVFNormalizado = null;
+$motorVFNuevo = (int)$idTipo === 4 && array_key_exists('dato_motor_tipo', $_POST);
+if ($motorVFNuevo) {
+    try {
+        $motorVFNormalizado = normalizarDatoMotorACorriente($_POST['dato_motor_tipo'] ?? '', $_POST['dato_motor_valor'] ?? '', $idTension);
+        $_POST['dato_motor_tipo'] = $motorVFNormalizado['dato_original_tipo'];
+        $_POST['dato_motor_valor'] = (string)$motorVFNormalizado['dato_original_valor'];
+        $_POST['dato_motor_corriente'] = (string)$motorVFNormalizado['corriente_normalizada'];
+        $_POST['dato_motor_hp_equivalente'] = $motorVFNormalizado['hp_equivalente'] === null ? '' : (string)$motorVFNormalizado['hp_equivalente'];
+        $potencia = $motorVFNormalizado['hp_equivalente'];
+    } catch (Throwable $e) {
+        volverConError($e->getMessage());
+    }
+}
 
 $comSerie = filter_input(INPUT_POST, 'id_comunicacion_serie', FILTER_VALIDATE_INT);
 $comSerie = ($comSerie === false || $comSerie === null) ? null : (int)$comSerie;
@@ -363,11 +378,11 @@ $idPuertaCabinaMc = ($idPuertaCabinaMc === false || $idPuertaCabinaMc === null) 
 $cantidadCabinaMc = filter_input(INPUT_POST, 'cantidad_cabina_mc', FILTER_VALIDATE_INT);
 $cantidadCabinaMc = ($cantidadCabinaMc === false || $cantidadCabinaMc === null) ? 0 : (int)$cantidadCabinaMc;
 
-if (!$idCpu || !$idTipo || !$idManiobra || !$idSubtipo || !$idTension || !$idMaterialHueco || !$cantidadEquipos || !$idBateria || $potencia === false) {
+if (!$idCpu || !$idTipo || !$idManiobra || !$idSubtipo || !$idTension || !$idMaterialHueco || !$cantidadEquipos || !$idBateria || (!$motorVFNuevo && $potencia === false)) {
     volverConError('Faltan datos obligatorios o alguno de los valores recibidos no es válido.');
 }
 
-if ($cantidadEquipos < 1 || $cantidadEquipos > 10 || $potencia < 0) {
+if ($cantidadEquipos < 1 || $cantidadEquipos > 10 || (!$motorVFNuevo && $potencia < 0)) {
     volverConError('La cantidad de equipos debe estar entre 1 y 10 y la potencia no puede ser negativa.');
 }
 $stmtTipoBateria = $conexion->prepare("SELECT bateria_id,bateria_codigo,bateria_nombre FROM baterias WHERE bateria_id=? AND bateria_activa='SI' LIMIT 1");
@@ -760,7 +775,21 @@ foreach ($paradasPorEquipo as $indiceCoche => $paradasCoche) {
     }
 }
 
-/* Buscar equipo */
+/* Buscar equipo. Las filas VF nuevas se eligen por corriente y control_id;
+ * cotizaciones anteriores y demás tipos siguen resolviendo por potencia HP. */
+if ($motorVFNuevo) {
+    $idMatrizVariador = (int)($_POST['id_matriz_variador'] ?? 0);
+    $corrienteRequerida = (float)$motorVFNormalizado['corriente_normalizada'];
+    if ($idMatrizVariador <= 0) volverConError('Seleccione un variador VF compatible con la corriente requerida.');
+    try {
+        $equipo = obtenerVariadorSeleccionadoVF($conexion, $idMatrizVariador, $idCpuMatriz, $idSubtipo, $idTension, $encoder, $corrienteRequerida);
+    } catch (Throwable $e) {
+        volverConError($e->getMessage());
+    }
+    if (!$equipo) volverConError('El variador seleccionado no es compatible o su corriente nominal es inferior a la requerida.');
+    $_POST['id_matriz_variador'] = (string)$idMatrizVariador;
+    $equipo = aplicarPrecioVersion($conexion, $listaId, $equipo, 'control_codigo');
+} else {
 $sqlMatriz = "SELECT
                 m.control_codigo,
                 m.control_precio,
@@ -799,6 +828,7 @@ $stmt->close();
 
 if (!$equipo) {
     volverConError('No se encontró una configuración para los valores seleccionados' . ($usaMatrizCpuBase ? ' usando la matriz base configurada para la CPU ' . $nombreCpuCompat : '') . '.');
+}
 }
 
 /* Obtener la descripción del contactor.
@@ -1824,7 +1854,7 @@ if ($contactorDescripcion !== '' && preg_match('/(\d+(?:[.,]\d+)?)/', $contactor
     $contactorDescripcion = str_replace(',', '.', $mContactor[1]);
 }
 $velocidadDescripcion = $numeroLimpio($velocidadCalculo);
-$potenciaDescripcion = $numeroLimpio($potencia);
+$potenciaDescripcion = $motorVFNuevo ? '' : $numeroLimpio($potencia);
 $paradasDescripcion = count(array_unique($paradasPorEquipo)) === 1
     ? (string)$paradasPorEquipo[0]
     : implode(' / ', $paradasPorEquipo);
@@ -1897,6 +1927,16 @@ if ($esHidraulicoDescripcion) {
 
 if ($contactorDescripcion !== '' && (float)$contactorDescripcion > 0) $partesDescripcionControl[] = 'contactor de ' . $contactorDescripcion . 'A';
 if ($potenciaDescripcion !== '') $partesDescripcionControl[] = 'potencia ' . $potenciaDescripcion . ' HP';
+if ($motorVFNuevo) {
+    $unidadesMotor = array('HP'=>'HP','AMP'=>'A','KW'=>'kW');
+    $valorMotorDescripcion = $numeroLimpio($motorVFNormalizado['dato_original_valor']);
+    $unidadMotorDescripcion = $unidadesMotor[$motorVFNormalizado['dato_original_tipo']];
+    $partesDescripcionControl[] = 'motor informado ' . $valorMotorDescripcion . ' ' . $unidadMotorDescripcion;
+    if ($motorVFNormalizado['hp_equivalente'] !== null && $motorVFNormalizado['dato_original_tipo'] === 'KW') {
+        $partesDescripcionControl[] = 'potencia equivalente ' . $numeroLimpio($motorVFNormalizado['hp_equivalente']) . ' HP';
+    }
+    $partesDescripcionControl[] = 'corriente requerida ' . $numeroLimpio($motorVFNormalizado['corriente_normalizada']) . ' A';
+}
 if ($tensionDescripcion !== '') $partesDescripcionControl[] = 'alimentación ' . strtoupper($tensionDescripcion);
 if (!$esHidraulicoDescripcion && $velocidadDescripcion !== '' && (float)$velocidadCalculo > 0) $partesDescripcionControl[] = 'velocidad ' . $velocidadDescripcion . ' m/min';
 if ($paradasDescripcion !== '') $partesDescripcionControl[] = 'para ' . $paradasDescripcion . ' paradas';
@@ -2321,8 +2361,16 @@ body{font-family:Arial,sans-serif;background:#f4f4f9;margin:40px}
 <p><strong>Descripción base:</strong> <?= escapar($descripcionComercialControl) ?></p>
 <?php if ($usaMatrizCpuBase): ?><p class="advertencia"><strong>Matriz de cálculo:</strong> la CPU <?= escapar($nombreCpuCompat) ?> utiliza la matriz base A6300V4; conserva sus límites propios de paradas y maniobras.</p><?php endif; ?>
 <p><strong>Código:</strong> <?= escapar($equipo['control_codigo']) ?></p>
+<?php if ($motorVFNuevo): ?>
+<?php $unidadMotorResultado=$motorVFNormalizado['dato_original_tipo']==='AMP'?'A':($motorVFNormalizado['dato_original_tipo']==='KW'?'kW':'HP'); ?>
+<p><strong>Dato de motor informado:</strong> <?= escapar($numeroLimpio($motorVFNormalizado['dato_original_valor'])) ?> <?= escapar($unidadMotorResultado) ?></p>
+<p><strong>Corriente requerida:</strong> <?= escapar($numeroLimpio($motorVFNormalizado['corriente_normalizada'])) ?> A</p>
+<p><strong>Variador seleccionado:</strong> <?= escapar($nombreSubtipo) ?> · <?= escapar((string)$equipo['control_corriente']) ?> A · <?= escapar($equipo['control_codigo']) ?></p>
+<?php if ($motorVFNormalizado['hp_equivalente'] !== null): ?><p><strong>HP equivalente:</strong> <?= escapar($numeroLimpio($motorVFNormalizado['hp_equivalente'])) ?> HP</p><?php endif; ?>
+<?php else: ?>
 <p><strong>Rango aplicado:</strong> <?= escapar((string)$equipo['control_potenciadesde']) ?> a <?= escapar((string)$equipo['control_potenciahasta']) ?> HP</p>
 <p><strong>Potencia seleccionada:</strong> <?= number_format((float)$potencia, 2, ',', '.') ?> HP</p>
+<?php endif; ?>
 <p><strong>Cantidad de equipos cotizados:</strong> <?= (int)$cantidadEquipos ?></p>
 <p><strong>Agrupación:</strong> <?= escapar($tipoBateriaNombre) ?></p>
 <?php if (!$esBateriaIndividual): ?>

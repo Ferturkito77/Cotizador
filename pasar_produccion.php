@@ -2,6 +2,7 @@
 session_start();
 require_once 'conexion.php';require_once 'auth.php';asegurarSistemaUsuarios($conexion);exigirRoles(array('ADMINISTRADOR','COMERCIAL'));
 require_once 'sistema_comercial.php';asegurarSistemaComercial($conexion);require_once 'integracion_externa.php';require_once 'documentos_eventos.php';
+require_once __DIR__ . '/services/control_motor.php';
 if(strtoupper((string)($_SERVER['REQUEST_METHOD']??'GET'))==='POST')automacValidarCsrf(true);
 function ppE($v){return htmlspecialchars((string)$v,ENT_QUOTES,'UTF-8');}
 function ppCondicionesPago(mysqli $c): array{
@@ -54,6 +55,16 @@ function ppTokenHidraulico(string $subtipo): string{
 }
 function ppCorrienteMatriz(mysqli $c,array $f): string{
   $cpu=(int)($f['id_cpu']??0);$tipo=(int)($f['id_tipo_control']??0);$sub=(int)($f['id_subtipo']??0);$ten=(int)($f['id_tension']??0);
+  if($tipo===4 && array_key_exists('dato_motor_tipo',$f)){
+    try{
+      $normalizado=normalizarDatoMotorACorriente($f['dato_motor_tipo'],$f['dato_motor_valor']??'',$ten);
+      $cpuMatriz=controlMotorCpuMatriz($c,$cpu);
+      $fila=obtenerVariadorSeleccionadoVF($c,(int)($f['id_matriz_variador']??0),$cpuMatriz,$sub,$ten,trim((string)($f['encoder']??'')),$normalizado['corriente_normalizada']);
+      if(!$fila)return '';
+      $v=trim((string)($fila['control_corriente']??''));if($v===''||!is_numeric($v))return '';
+      return str_replace('.',',',rtrim(rtrim(number_format((float)$v,2,'.',''),'0'),'.'));
+    }catch(Throwable $e){return '';}
+  }
   $pot=is_numeric($f['potencia_hp']??null)?(float)$f['potencia_hp']:0.0;$enc=trim((string)($f['encoder']??''));if(!$cpu||!$tipo||!$sub||!$ten)return '';
   $base=$cpu;$st=$c->prepare('SELECT COALESCE(NULLIF(cpu_matriz_base_id,0),cpu_id) b FROM cpus WHERE cpu_id=? LIMIT 1');
   if($st){$st->bind_param('i',$cpu);$st->execute();$x=$st->get_result()->fetch_assoc();$st->close();if($x&&(int)$x['b']>0)$base=(int)$x['b'];}

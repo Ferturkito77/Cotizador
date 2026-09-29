@@ -924,7 +924,11 @@ require_once __DIR__ . '/cotizador_contexto.php';
             // En particular, velocidad_vf se oculta y se vacia para hidraulicos y otros
             // controles no VF; exigirla aqui bloqueaba el calculo auxiliar aunque el calculo
             // final de calcular.php fuera perfectamente valido.
-            const idsBase = ['id_tension','id_cpu','cantidad_equipos','id_maniobra','potencia_hp','id_tipo_control','id_subtipo','id_material_hueco'];
+            const tipoControl = String(document.getElementById('id_tipo_control')?.value || '');
+            const grupoMotorVF = document.getElementById('grupo_dato_motor_vf');
+            const motorVFActivo = tipoControl === '4' && grupoMotorVF && grupoMotorVF.dataset.vfLegado !== '1';
+            const idsBase = ['id_tension','id_cpu','cantidad_equipos','id_maniobra','id_tipo_control','id_subtipo','id_material_hueco'];
+            if (!motorVFActivo) idsBase.push('potencia_hp');
             for (const id of idsBase) {
                 const campo = document.getElementById(id);
                 if (!campo || campo.disabled) continue;
@@ -933,7 +937,13 @@ require_once __DIR__ . '/cotizador_contexto.php';
                 if (campo.type === 'number' && Number(valor) <= 0) return false;
             }
 
-            const tipoControl = String(document.getElementById('id_tipo_control')?.value || '');
+            if (motorVFActivo) {
+              const tipoDato = document.getElementById('dato_motor_tipo');
+              const valorDato = document.getElementById('dato_motor_valor');
+              const corrienteDato = document.getElementById('dato_motor_corriente');
+              const variadorDato = document.getElementById('id_matriz_variador');
+              if (!tipoDato?.value || !valorDato?.value || Number(valorDato.value) <= 0 || !corrienteDato?.value || !variadorDato?.value) return false;
+            }
             // VF / iman permanente / Roomless / MRL son los tipos que requieren velocidad.
             if (['4','5','6','7'].includes(tipoControl)) {
                 const velocidad = document.getElementById('velocidad_vf');
@@ -3682,14 +3692,14 @@ document.addEventListener('DOMContentLoaded',function(){
       if(e.target?.closest?.('#modulo_control') || ['id_tipo_control','id_subtipo','cantidad_equipos','velocidad_vf','agregar_contactorpot','retorno_bateria_gel'].includes(n)||['id_tipo_control','id_subtipo','cantidad_equipos','velocidad_vf'].includes(id)) programarCantidadLimites();
       if(id==='velocidad_vf'||n==='velocidad_vf') actualizarEncoderObligatorioPorVelocidad();
       if((id==='encoder_motor'||n==='encoder') && e.target?.dataset?.encoderIncompatible==='1'){e.target.checked=false;}
-      if(['id_cpu','id_tipo_control','id_subtipo','id_tension','potencia_hp','encoder_motor'].includes(id)||['id_cpu','id_tipo_control','id_subtipo','id_tension','potencia_hp','encoder'].includes(n)) actualizarCorrienteVariadorV33();
+      if(['id_cpu','id_tipo_control','id_subtipo','id_tension','potencia_hp','encoder_motor','dato_motor_tipo','dato_motor_valor','id_matriz_variador'].includes(id)||['id_cpu','id_tipo_control','id_subtipo','id_tension','potencia_hp','encoder','dato_motor_tipo','dato_motor_valor','id_matriz_variador'].includes(n)) actualizarCorrienteVariadorV33();
       if(id==='id_comunicacion_serie'||n==='id_comunicacion_serie'||id==='cantidad_equipos'||n==='cantidad_equipos'||n==='paradas_equipo[]'){sincronizarDatosSenalizacion(true);programarCalculoSenalizacion(80);}
       if(['senal_tipo_puerta','senal_indicador_modelo'].includes(id)||n==='senal_tipo_puerta'||n==='senal_indicador_modelo'||(e.target.closest&&e.target.closest('[data-senal-adicional="LUZ DE EMERGENCIA"]'))) actualizarEspecialesAccesorios();
     };
     formularioCotizador.addEventListener('input',afectaLimites);
     formularioCotizador.addEventListener('change',afectaLimites);
   }
-  actualizarEncoderObligatorioPorVelocidad();actualizarVelocidad();actualizarCorrienteVariadorV33();actualizarEspecialesAccesorios();
+  actualizarEncoderObligatorioPorVelocidad();actualizarVelocidad();actualizarModoDatoMotorVF();actualizarCorrienteVariadorV33();actualizarEspecialesAccesorios();
   // v465: el modelo de limite es unico y esta oculto, por lo que no existe ya un
   // cambio de combo que dispare el primer calculo. Inicializarlo al cargar si Control esta incluido.
   if(document.getElementById('limite_accesorio_select')?.value && moduloIncluido('control')) programarCantidadLimites(120);
@@ -4426,6 +4436,9 @@ function restaurarConfigurablesAccesoriosV461(){
  if(sint.length||barr.length||pes||cable||sup){actualizarEspecialesAccesorios();}
 }
 let corrienteVariadorV33=0;
+let temporizadorDatoMotorVF=null;
+let secuenciaDatoMotorVF=0;
+let controladorDatoMotorVF=null;
 function factorAccesoriosV33(){const d=[1,2,3].map(n=>Math.max(0,Math.min(100,Number(document.getElementById('accesorio_descuento_'+n)?.value||0))));return (1-d[0]/100)*(1-d[1]/100)*(1-d[2]/100);}
 function precioEspV33(c){return Number(preciosEspecialesV33[c]||0);}function precioExcelV33(c){return Math.ceil(precioEspV33(c));}
 function filaEspecialV33(clave,concepto,codigo,cantidad,precio,precioBase,clase){
@@ -4509,9 +4522,110 @@ function sincronizarAlarmaEmergenciaDesdeSenalizacionV203(){
 }
 function cantidadParadasV33(){return Math.max(1,Number(document.getElementById('control_acceso_paradas')?.value||document.getElementById('senal_paradas')?.value||document.querySelector('[name="paradas_equipo[]"]')?.value||1));}
 function adicionalesRangoV33(p){return p<=16?0:p<=32?1:p<=48?2:p<=64?3:0;}
+function esDatoMotorVFActivo(){
+ const grupo=document.getElementById('grupo_dato_motor_vf');
+ return document.getElementById('id_tipo_control')?.value==='4' && !!grupo && grupo.dataset.vfLegado!=='1';
+}
+function actualizarModoDatoMotorVF(){
+ const grupo=document.getElementById('grupo_dato_motor_vf');
+ const grupoHP=document.getElementById('grupo_potencia_hp');
+ const potencia=document.getElementById('potencia_hp');
+ if(!grupo || !potencia)return;
+ const nuevo=esDatoMotorVFActivo();
+ grupo.style.display=nuevo?'':'none';
+ if(grupoHP)grupoHP.style.display=nuevo?'none':'';
+ potencia.disabled=nuevo;
+ potencia.required=!nuevo;
+ ['dato_motor_tipo','dato_motor_valor','dato_motor_corriente','dato_motor_hp_equivalente','id_matriz_variador'].forEach(function(id){
+   const campo=document.getElementById(id);if(campo)campo.disabled=!nuevo;
+ });
+}
+function limpiarVariadoresVF(mensaje){
+ const select=document.getElementById('id_matriz_variador');
+ if(select){select.replaceChildren(new Option(mensaje||'Complete el dato del motor para buscar variadores',''));select.value='';}
+}
+async function consultarVariadoresPorCorrienteVF(){
+ const tipo=document.getElementById('dato_motor_tipo')?.value||'';
+ const valor=document.getElementById('dato_motor_valor')?.value||'';
+ const cpu=document.getElementById('id_cpu')?.value||'';
+ const subtipo=document.getElementById('id_subtipo')?.value||'';
+ const tension=document.getElementById('id_tension')?.value||'';
+ const select=document.getElementById('id_matriz_variador');
+ const secuencia=++secuenciaDatoMotorVF;
+ if(controladorDatoMotorVF)controladorDatoMotorVF.abort();
+ const controlador=new AbortController();controladorDatoMotorVF=controlador;
+ const corrienteHidden=document.getElementById('dato_motor_corriente');
+ const hpHidden=document.getElementById('dato_motor_hp_equivalente');
+ const corrienteVisible=document.getElementById('dato_motor_corriente_visible');
+ const matrizAnterior=String(select?.value||'');
+ corrienteVariadorV33=0;
+ if(corrienteHidden)corrienteHidden.value='';
+ if(hpHidden)hpHidden.value='';
+ if(corrienteVisible)corrienteVisible.value='';
+ if(select){select.disabled=true;limpiarVariadoresVF('Buscando variadores compatibles...');}
+ invalidarCalculoAuxiliar('Actualizando corriente y variador VF...');
+ actualizarEspecialesAccesorios();
+ if(!tipo || !valor || Number(valor)<=0 || !cpu || !subtipo || !tension){
+   if(select)limpiarVariadoresVF('Complete el dato del motor y los datos técnicos del Control');
+   invalidarCalculoAuxiliar('Complete los datos del motor para calcular VF.');
+   return false;
+ }
+ const form=new FormData();
+ [['id_cpu',cpu],['id_tipo_control','4'],['id_subtipo',subtipo],['id_tension',tension],['dato_motor_tipo',tipo],['dato_motor_valor',valor],['id_matriz_variador',matrizAnterior]].forEach(function(par){form.set(par[0],par[1]);});
+ const encoder=document.querySelector('[name="encoder"]');if(encoder?.checked)form.set('encoder','SI');
+ try{
+   const respuesta=await fetch('get_corriente_variador.php?_='+Date.now(),{method:'POST',body:form,signal:controlador.signal,cache:'no-store',credentials:'same-origin'});
+   const datos=await respuesta.json();
+   if(secuencia!==secuenciaDatoMotorVF)return false;
+   if(!respuesta.ok || !datos.corriente_normalizada){
+     if(select)limpiarVariadoresVF(datos.error||'No hay variadores compatibles');
+     invalidarCalculoAuxiliar(datos.error||'No se pudo normalizar la corriente del motor VF.');
+     return false;
+   }
+   const corriente=Number(datos.corriente_normalizada);
+   if(corrienteHidden)corrienteHidden.value=String(corriente);
+   if(hpHidden)hpHidden.value=datos.hp_equivalente===null?'':String(datos.hp_equivalente);
+   if(corrienteVisible)corrienteVisible.value=String(corriente)+' A';
+   const opciones=Array.isArray(datos.variadores)?datos.variadores:[];
+   if(!opciones.length){
+     if(select)limpiarVariadoresVF('No hay variadores con corriente nominal suficiente');
+     invalidarCalculoAuxiliar('No hay variadores VF compatibles con la corriente requerida.');
+     return false;
+   }
+   if(select){
+     select.replaceChildren(new Option('Seleccione un variador compatible',''));
+     opciones.forEach(function(fila){
+       const titulo=String(fila.ctrlsubtipo_name||'Variador')+' · '+String(fila.control_corriente)+' A · '+String(fila.control_codigo||'')+(fila.precios_descripcion?' · '+String(fila.precios_descripcion):'');
+       const op=new Option(titulo,String(fila.control_id));op.dataset.corriente=String(fila.control_corriente);op.dataset.subtipo=String(fila.control_subtipo);select.add(op);
+     });
+     const elegida=opciones.find(function(f){return String(f.control_id)===matrizAnterior;})||opciones[0];
+     select.value=String(elegida.control_id);select.disabled=false;
+     const subtipoSelect=document.getElementById('id_subtipo');
+     if(subtipoSelect && String(subtipoSelect.value)!==String(elegida.control_subtipo))subtipoSelect.value=String(elegida.control_subtipo);
+     corrienteVariadorV33=Number(elegida.control_corriente)||0;
+   }
+   actualizarEspecialesAccesorios();
+   programarCalculoTiempoReal(40);
+   return true;
+ }catch(error){
+   if(error?.name==='AbortError')return false;
+   if(secuencia!==secuenciaDatoMotorVF)return false;
+   if(select)limpiarVariadoresVF('No se pudo consultar la matriz de variadores');
+   invalidarCalculoAuxiliar('No se pudo consultar la matriz de variadores VF.');
+   return false;
+ }
+}
 async function actualizarCorrienteVariadorV33(){
  const manual=document.getElementById('cable_mallado_corriente_manual');
  const manualWrap=document.getElementById('cable_mallado_corriente_manual_wrap');
+ actualizarModoDatoMotorVF();
+ if(esDatoMotorVFActivo()){
+   clearTimeout(temporizadorDatoMotorVF);
+   temporizadorDatoMotorVF=setTimeout(consultarVariadoresPorCorrienteVF,120);
+   if(manual){manual.disabled=true;manual.readOnly=true;}
+   if(manualWrap){manualWrap.classList.add('corriente-auto-v459');manualWrap.style.display='none';}
+   return;
+ }
  const puedeAuto=moduloIncluido('control');
  if(!puedeAuto){
    corrienteVariadorV33=0;
@@ -4523,12 +4637,7 @@ async function actualizarCorrienteVariadorV33(){
  const fd=new FormData();['id_cpu','id_tipo_control','id_subtipo','id_tension','potencia_hp'].forEach(id=>fd.append(id,document.getElementById(id)?.value||''));const enc=document.querySelector('[name="encoder"]');if(enc?.checked)fd.append('encoder','SI');
  try{const r=await fetch('get_corriente_variador.php?_='+Date.now(),{method:'POST',body:fd,cache:'no-store'});const j=await r.json();const corrienteConsulta=j.ok?Number(j.corriente||0):0;if(corrienteConsulta>0)corrienteVariadorV33=corrienteConsulta;}catch(e){}
  if(manual){manual.disabled=corrienteVariadorV33>0;manual.readOnly=corrienteVariadorV33>0;}
- if(manualWrap){
-   manualWrap.classList.toggle('corriente-auto-v459',corrienteVariadorV33>0);
-   // v473: con corriente automática desde Control no mostrar un segundo campo redundante.
-   // Si no hay dato automático, el campo queda visible como respaldo para cotizaciones sin Control.
-   manualWrap.style.display=corrienteVariadorV33>0?'none':'';
- }
+ if(manualWrap){manualWrap.classList.toggle('corriente-auto-v459',corrienteVariadorV33>0);manualWrap.style.display=corrienteVariadorV33>0?'none':'';}
  actualizarEspecialesAccesorios();
 }
 function indicadorColorSintetizadorV474(){

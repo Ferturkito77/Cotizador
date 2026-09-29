@@ -253,11 +253,31 @@
             </select>
         </div>
 
-        <div class="campo">
+        <?php $controlVfLegado = ((int)($datos['id_tipo_control'] ?? 0) === 4 && !array_key_exists('dato_motor_tipo', $datos) && trim((string)($datos['potencia_hp'] ?? '')) !== ''); ?>
+        <div class="campo" id="grupo_potencia_hp">
             <label for="potencia_hp">Potencia (HP):</label>
             <input type="number" step="0.01" min="0" name="potencia_hp" id="potencia_hp"
                    value="<?= escapar((string)($datos['potencia_hp'] ?? '')) ?>"
-                   placeholder="Ej.: 5,5" required>
+                   placeholder="Ej.: 5,5" required data-vf-legado="<?= $controlVfLegado ? '1' : '0' ?>">
+        </div>
+        <div class="campo" id="grupo_dato_motor_vf" style="display:none" data-vf-legado="<?= $controlVfLegado ? '1' : '0' ?>">
+            <label for="dato_motor_tipo">Dato conocido del motor (VF):</label>
+            <select name="dato_motor_tipo" id="dato_motor_tipo" disabled>
+                <option value="HP"<?= (($datos['dato_motor_tipo'] ?? 'HP') === 'HP') ? ' selected' : '' ?>>HP</option>
+                <option value="AMP"<?= (($datos['dato_motor_tipo'] ?? '') === 'AMP') ? ' selected' : '' ?>>Amp</option>
+                <option value="KW"<?= (($datos['dato_motor_tipo'] ?? '') === 'KW') ? ' selected' : '' ?>>kW</option>
+            </select>
+            <label for="dato_motor_valor">Valor informado:</label>
+            <input type="number" step="0.01" min="0.01" name="dato_motor_valor" id="dato_motor_valor" value="<?= escapar((string)($datos['dato_motor_valor'] ?? '')) ?>" disabled>
+            <label for="dato_motor_corriente_visible">Corriente técnica normalizada:</label>
+            <input type="text" id="dato_motor_corriente_visible" value="<?= escapar((string)($datos['dato_motor_corriente'] ?? '')) ?>" readonly>
+            <input type="hidden" name="dato_motor_corriente" id="dato_motor_corriente" value="<?= escapar((string)($datos['dato_motor_corriente'] ?? '')) ?>" disabled>
+            <input type="hidden" name="dato_motor_hp_equivalente" id="dato_motor_hp_equivalente" value="<?= escapar((string)($datos['dato_motor_hp_equivalente'] ?? '')) ?>" disabled>
+            <label for="id_matriz_variador">Variador seleccionado:</label>
+            <select name="id_matriz_variador" id="id_matriz_variador" disabled required>
+                <option value="">Seleccione la corriente requerida para buscar variadores</option>
+            </select>
+            <small>Se puede elegir cualquier fila compatible con corriente nominal igual o superior a la requerida.</small>
         </div>
 
         <div class="campo">
