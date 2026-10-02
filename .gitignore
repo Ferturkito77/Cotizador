@@ -1,0 +1,19 @@
+pdf/cotizaciones/*.pdf
+pdf/pedidos/*.pdf
+pdf/revisiones/*.pdf
+pdf/ordenes_fabricacion/*.pdf*.zip
+*.sql
+!database/cotizador_nuevo.sql
+!migracion_perfiles_senalizacion_rescates_2026-10-01.sql
+*.log
+*.bak
+*.old
+*.orig
+*.save
+*.zip
+
+storage/logs/
+historicos_pdf/
+
+ChatGPT Installer.exe
+Microsoft.Services.Store.winmd

@@ -596,13 +596,13 @@
             <select name="id_rescate" id="id_rescate">
                 <option value="">Sin rescate</option>
                 <?php foreach ($rescatesHidraulicos as $rRescate): ?>
-                    <option value="<?= (int)$rRescate['rescate_id'] ?>" data-familia="HIDRAULICO" data-clave="<?= escapar($rRescate['rescate_clave']) ?>"<?= valorSeleccionado($datos, 'id_rescate', $rRescate['rescate_id']) ?>><?= escapar($rRescate['rescate_nombre']) ?></option>
+                    <option value="<?= (int)$rRescate['rescate_id'] ?>" data-familia="HIDRAULICO" data-clave="<?= escapar($rRescate['rescate_clave']) ?>" data-compatibilidades="<?= escapar(json_encode($rRescate['compatibilidades'] ?? array(), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)) ?>"<?= valorSeleccionado($datos, 'id_rescate', $rRescate['rescate_id']) ?>><?= escapar($rRescate['rescate_nombre']) ?></option>
                 <?php endforeach; ?>
                 <?php foreach ($rescatesMrl as $rRescate): ?>
-                    <option value="<?= (int)$rRescate['rescate_id'] ?>" data-familia="MRL_IMAN" data-clave="<?= escapar($rRescate['rescate_clave']) ?>"<?= valorSeleccionado($datos, 'id_rescate', $rRescate['rescate_id']) ?>><?= escapar($rRescate['rescate_nombre']) ?></option>
+                    <option value="<?= (int)$rRescate['rescate_id'] ?>" data-familia="MRL_IMAN" data-clave="<?= escapar($rRescate['rescate_clave']) ?>" data-compatibilidades="<?= escapar(json_encode($rRescate['compatibilidades'] ?? array(), JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)) ?>"<?= valorSeleccionado($datos, 'id_rescate', $rRescate['rescate_id']) ?>><?= escapar($rRescate['rescate_nombre']) ?></option>
                 <?php endforeach; ?>
             </select>
-            <div class="ayuda">El rescate se valoriza por equipo con los precios de la base Bejerman vigente. En MRL/imán permanente también suma imanes, cabezal y soporte.</div>
+            <div class="ayuda">El rescate y sus componentes se valorizan con los precios de la base Bejerman vigente, según las reglas configuradas para cada opción.</div>
         </div>
 
         <div class="campo campo-adicional-ancho" id="grupo_adicionales_ucm_mrl" style="display:none;">

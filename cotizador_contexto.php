@@ -381,7 +381,22 @@ $itemsModularesGuardados['ACCESORIOS'] = $restantesAccesoriosV461;
 $senalPulsadoresExtMatriz=cargarTablaAccesorioEspecial($conexion,'senal_pulsadores_exteriores_matriz','familia, orden, id');
 $senalPulsadoresExtIndicadores=cargarTablaAccesorioEspecial($conexion,'senal_pulsadores_exteriores_indicadores','familia, orden, id');
 $senalIndicadoresExteriorCatalogo=cargarTablaAccesorioEspecial($conexion,'senal_indicadores_cabina','orden, id');
+$senalIndicadoresExteriorIndependientes=array();
+if(esquemaTablaExiste($conexion,'senal_indicadores_contextos')){
+    $contextosPorCodigo=array();$contextosConfigurados=array();
+    $rc=$conexion->query('SELECT codigo,contexto,activo FROM senal_indicadores_contextos ORDER BY orden,codigo');
+    if($rc)while($cx=$rc->fetch_assoc()){$key=strtoupper(trim((string)$cx['codigo']));$contextosConfigurados[$key]=true;if((int)$cx['activo']===1)$contextosPorCodigo[$key][strtoupper(trim((string)$cx['contexto']))]=true;}
+    foreach($senalIndicadoresExteriorCatalogo as &$indicadorCatalogo){$key=strtoupper(trim((string)($indicadorCatalogo['codigo']??'')));$indicadorCatalogo['contextos_configurados']=isset($contextosConfigurados[$key])?1:0;$indicadorCatalogo['contextos_permitidos']=array_keys($contextosPorCodigo[$key]??array());if(empty($contextosConfigurados[$key])||isset($contextosPorCodigo[$key]['EXTERIOR_INDEPENDIENTE']))$senalIndicadoresExteriorIndependientes[]=$indicadorCatalogo;}
+    unset($indicadorCatalogo);
+}else{$senalIndicadoresExteriorIndependientes=$senalIndicadoresExteriorCatalogo;}
 $senalAcabadosCoeficientes=cargarTablaAccesorioEspecial($conexion,'senal_acabados_coeficientes','acabado, medida_especial');
+
+if(esquemaTablaExiste($conexion,'senal_modelos_perfiles')){
+    $perfilesExteriores=array();$rp=$conexion->query("SELECT m.modelo_pulsador_nombre,p.modo_base,p.tipo_modulo_requerido,p.indicador_pulsador,p.modo_pulsador_exterior,p.separar_indicador_exterior,p.politica_acabado,p.acabado FROM senal_modelos_pulsador m INNER JOIN senal_modelos_perfiles p ON p.modelo_pulsador_id=m.modelo_pulsador_id AND p.activo=1");
+    if($rp)while($perfilExt=$rp->fetch_assoc()){$nombre=strtoupper(trim((string)$perfilExt['modelo_pulsador_nombre']));$perfilesExteriores[$nombre]=$perfilExt;if($nombre==='ROND METAL')$perfilesExteriores['METAL']=$perfilExt;}
+    foreach($senalPulsadoresExtMatriz as &$filaPulsadorExterior){$nombre=strtoupper(trim((string)($filaPulsadorExterior['modelo_pulsador']??'')));if(isset($perfilesExteriores[$nombre]))$filaPulsadorExterior['_perfil_modelo']=$perfilesExteriores[$nombre];}
+    unset($filaPulsadorExterior);
+}
 
 $codigosEspeciales=array('A7601C','A7600C','A4820SV','A2164C','A21642RC','A2167C','BMX174C','A68S32.2','A68S32.4','A68S32.6','A68S32.8','A68S63.XX','A6811C','7C4NMALLA','7C6NMALLA','7C10N/MALLA','7C16NMALLA','A2800C','A2803C','A2804C','A2802C','A2807C','A2808C','A3700CCP','A3700CCB','A3700CPP','A3700CPB','A3700X','A3710CTP','A3710CTB','A3710X','A3700LU','A3701TUHW');
 $preciosEspeciales=array();
@@ -454,10 +469,23 @@ if ($tablaPosicionamientoExiste) {
 }
 $rescatesHidraulicos = array();
 $rescatesMrl = array();
+$compatibilidadesRescate = array();
+$tablaCompatibilidadesRescate = esquemaTablaExiste($conexion,'rescates_compatibilidades');
+if ($tablaCompatibilidadesRescate) {
+    $rc = $conexion->query("SELECT rescate_id,tipo_control_id,subtipo_control_id,corriente_clave FROM rescates_compatibilidades WHERE activo='SI' ORDER BY orden,compatibilidad_id");
+    if ($rc) while ($filaCompatibilidad = $rc->fetch_assoc()) {
+        $compatibilidadesRescate[(int)$filaCompatibilidad['rescate_id']][] = array(
+            'tipo'=>(int)$filaCompatibilidad['tipo_control_id'],
+            'subtipo'=>$filaCompatibilidad['subtipo_control_id'] === null ? 0 : (int)$filaCompatibilidad['subtipo_control_id'],
+            'corriente'=>$filaCompatibilidad['corriente_clave'] === null ? 0 : (int)$filaCompatibilidad['corriente_clave']
+        );
+    }
+}
 $tablaRescatesExiste = esquemaTablaExiste($conexion,'rescates_opciones');
 if ($tablaRescatesExiste) {
     $rr = $conexion->query("SELECT rescate_id, rescate_clave, rescate_nombre, rescate_familia FROM rescates_opciones WHERE rescate_activo='SI' ORDER BY rescate_familia, rescate_orden, rescate_id");
     if ($rr) while ($filaRescate = $rr->fetch_assoc()) {
+        $filaRescate['compatibilidades'] = $compatibilidadesRescate[(int)$filaRescate['rescate_id']] ?? array();
         if ($filaRescate['rescate_familia'] === 'HIDRAULICO') $rescatesHidraulicos[] = $filaRescate;
         if ($filaRescate['rescate_familia'] === 'MRL_IMAN') $rescatesMrl[] = $filaRescate;
     }

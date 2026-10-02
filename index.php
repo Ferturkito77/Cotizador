@@ -693,15 +693,23 @@ require_once __DIR__ . '/cotizador_contexto.php';
             if (!tipo || !grupo || !select) return;
             const opTipo = tipo && tipo.selectedIndex >= 0 ? tipo.options[tipo.selectedIndex] : null;
             const familia = opTipo ? String(opTipo.dataset.familiaRescate || '') : ''; // v229: sin fallback por IDs; la familia se mantiene en control_tipo_capacidades
-            const tiposMrlIman = Array.from(tipo.options).filter(o => String(o.dataset.familiaRescate || '') === 'MRL_IMAN').map(o => String(o.value));
-            const subtipoTexto = textoSeleccionado('id_subtipo');
-            const esInvt = subtipoTexto.includes('INVT GD300L') || subtipoTexto.includes('INVT GD390L');
+          const subtipo = String(document.getElementById('id_subtipo')?.value || '');
+          const corriente = Number(typeof corrienteVariadorV33 !== 'undefined' ? corrienteVariadorV33 : 0) || 0;
             grupo.style.display = familia ? 'block' : 'none';
             Array.from(select.options).forEach(function(op) {
                 if (!op.value) { op.hidden = false; op.disabled = false; return; }
                 let visible = op.dataset.familia === familia;
-                if (op.dataset.clave === 'INVT_INTEGRAL_SIN_UPS') {
-                    visible = visible && tiposMrlIman.includes(tipo.value) && esInvt;
+            let compatibilidades = [];
+            try { compatibilidades = JSON.parse(op.dataset.compatibilidades || '[]'); } catch (e) { compatibilidades = []; }
+            if (visible && compatibilidades.length) {
+              visible = compatibilidades.some(function(regla) {
+                return Number(regla.tipo) === Number(tipo.value)
+                  && (!Number(regla.subtipo) || Number(regla.subtipo) === Number(subtipo))
+                  && (!Number(regla.corriente) || (corriente > 0 && Number(regla.corriente) === Math.round(corriente)));
+              });
+            } else if (visible && op.dataset.clave === 'INVT_INTEGRAL_SIN_UPS') {
+              const subtipoTexto = textoSeleccionado('id_subtipo');
+              visible = subtipoTexto.includes('INVT GD300L') || subtipoTexto.includes('INVT GD390L');
                 }
                 op.hidden = !visible;
                 op.disabled = !visible;
@@ -2619,9 +2627,19 @@ function actualizarResumenRapidoControl(){
   const resumen=document.getElementById('control_resumen_texto');
   if(resumen) resumen.textContent=[cpu,tipo,cantidad+' equipo'+(cantidad===1?'':'s'),'Paradas: '+resumenParadas,'Maniobra: '+maniobra,'Adicionales: '+(checks+selectExtras+cantExtras)].join(' · ');
 }
+function perfilModeloSenalizacionActual(){
+  const modelo=document.getElementById('senal_modelo');
+  if(!modelo || modelo.selectedIndex<0) return {};
+  try{return JSON.parse(modelo.options[modelo.selectedIndex].dataset.perfil||'{}');}catch(e){return {};}
+}
 function tipoOnixSenalizacionActual(){
   const modelo=document.getElementById('senal_modelo');
   if(!modelo || modelo.selectedIndex<0) return '';
+  const perfil=perfilModeloSenalizacionActual();
+  const modo=String(perfil.modo_base||'').toUpperCase();
+  if(modo==='PANTALLA') return 'PANTALLA';
+  if(modo==='ONIX_TELEFONICO') return 'TELEFONICO';
+  if(modo==='ONIX_INDIVIDUALES') return 'INDIVIDUALES';
   const txt=String(modelo.options[modelo.selectedIndex]?.textContent||'').trim().toUpperCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   if(txt.includes('ONIX TELEFONICO')) return 'TELEFONICO';
@@ -2630,16 +2648,24 @@ function tipoOnixSenalizacionActual(){
   return '';
 }
 function aplicarReglaOnixSenalizacion(){
+  const perfil=perfilModeloSenalizacionActual();
   const tipo=tipoOnixSenalizacionActual();
   const esOnix=tipo!=='';
-  const modeloSel=document.getElementById('senal_modelo');
-  const modeloTxt=String(modeloSel?.selectedOptions?.[0]?.textContent||'').toUpperCase();
-  const esRond=modeloTxt.includes('ROND METAL');
+  const modoBase=String(perfil.modo_base||'').toUpperCase();
+  const nombreModelo=String(document.getElementById('senal_modelo')?.selectedOptions?.[0]?.textContent||'').trim().toUpperCase();
+  const esModeloPuerta=modoBase?modoBase==='MODELO_PUERTA':nombreModelo.includes('ROND METAL');
+  const esPantalla=Number(perfil.pantalla||0)===1 || tipo==='PANTALLA' || tipo==='PANTALLA_21';
+  const tipoModuloRequerido=String(perfil.tipo_modulo_requerido||'').trim().toUpperCase();
   const moduloWrap=document.getElementById('senal_tipo_modulo_wrap');
-  if(moduloWrap) moduloWrap.style.display=esRond?'none':'';
+  const modulo=document.getElementById('senal_tipo_modulo');
+  if(tipoModuloRequerido && modulo){
+    const requerido=Array.from(modulo.options).find(function(op){return String(op.textContent||'').trim().toUpperCase()===tipoModuloRequerido;});
+    if(requerido) modulo.value=requerido.value;
+  }
+  if(moduloWrap) moduloWrap.style.display=(esModeloPuerta||!!tipoModuloRequerido)?'none':'';
   const detalle=document.getElementById('senal_detalle_convencional');
   if(detalle){
-    const ocultarDetalle=esOnix||esRond;
+    const ocultarDetalle=esOnix||esModeloPuerta;
     detalle.style.display=ocultarDetalle?'none':'';
     detalle.querySelectorAll('select,input').forEach(function(campo){
       if(campo.dataset.onixDisabledOriginal===undefined) campo.dataset.onixDisabledOriginal=campo.disabled?'1':'0';
@@ -2655,18 +2681,20 @@ function aplicarReglaOnixSenalizacion(){
   const wrapCant=document.getElementById('senal_indicador_cantidad_wrap');
   const info=document.getElementById('senal_onix_indicador_info');
   const ayuda=document.getElementById('senal_indicador_codigo_ayuda');
-  if(esOnix){
+  const permiteIndicadorCabina=perfil.indicador_cabina===undefined?!esOnix:Number(perfil.indicador_cabina)!==0;
+  if(!permiteIndicadorCabina){
     if(modeloInd){ modeloInd.value=''; modeloInd.disabled=true; }
     if(cantInd){ cantInd.value='0'; cantInd.disabled=true; }
     if(wrapModelo) wrapModelo.style.display='none';
     if(wrapCant) wrapCant.style.display='none';
     if(ayuda) ayuda.style.display='none';
     if(info){
-      let texto='';
-      if(tipo==='PANTALLA_21') texto='<strong>Indicador de posición:</strong> no lleva.';
-      if(tipo==='TELEFONICO') texto='<strong>Indicador incluido:</strong> 7 pulg Beaglebond · incluido en la botonera, no se suma al precio.';
-      if(tipo==='INDIVIDUALES') texto='<strong>Indicador incluido:</strong> A4830 Crystal Color · incluido en la botonera, no se suma al precio.';
-      info.innerHTML=texto;
+      const incluido=String(perfil.indicador_incluido_descripcion||'');
+      let texto=esPantalla?'Indicador de posición: no lleva.':'';
+      if(!esPantalla && incluido) texto='Indicador incluido: '+incluido+' · incluido en la botonera, no se suma al precio.';
+      if(!esPantalla && !incluido && tipo==='TELEFONICO') texto='Indicador incluido: 7 pulg Beaglebond · incluido en la botonera, no se suma al precio.';
+      if(!esPantalla && !incluido && tipo==='INDIVIDUALES') texto='Indicador incluido: A4830 Crystal Color · incluido en la botonera, no se suma al precio.';
+      info.textContent=texto;
       info.style.display='block';
     }
   }else{
@@ -2684,10 +2712,11 @@ function aplicarReglaOnixSenalizacion(){
     item.setAttribute('aria-hidden',esOnix?'true':'false');
   });
 
-  // Toda ONIX indicada por Producción requiere Luz de cortesía en Control.
+  // Los perfiles pueden requerir Luz de cortesía en Control.
   const luz=document.querySelector('#form_cotizador input[name="luz_cortesia"]');
+  const requiereLuz=perfil.requiere_luz_cortesia===undefined?esOnix:Number(perfil.requiere_luz_cortesia)===1;
   if(luz){
-    if(esOnix){
+    if(requiereLuz){
       if(!luz.checked){ luz.checked=true; luz.dataset.onixAuto='1'; }
     }else if(luz.dataset.onixAuto==='1'){
       luz.checked=false;
@@ -3037,6 +3066,7 @@ function matrizIndicadoresPulsadoresV181(){
   return window.__senalPulsExtIndicadoresV181;
 }
 function matrizIndicadoresMaestraV190(){if(window.__senalIndicadoresMaestraV190)return window.__senalIndicadoresMaestraV190;try{window.__senalIndicadoresMaestraV190=JSON.parse(document.getElementById('senal_indicadores_maestros_json')?.textContent||'[]');}catch(_){window.__senalIndicadoresMaestraV190=[];}return window.__senalIndicadoresMaestraV190;}
+function indicadorContextoPermitidoV190(indicador,contexto){if(Number(indicador?.contextos_configurados||0)===0)return true;const permitidos=Array.isArray(indicador?.contextos_permitidos)?indicador.contextos_permitidos:[];return permitidos.includes(String(contexto||'').toUpperCase());}
 function formatearPrecioPulsadorV182(v){
   const n=Number(v||0);return n>0?'$ '+Math.ceil(n).toLocaleString('es-AR'):'SIN PRECIO';
 }
@@ -3058,7 +3088,16 @@ async function actualizarPrecioPulsadorV182(fam,codigo){
     const jp=await consultar(codigo);
     if(Number(out.dataset.precioSolicitud)!==solicitud)return;
     if(!jp.ok){out.textContent='SIN PRECIO BEJERMAN';out.dataset.unitario='0';out.classList.add('sin-precio');if(detalle)detalle.textContent='Código pulsador '+codigo+' sin precio';return;}
-    const acabado=String(document.getElementById(pref+'acabado')?.value||'ACERO');const especial=!!document.getElementById(pref+'medida_especial')?.checked;const ap=aplicarCoefPreviewV190(Number(jp.unitario||0),acabado,especial);if(!ap.ok){out.textContent='COEFICIENTE A DEFINIR';out.dataset.unitario='0';out.classList.add('sin-precio');if(detalle)detalle.textContent='Acabado '+acabado+(especial?' · medida especial':'')+' sin coeficiente definido';return;}let total=ap.total, texto='Pulsador '+formatearPrecioPulsadorV182(ap.total)+' ('+acabado+(especial?' especial':'')+' × '+ap.coef.toLocaleString('es-AR')+')';
+    const mismo=!!document.getElementById(pref+'mismo_modelo')?.checked;
+    const modeloActual=mismo?modeloCabinaV179():normalizarTextoPulsadorV179(document.getElementById(pref+'modelo')?.value||'');
+    const filaPerfil=matrizPulsadoresV179().find(r=>String(r.familia||'').toUpperCase()===String(fam).toUpperCase()&&normalizarTextoPulsadorV179(r.modelo_pulsador)===modeloActual);
+    const perfil=filaPerfil?._perfil_modelo||{};
+    const acabadoIncluido=String(perfil.politica_acabado||'').toUpperCase()==='INCLUIDO_EN_PRECIO';
+    const acabado=acabadoIncluido?String(perfil.acabado||'ACERO'):String(document.getElementById(pref+'acabado')?.value||'ACERO');
+    const especial=!acabadoIncluido&&!!document.getElementById(pref+'medida_especial')?.checked;
+    const ap=acabadoIncluido?{ok:true,total:Math.ceil(Number(jp.unitario||0)),coef:1}:aplicarCoefPreviewV190(Number(jp.unitario||0),acabado,especial);
+    if(!ap.ok){out.textContent='COEFICIENTE A DEFINIR';out.dataset.unitario='0';out.classList.add('sin-precio');if(detalle)detalle.textContent='Acabado '+acabado+(especial?' · medida especial':'')+' sin coeficiente definido';return;}
+    let total=ap.total, texto=acabadoIncluido?'Pulsador '+formatearPrecioPulsadorV182(ap.total)+' (acabado '+acabado+' incluido)':'Pulsador '+formatearPrecioPulsadorV182(ap.total)+' ('+acabado+(especial?' especial':'')+' × '+ap.coef.toLocaleString('es-AR')+')';
     if(String(fam).endsWith('_IP')){
       const codInd=String(document.getElementById(pref+'indicador_codigo')?.value||'').trim();
       if(!codInd){out.textContent='FALTA INDICADOR';out.dataset.unitario='0';out.classList.add('sin-precio');if(detalle)detalle.textContent='Seleccione el indicador exterior';return;}
@@ -3082,8 +3121,11 @@ function codigoIndicadorCabinaV181(){
 function refrescarIndicadorExteriorV181(fam,usuario){
   if(!String(fam).endsWith('_IP'))return;
   const pref=prefPulsadorV179(fam), sel=document.getElementById(pref+'indicador_codigo'), tipoSel=document.getElementById(pref+'tipo'), preview=document.getElementById(pref+'indicador_modelo_preview');if(!sel)return;
+  const tarjeta=sel.closest('.senal-pulsador-card-v179');
+  if(tarjeta?.dataset.indicadorPermitido==='0'){sel.innerHTML='<option value="">No permitido por el perfil del modelo</option>';sel.value='';sel.disabled=true;if(preview)preview.textContent='El perfil no admite indicador en este pulsador.';actualizarPrecioPulsadorV182(fam,String(document.getElementById(pref+'codigo_preview')?.textContent||''));return;}
+  sel.disabled=false;
   let tipo=normalizarTextoPulsadorV179(tipoSel?.value||tipoCabinaV179());if(senalControlIncluidoV190())tipo='ELECTRONICO';
-  let rows=matrizIndicadoresMaestraV190().filter(r=>Number(r.activo)!==0 && (!tipo||normalizarTextoPulsadorV179(r.tipo_modulos)===tipo));
+  let rows=matrizIndicadoresMaestraV190().filter(r=>Number(r.activo)!==0 && indicadorContextoPermitidoV190(r,'PULSADOR_EXTERIOR') && (!tipo||normalizarTextoPulsadorV179(r.tipo_modulos)===tipo));
   const actual=String(sel.value||sel.dataset.valor||'').toUpperCase();
   sel.innerHTML='<option value="">Seleccione...</option>'+rows.map(r=>'<option value="'+String(r.codigo||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+String(r.modelo_indicador||'')+' · '+String(r.codigo||'')+'</option>').join('');
   if(actual&&[...sel.options].some(o=>String(o.value).toUpperCase()===actual))sel.value=[...sel.options].find(o=>String(o.value).toUpperCase()===actual).value;else sel.value='';sel.dataset.valor='';
@@ -3107,20 +3149,22 @@ function setOpcionesPulsadorV179(sel,vals,preferido){
   sel.dataset.valor='';
   return sel.value;
 }
-function aplicarReglaRondMetalExteriorV187(fam,modeloNormalizado){
+function aplicarReglaRondMetalExteriorV187(fam,modeloNormalizado,perfil){
   const pref=prefPulsadorV179(fam);
   const esMetal=normalizarTextoPulsadorV179(modeloNormalizado)==='METAL';
+  const modoModelo=String(perfil?.modo_pulsador_exterior||'').toUpperCase()==='MODELO';
+  const ocultarDetalle=esMetal||modoModelo;
   const editor=document.getElementById(pref+'editor');
   if(editor){
     editor.querySelectorAll('.senal-ext-detalle-v187').forEach(function(w){
-      w.style.display=esMetal?'none':'';
+      w.style.display=ocultarDetalle?'none':'';
       w.querySelectorAll('select,input').forEach(function(c){
-        if(esMetal){c.dataset.rondMetalDisabled='1';c.disabled=true;}
-        else if(c.dataset.rondMetalDisabled==='1'){c.disabled=false;delete c.dataset.rondMetalDisabled;}
+        if(ocultarDetalle){c.dataset.perfilModeloDisabled='1';c.disabled=true;}
+        else if(c.dataset.perfilModeloDisabled==='1'){c.disabled=false;delete c.dataset.perfilModeloDisabled;}
       });
     });
     const tipoWrap=editor.querySelector('.senal-ext-tipo-v188');
-    if(tipoWrap) tipoWrap.style.display=(esMetal && !String(fam).endsWith('_IP'))?'none':'';
+    if(tipoWrap) tipoWrap.style.display=((esMetal && !String(fam).endsWith('_IP'))||String(perfil?.tipo_modulo_requerido||'').trim()!=='')?'none':'';
   }
   return esMetal;
 }
@@ -3140,12 +3184,20 @@ function refrescarPulsadorExteriorV179(fam,usuario){
     if(mv)rows=rows.filter(r=>normalizarTextoPulsadorV179(r.modelo_pulsador)===modeloElegido);
   }
 
-  const esMetal=aplicarReglaRondMetalExteriorV187(fam,modeloElegido);
+  const perfilExterior=rows[0]?._perfil_modelo||{};
+  const modoModeloPerfil=String(perfilExterior.modo_pulsador_exterior||'').toUpperCase()==='MODELO';
+  const tipoModuloRequerido=normalizarTextoPulsadorV179(perfilExterior.tipo_modulo_requerido||'');
+  if(tipoModuloRequerido)rows=rows.filter(r=>normalizarTextoPulsadorV179(r.tipo_modulos)===tipoModuloRequerido);
+  const permiteIndicadorPulsador=perfilExterior.indicador_pulsador===undefined||Number(perfilExterior.indicador_pulsador)!==0;
+  const tarjetaExterior=document.querySelector('#senal_pulsadores_v179 [data-familia="'+String(fam).toUpperCase()+'"]');
+  if(tarjetaExterior)tarjetaExterior.dataset.indicadorPermitido=permiteIndicadorPulsador?'1':'0';
+  if(String(fam).endsWith('_IP')&&!permiteIndicadorPulsador)rows=[];
+  const esMetal=aplicarReglaRondMetalExteriorV187(fam,modeloElegido,perfilExterior);
   const defaultTipo=usuario?tipoSel?.value:(tipoSel?.dataset.valor||tipoCabinaV179());
   const tv=setOpcionesPulsadorV179(tipoSel,rows.map(r=>r.tipo_modulos),defaultTipo);
   if(tv)rows=rows.filter(r=>normalizarTextoPulsadorV179(r.tipo_modulos)===normalizarTextoPulsadorV179(tv));
 
-  if(!esMetal){
+  if(!esMetal&&!modoModeloPerfil){
     const cv=setOpcionesPulsadorV179(colorSel,rows.map(r=>r.color_registro),usuario?colorSel?.value:(colorSel?.dataset.valor||colorCabinaV179())); if(cv)rows=rows.filter(r=>normalizarTextoPulsadorV179(r.color_registro)===normalizarTextoPulsadorV179(cv));
     const teV=setOpcionesPulsadorV179(tensionSel,rows.map(r=>r.tension_modulos),usuario?tensionSel?.value:(tensionSel?.dataset.valor||tensionCabinaV179())); if(teV)rows=rows.filter(r=>normalizarTextoPulsadorV179(r.tension_modulos)===normalizarTextoPulsadorV179(teV));
     const bv=setOpcionesPulsadorV179(bornesSel,rows.map(r=>r.bornes),usuario?bornesSel?.value:(bornesSel?.dataset.valor||bornesCabinaV179())); if(bv)rows=rows.filter(r=>normalizarTextoPulsadorV179(r.bornes)===normalizarTextoPulsadorV179(bv));
@@ -4604,7 +4656,8 @@ async function consultarVariadoresPorCorrienteVF(){
      if(subtipoSelect && String(subtipoSelect.value)!==String(elegida.control_subtipo))subtipoSelect.value=String(elegida.control_subtipo);
      corrienteVariadorV33=Number(elegida.control_corriente)||0;
    }
-   actualizarEspecialesAccesorios();
+  actualizarEspecialesAccesorios();
+  actualizarRescates();
    programarCalculoTiempoReal(40);
    return true;
  }catch(error){
@@ -4639,6 +4692,7 @@ async function actualizarCorrienteVariadorV33(){
  if(manual){manual.disabled=corrienteVariadorV33>0;manual.readOnly=corrienteVariadorV33>0;}
  if(manualWrap){manualWrap.classList.toggle('corriente-auto-v459',corrienteVariadorV33>0);manualWrap.style.display=corrienteVariadorV33>0?'none':'';}
  actualizarEspecialesAccesorios();
+ actualizarRescates();
 }
 function indicadorColorSintetizadorV474(){
  const selIndicador=document.getElementById('senal_indicador_modelo');
@@ -4910,6 +4964,7 @@ document.addEventListener('DOMContentLoaded',()=>{restaurarConfigurablesAccesori
  function filtrarCabinaV375(cambiar){const sel=byId('senal_indicador_modelo'), rol=byId('senal_indicador_rol');if(!sel)return;const em=esElectromecanico();if(rol?.closest('.campo'))rol.closest('.campo').style.display=em?'':'none';const target=em?tipoPorRol(rol?.value):'ELECTRONICO';const antes=sel.value, cf=canon(antes);let elegido='';[...sel.options].forEach(o=>{if(!o.value){o.hidden=false;o.disabled=false;return}const tipos=String(o.dataset.tipos||'').toUpperCase().split('|');const ok=tipos.includes(target);o.hidden=!ok;o.disabled=!ok;if(ok&&canon(o.value)===cf)elegido=o.value});if(antes&&sel.selectedOptions[0]?.disabled){sel.value=elegido||''}if(cambiar&&sel.value!==antes)normalizarIndicadorSenalizacion();}
  const oldFiltrar=window.filtrarIndicadoresPorTipoSenalizacion;window.filtrarIndicadoresPorTipoSenalizacion=function(){filtrarCabinaV375(false)};
  const oldRef=window.refrescarIndicadorExteriorV181;window.refrescarIndicadorExteriorV181=function(fam,usuario){if(!String(fam).endsWith('_IP'))return oldRef?.(fam,usuario);const p=pref(fam),sel=byId(p+'indicador_codigo'),preview=byId(p+'indicador_modelo_preview');if(!sel)return;const role=esElectromecanico()?String(byId(p+'indicador_rol')?.value||'REPETIDOR'):'REPETIDOR';if(byId(p+'indicador_rol')?.closest('.campo'))byId(p+'indicador_rol').closest('.campo').style.display=esElectromecanico()?'':'none';const tipo=esElectromecanico()?tipoPorRol(role):'ELECTRONICO';const rows=matrizIndicadoresMaestraV190().filter(r=>Number(r.activo)!==0&&normalizarTextoPulsadorV179(r.tipo_modulos)===tipo&&!String(r.modelo_indicador||'').toUpperCase().includes('BEAGLEBOND'));const actual=String(sel.value||sel.dataset.valor||'').toUpperCase(), oldRow=matrizIndicadoresMaestraV190().find(r=>String(r.codigo||'').toUpperCase()===actual), oldCanon=canon(oldRow?.modelo_indicador||'');sel.innerHTML='<option value="">Seleccione...</option>'+rows.map(r=>'<option value="'+String(r.codigo||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'">'+String(r.modelo_indicador||'')+' · '+String(r.codigo||'')+'</option>').join('');let candidate=rows.find(r=>String(r.codigo||'').toUpperCase()===actual)||rows.find(r=>canon(r.modelo_indicador)===oldCanon);sel.value=candidate?String(candidate.codigo||''):'';sel.dataset.valor='';const rr=rows.find(x=>String(x.codigo||'')===String(sel.value||''));if(preview)preview.textContent=rr?(String(rr.modelo_indicador||'')+' · '+String(rr.codigo||'')+' · '+(role==='MAESTRO'?'maestro A4000':'repetidor A4400')):'Seleccione el indicador.';const codigoPul=String(byId(p+'codigo_preview')?.textContent||'').trim();actualizarPrecioPulsadorV182(fam,codigoPul);if(usuario)programarCalculoSenalizacion(100)};
+ const refrescarIndicadorExteriorAnteriorV490=window.refrescarIndicadorExteriorV181;window.refrescarIndicadorExteriorV181=function(fam,usuario){refrescarIndicadorExteriorAnteriorV490?.(fam,usuario);if(!String(fam).endsWith('_IP'))return;const sel=byId(pref(fam)+'indicador_codigo');if(!sel)return;let cambio=false;Array.from(sel.options).forEach(function(op){if(!op.value)return;const fila=matrizIndicadoresMaestraV190().find(r=>String(r.codigo||'').toUpperCase()===String(op.value).toUpperCase());const permitido=fila&&indicadorContextoPermitidoV190(fila,'PULSADOR_EXTERIOR');op.hidden=!permitido;op.disabled=!permitido;if(!permitido&&String(op.value)===String(sel.value)){sel.value='';cambio=true;}});if(cambio)actualizarPrecioPulsadorV182(fam,String(byId(pref(fam)+'codigo_preview')?.textContent||''));};
  const oldCapt=window.capturarItemPulsadorV188;window.capturarItemPulsadorV188=function(fam){const it=oldCapt(fam);if(it&&String(fam).endsWith('_IP'))it.indicador_rol=esElectromecanico()?String(byId(pref(fam)+'indicador_rol')?.value||'REPETIDOR'):'REPETIDOR';return it};
  const oldEdit=window.editarItemPulsadorV188; if(typeof oldEdit==='function')window.editarItemPulsadorV188=function(fam,idx){const arr=itemsPulsadoresV188(),it=arr[idx];oldEdit(fam,idx);if(it&&String(it.familia).endsWith('_IP')){const r=byId(pref(it.familia)+'indicador_rol');if(r)r.value=it.indicador_rol||'REPETIDOR';refrescarIndicadorExteriorV181(it.familia,false)}actualizarParadas()};
  function filtrarExtV375(cambiar){const sel=byId('senal_indicador_ext_modelo_v190'),rol=byId('senal_indicador_ext_rol_v375');if(!sel)return;const em=esElectromecanico();if(rol?.closest('.campo'))rol.closest('.campo').style.display=em?'':'none';const target=em?tipoPorRol(rol?.value):'ELECTRONICO',antes=sel.value,old=sel.selectedOptions[0],cf=canon(old?.dataset.modelo||'');let cand='';[...sel.options].forEach(o=>{if(!o.value){o.hidden=false;o.disabled=false;return}const ok=String(o.dataset.tipo||'').toUpperCase()===target&&!String(o.dataset.modelo||'').toUpperCase().includes('BEAGLEBOND');o.hidden=!ok;o.disabled=!ok;if(ok&&canon(o.dataset.modelo)===cf)cand=o.value});if(antes&&sel.selectedOptions[0]?.disabled)sel.value=cand||'';if(cambiar)actualizarPrecioIndicadorExteriorV190()}

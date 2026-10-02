@@ -245,26 +245,22 @@ $agregarContactorPotencial = isset($_POST['agregar_contactorpot']) && $_POST['ag
 $emergenciaCorte = isset($_POST['emergencia_corte']) && $_POST['emergencia_corte'] === 'SI';
 $alimentacionPuertaVf = isset($_POST['alimentacion_puerta_vf']) && $_POST['alimentacion_puerta_vf'] === 'SI';
 $forzadorAire = isset($_POST['forzador_aire']) && $_POST['forzador_aire'] === 'SI';
-// v177: cualquier botonera ONIX (Individuales, Telefónica o Pantalla 21) exige
-// Luz de cortesía en Control. Se refuerza en servidor para no depender del JavaScript.
+// La exigencia de Luz de cortesía se configura en el perfil de Señalización.
 if (!empty($_POST['senal_incluir']) && !empty($_POST['senal_modelo'])) {
     $senalModeloId = (int)$_POST['senal_modelo'];
-    $senalModeloNombre = '';
-    $stOnix = $conexion->prepare("SELECT modelo_pulsador_nombre FROM senal_modelos_pulsador WHERE modelo_pulsador_id=? LIMIT 1");
-    if ($stOnix) {
-        $stOnix->bind_param('i', $senalModeloId);
-        if ($stOnix->execute()) {
-            $filaOnix = $stOnix->get_result()->fetch_assoc();
-            $senalModeloNombre = strtoupper(trim((string)($filaOnix['modelo_pulsador_nombre'] ?? '')));
-            $senalModeloNombre = strtr($senalModeloNombre, array('Á'=>'A','É'=>'E','Í'=>'I','Ó'=>'O','Ú'=>'U','Ñ'=>'N'));
+    $perfilSenalSeleccionado = senalPerfilModelo($conexion, $senalModeloId);
+    $requiereLuzCortesia = !empty($perfilSenalSeleccionado['requiere_luz_cortesia']);
+    if (!esquemaTablaExiste($conexion, 'senal_modelos_perfiles')) {
+        $stOnix = $conexion->prepare("SELECT modelo_pulsador_nombre FROM senal_modelos_pulsador WHERE modelo_pulsador_id=? LIMIT 1");
+        if ($stOnix) {
+            $stOnix->bind_param('i', $senalModeloId);
+            $stOnix->execute();
+            $nombreModeloSenal = strtoupper(trim((string)($stOnix->get_result()->fetch_assoc()['modelo_pulsador_nombre'] ?? '')));
+            $stOnix->close();
+            $requiereLuzCortesia = strpos($nombreModeloSenal, 'ONIX ') === 0 || strpos($nombreModeloSenal, 'PANTALLA 21') !== false || strpos($nombreModeloSenal, 'PANTALLA TOUCH 21') !== false;
         }
-        $stOnix->close();
     }
-    if (strpos($senalModeloNombre, 'ONIX TELEFONICO') !== false ||
-        strpos($senalModeloNombre, 'ONIX INDIVIDUALES') !== false ||
-        strpos($senalModeloNombre, 'ONIX PULS') !== false ||
-        strpos($senalModeloNombre, 'PANTALLA 21') !== false ||
-        strpos($senalModeloNombre, 'PANTALLA TOUCH 21') !== false) {
+    if ($requiereLuzCortesia) {
         $_POST['luz_cortesia'] = 'SI';
     }
 }
@@ -1487,6 +1483,8 @@ if (!$protectorFaltaFaseIncluido && $protectorFaltaFaseSeleccionado) {
 /* Rescates configurables. Cada componente toma su precio desde la base Bejerman vigente. */
 $rescateSeleccionado = null;
 $familiaRescate = '';
+$modoPrecioRescate = '';
+$codigoPresentacionRescate = '';
 $componentesRescate = array();
 $precioRescateTotal = 0.0;
 if ($idRescate > 0) {
@@ -1507,28 +1505,79 @@ if ($idRescate > 0) {
     $familiaRescate = $rescateSeleccionado['rescate_familia'];
     $descripcionEquipoMayus = strtoupper((string)($equipo['precios_descripcion'] ?? ''));
     $familiaTipoConfigurada = (string)($tipoCapV213['familia_rescate'] ?? '');
+    if (esquemaTablaExiste($conexion, 'rescates_compatibilidades')) {
+        $corrienteCompatibilidad = (int)round((float)($equipo['control_corriente'] ?? 0));
+        $stmtCompatibilidad = $conexion->prepare("SELECT COUNT(*) total, SUM(CASE WHEN tipo_control_id=? AND (subtipo_control_id IS NULL OR subtipo_control_id=?) AND (corriente_clave IS NULL OR corriente_clave=?) AND activo='SI' THEN 1 ELSE 0 END) permitida FROM rescates_compatibilidades WHERE rescate_id=?");
+        if ($stmtCompatibilidad) {
+            $stmtCompatibilidad->bind_param('iiii', $idTipo, $idSubtipo, $corrienteCompatibilidad, $idRescate);
+            $stmtCompatibilidad->execute();
+            $compatibilidad = $stmtCompatibilidad->get_result()->fetch_assoc();
+            $stmtCompatibilidad->close();
+            if ((int)($compatibilidad['total'] ?? 0) > 0 && (int)($compatibilidad['permitida'] ?? 0) === 0) {
+                volverConError('El rescate seleccionado no es compatible con el tipo, variador o corriente del Control.');
+            }
+        }
+    }
     if ($familiaRescate !== '' && $familiaTipoConfigurada !== $familiaRescate) {
         volverConError('El rescate seleccionado no corresponde a la familia de rescate configurada para este tipo de Control.');
     }
 
-    /* Rescate integral INVT: el código se determina automáticamente por la corriente del variador. */
-    if ($rescateSeleccionado['rescate_clave'] === 'INVT_INTEGRAL_SIN_UPS') {
+    $presentacionRescate = null;
+    $modoPrecioRescate = '';
+    $codigoPresentacionRescate = '';
+    if (esquemaTablaExiste($conexion, 'rescates_presentacion')) {
+        $stmtPresentacionRescate = $conexion->prepare('SELECT modo_precio,codigo_presentacion FROM rescates_presentacion WHERE rescate_id=? LIMIT 1');
+        if ($stmtPresentacionRescate) {
+            $stmtPresentacionRescate->bind_param('i', $idRescate);
+            $stmtPresentacionRescate->execute();
+            $presentacionRescate = $stmtPresentacionRescate->get_result()->fetch_assoc();
+            $stmtPresentacionRescate->close();
+        }
+    }
+    $modoPrecioRescate = strtoupper(trim((string)($presentacionRescate['modo_precio'] ?? '')));
+    $codigoPresentacionRescate = strtoupper(trim((string)($presentacionRescate['codigo_presentacion'] ?? '')));
+    $esArticuloCorriente = $modoPrecioRescate === 'ARTICULO_CORRIENTE';
+    $corrienteVariador = (int)round((float)($equipo['control_corriente'] ?? 0));
+    $codigoArticuloCorriente = '';
+    if ($esArticuloCorriente && esquemaTablaExiste($conexion, 'rescates_codigos_corriente')) {
+        $stmtCodigo = $conexion->prepare("SELECT codigo FROM rescates_codigos_corriente WHERE rescate_id=? AND subtipo_control_id=? AND corriente_clave=? AND activo='SI' ORDER BY orden,articulo_rescate_id LIMIT 1");
+        if ($stmtCodigo) {
+            $stmtCodigo->bind_param('iii', $idRescate, $idSubtipo, $corrienteVariador);
+            $stmtCodigo->execute();
+            $filaCodigo = $stmtCodigo->get_result()->fetch_assoc();
+            $stmtCodigo->close();
+            $codigoArticuloCorriente = trim((string)($filaCodigo['codigo'] ?? ''));
+        }
+    }
+
+    /* Rescates integrales: el articulo se configura por rescate, variador y corriente. */
+    if ($esArticuloCorriente) {
+        if ($codigoArticuloCorriente === '') {
+            volverConError('No existe un código de artículo activo para el variador y la corriente de este rescate.');
+        }
+        $codigoIntegral = $codigoArticuloCorriente;
+        $articuloIntegral = precioDeLista($conexion, $listaId, $codigoIntegral);
+        if (!$articuloIntegral || !isset($articuloIntegral['precios_costo']) || (float)$articuloIntegral['precios_costo'] <= 0) {
+            volverConError('El código de rescate integral ' . $codigoIntegral . ' no existe o no tiene precio válido en la base Bejerman vigente.');
+        }
+        $unitarioIntegral = (float)$articuloIntegral['precios_costo'];
+        $totalIntegral = $unitarioIntegral * $cantidadEquipos;
+        $componentesRescate[] = array(
+            'codigo' => $codigoIntegral,
+            'descripcion' => $articuloIntegral['precios_descripcion'],
+            'cantidad' => $cantidadEquipos,
+            'unitario' => $unitarioIntegral,
+            'total' => $totalIntegral,
+            'formula' => 'Corriente del variador: ' . $corrienteVariador . ' A; 1 por equipo × ' . $cantidadEquipos . ' equipo(s)'
+        );
+        $precioRescateTotal = $totalIntegral;
+    } elseif (!$presentacionRescate && $rescateSeleccionado['rescate_clave'] === 'INVT_INTEGRAL_SIN_UPS' && !esquemaTablaExiste($conexion, 'rescates_codigos_corriente')) {
         $subtipoMayus = strtoupper((string)$nombreSubtipo);
         $esInvt = strpos($subtipoMayus, 'INVT GD300L') !== false || strpos($subtipoMayus, 'INVT GD390L') !== false;
         if (!$esInvt) {
             volverConError('El rescate integral solamente está disponible para variadores INVT GD300L o INVT GD390L.');
         }
-        $corrienteVariador = (int)round((float)($equipo['control_corriente'] ?? 0));
-        $codigosRescateIntegral = array(
-            10 => 'REINTI10',
-            14 => 'REINTI14',
-            18 => 'REINTI18',
-            25 => 'REINTI25',
-            32 => 'REINTI32',
-            39 => 'REINTI39',
-            45 => 'REINTI45',
-            60 => 'REINTI60'
-        );
+        $codigosRescateIntegral = array(10=>'REINTI10',14=>'REINTI14',18=>'REINTI18',25=>'REINTI25',32=>'REINTI32',39=>'REINTI39',45=>'REINTI45',60=>'REINTI60');
         if (!isset($codigosRescateIntegral[$corrienteVariador])) {
             volverConError('No existe un rescate integral configurado para la corriente de ' . $corrienteVariador . ' A del variador seleccionado.');
         }
@@ -1614,10 +1663,10 @@ if ($rescateSeleccionado) {
         'MRL_MANUAL_UPS08' => 'A6XREM0.8'
     );
     $claveRescate = (string)($rescateSeleccionado['rescate_clave'] ?? '');
-    if ($claveRescate === 'INVT_INTEGRAL_SIN_UPS' && count($componentesRescate) === 1) {
+    if ($modoPrecioRescate === 'ARTICULO_CORRIENTE' && count($componentesRescate) === 1) {
         $codigoComercialRescate = (string)($componentesRescate[0]['codigo'] ?? '');
     } else {
-        $codigoComercialRescate = (string)($mapaCodigosRescate[$claveRescate] ?? '');
+        $codigoComercialRescate = $codigoPresentacionRescate !== '' ? $codigoPresentacionRescate : (string)($mapaCodigosRescate[$claveRescate] ?? '');
     }
     if ($codigoComercialRescate === '' && count($componentesRescate) === 1) {
         $codigoComercialRescate = (string)($componentesRescate[0]['codigo'] ?? '');

@@ -100,7 +100,18 @@ function ofAgregarMaterialesRescateMrl($arg1, $arg2, $arg3 = null, $arg4 = null)
 
     $idTipoControl = (int)($datosFormulario['id_tipo_control'] ?? 0);
     $idRescate = (int)($datosFormulario['id_rescate'] ?? 0);
-    if ($idTipoControl !== 7 || $idRescate <= 0) return $materialHueco; // solo MRL con rescate
+    if ($idRescate <= 0) return $materialHueco;
+    if ($conexion instanceof mysqli && function_exists('esquemaTablaExiste') && esquemaTablaExiste($conexion, 'rescates_presentacion')) {
+        $stmtPresentacion = $conexion->prepare('SELECT modo_precio FROM rescates_presentacion WHERE rescate_id=? LIMIT 1');
+        if ($stmtPresentacion) {
+            $stmtPresentacion->bind_param('i', $idRescate);
+            $stmtPresentacion->execute();
+            $presentacion = $stmtPresentacion->get_result()->fetch_assoc();
+            $stmtPresentacion->close();
+            if (strtoupper(trim((string)($presentacion['modo_precio'] ?? ''))) === 'ARTICULO_CORRIENTE') return $materialHueco;
+        }
+    }
+    if ($idTipoControl !== 7) return $materialHueco; // componentes físicos actuales del rescate MRL
 
     $cantidadEquipos = max(1, (int)($datosFormulario['cantidad_equipos'] ?? 1));
     $paradas = $datosFormulario['paradas_equipo'] ?? array();

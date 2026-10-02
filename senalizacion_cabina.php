@@ -10,6 +10,40 @@ require_once __DIR__ . '/schema_guard.php';
 
 function senalTablaExiste($conexion, $tabla) { return esquemaTablaExiste($conexion,(string)$tabla); }
 
+function senalPerfilModelo($conexion,$modeloId){
+    $perfil=array(
+        'familia_comercial'=>'GENERAL',
+        'modo_base'=>'MATRIZ_COMPLETA',
+        'tipo_modulo_requerido'=>'',
+        'pantalla'=>0,
+        'indicador_cabina'=>1,
+        'indicador_pulsador'=>1,
+        'indicador_exterior_independiente'=>1,
+        'regla_adicional_parada'=>'MATRIZ',
+        'modelo_adicional_parada'=>'',
+        'politica_acabado'=>'COEFICIENTE',
+        'acabado'=>'',
+        'modo_pulsador_exterior'=>'MATRIZ_COMPLETA',
+        'indicador_incluido_descripcion'=>'',
+        'separar_indicador_exterior'=>0,
+        'requiere_luz_cortesia'=>0
+    );
+    if((int)$modeloId<=0 || !senalTablaExiste($conexion,'senal_modelos_perfiles')) return $perfil;
+    $st=$conexion->prepare('SELECT familia_comercial,modo_base,tipo_modulo_requerido,pantalla,indicador_cabina,indicador_pulsador,indicador_exterior_independiente,regla_adicional_parada,modelo_adicional_parada,politica_acabado,acabado,modo_pulsador_exterior,indicador_incluido_descripcion,separar_indicador_exterior,requiere_luz_cortesia FROM senal_modelos_perfiles WHERE modelo_pulsador_id=? AND activo=1 LIMIT 1');
+    if(!$st)return $perfil;
+    $id=(int)$modeloId;$st->bind_param('i',$id);$st->execute();$fila=$st->get_result()->fetch_assoc();$st->close();
+    return $fila?array_merge($perfil,$fila):$perfil;
+}
+
+function senalIndicadorPermitidoContexto($conexion,$codigo,$contexto){
+    $codigo=strtoupper(trim((string)$codigo));$contexto=strtoupper(trim((string)$contexto));
+    if($codigo==='' || !senalTablaExiste($conexion,'senal_indicadores_contextos')) return true;
+    $st=$conexion->prepare('SELECT COUNT(*) total, SUM(CASE WHEN contexto=? AND activo=1 THEN 1 ELSE 0 END) permitido FROM senal_indicadores_contextos WHERE UPPER(TRIM(codigo))=?');
+    if(!$st) return false;
+    $st->bind_param('ss',$contexto,$codigo);$st->execute();$fila=$st->get_result()->fetch_assoc();$st->close();
+    return !$fila || (int)$fila['total']===0 || (int)$fila['permitido']>0;
+}
+
 function senalAplicarDependenciasDesdeControl($conexion, $post) {
     if (!is_array($post)) return array();
 
@@ -233,23 +267,48 @@ function senalResolverMatrizBase($conexion, $post) {
         }
         $stModelo->close();
     }
+    $perfil=senalPerfilModelo($conexion,$modelo);
+    $modoBase=strtoupper(trim((string)$perfil['modo_base']));
+    if($modoBase==='MATRIZ_COMPLETA'){
+        if(strpos($modeloNombre,'ONIX TELEFONICO')!==false)$modoBase='ONIX_TELEFONICO';
+        elseif(strpos($modeloNombre,'ONIX INDIVIDUALES')!==false || strpos($modeloNombre,'ONIX PULS')!==false)$modoBase='ONIX_INDIVIDUALES';
+        elseif(strpos($modeloNombre,'PANTALLA 21')!==false || strpos($modeloNombre,'PANTALLA TOUCH 21')!==false)$modoBase='PANTALLA';
+        elseif($modeloNombre==='METAL')$modoBase='MODELO_PUERTA';
+    }
     $onixTipo='';
-    if(strpos($modeloNombre,'ONIX TELEFONICO')!==false) $onixTipo='TELEFONICO';
-    elseif(strpos($modeloNombre,'ONIX INDIVIDUALES')!==false || strpos($modeloNombre,'ONIX PULS')!==false) $onixTipo='INDIVIDUALES';
-    elseif(strpos($modeloNombre,'PANTALLA 21')!==false || strpos($modeloNombre,'PANTALLA TOUCH 21')!==false) $onixTipo='PANTALLA_21';
+    if($modoBase==='ONIX_TELEFONICO')$onixTipo='TELEFONICO';
+    elseif($modoBase==='ONIX_INDIVIDUALES')$onixTipo='INDIVIDUALES';
+    elseif($modoBase==='PANTALLA')$onixTipo='PANTALLA';
+    $esPantalla=!empty($perfil['pantalla']) || $modoBase==='PANTALLA';
     $esOnix=$onixTipo!=='';
-    $esRond=($modeloNombre==='METAL');
+    $esModeloPuerta=$modoBase==='MODELO_PUERTA';
+    $tipoModuloRequerido=strtoupper(trim((string)$perfil['tipo_modulo_requerido']));
+    if($tipoModuloRequerido!==''){
+        $stReq=$conexion->prepare('SELECT tipo_modulo_id FROM senal_tipos_modulo WHERE UPPER(TRIM(tipo_modulo_nombre))=? LIMIT 1');
+        if($stReq){$stReq->bind_param('s',$tipoModuloRequerido);$stReq->execute();$fr=$stReq->get_result()->fetch_assoc();$stReq->close();if($fr)$tipoModulo=(int)$fr['tipo_modulo_id'];}
+    }elseif($modoBase==='MODELO_PUERTA' && senalTieneControl($post)){
+        $rte=$conexion->query("SELECT tipo_modulo_id FROM senal_tipos_modulo WHERE UPPER(tipo_modulo_nombre)='ELECTRONICO' ORDER BY tipo_modulo_id LIMIT 1");
+        if($rte && ($fte=$rte->fetch_assoc()))$tipoModulo=(int)$fte['tipo_modulo_id'];
+    }
 
-    // v186: ROND METAL se define comercialmente solo por modelo + tipo de puerta.
-    // Color, bornes, tension y tecla quedan fuera de la configuracion visible.
-    if($esRond){
-        if(senalTieneControl($post)){$rte=$conexion->query("SELECT tipo_modulo_id FROM senal_tipos_modulo WHERE UPPER(tipo_modulo_nombre) LIKE 'ELECTRON%' ORDER BY tipo_modulo_id LIMIT 1");if($rte&&($fte=$rte->fetch_assoc()))$tipoModulo=(int)$fte['tipo_modulo_id'];}
-        if(!$modelo||!in_array($tipoPuerta,array('PM','PA'),true)) throw new Exception('Seleccione modelo ROND METAL y tipo de puerta.');
-        $sqlRond="SELECT m.codigo,mp.modelo_pulsador_nombre,'24V' AS tension_modulo_nombre,'3B' AS borne_nombre,'BLANCO' AS color_registro_nombre,'RELIEVE' AS tecla_nombre,COALESCE(tip.tipo_modulo_nombre,'') AS tipo_modulo_nombre FROM matriz_botoneras_cabina m INNER JOIN senal_modelos_pulsador mp ON mp.modelo_pulsador_id=m.modelo_pulsador_id LEFT JOIN senal_tipos_modulo tip ON tip.tipo_modulo_id=? WHERE m.tipo_puerta=? AND m.modelo_pulsador_id=? AND m.activo='SI' ORDER BY m.matriz_botonera_id ASC LIMIT 1";
-        $stRond=$conexion->prepare($sqlRond);if(!$stRond) throw new Exception('Falta la matriz ROND METAL. Ejecute la migracion v186.');
-        $stRond->bind_param('isi',$tipoModulo,$tipoPuerta,$modelo);$stRond->execute();$mat=$stRond->get_result()->fetch_assoc();$stRond->close();
-        if(!$mat) throw new Exception('ROND METAL no tiene una configuracion activa para la puerta seleccionada.');
-        $mat['tipo_puerta']=$tipoPuerta;$mat['es_rond_metal']=true;return $mat;
+    // El perfil MODELO_PUERTA comparte la matriz por modelo y puerta sin exponer otros criterios.
+    if($esModeloPuerta){
+        if(!$modelo||!in_array($tipoPuerta,array('PM','PA'),true)) throw new Exception('Seleccione un modelo y tipo de puerta válidos.');
+        if($tipoModuloRequerido!=='' && !$tipoModulo) throw new Exception('El tipo de módulo requerido por el perfil no existe en el catálogo.');
+        $sqlModelo="SELECT m.codigo,mp.modelo_pulsador_id,mp.modelo_pulsador_nombre,tm.tension_modulo_nombre,b.borne_nombre,c.color_registro_nombre,t.tecla_nombre,COALESCE(tip.tipo_modulo_nombre,'') AS tipo_modulo_nombre
+                    FROM matriz_botoneras_cabina m
+                    INNER JOIN senal_modelos_pulsador mp ON mp.modelo_pulsador_id=m.modelo_pulsador_id
+                    INNER JOIN senal_tensiones_modulo tm ON tm.tension_modulo_id=m.tension_modulo_id
+                    INNER JOIN senal_bornes b ON b.borne_id=m.borne_id
+                    INNER JOIN senal_colores_registro c ON c.color_registro_id=m.color_registro_id
+                    INNER JOIN senal_teclas t ON t.tecla_id=m.tecla_id
+                    LEFT JOIN senal_tipos_modulo tip ON tip.tipo_modulo_id=?
+                    WHERE m.tipo_puerta=? AND m.modelo_pulsador_id=? AND m.activo='SI' ORDER BY m.matriz_botonera_id LIMIT 1";
+        $stModeloPuerta=$conexion->prepare($sqlModelo);if(!$stModeloPuerta)throw new Exception('No se pudo consultar la matriz de botoneras por modelo y puerta.');
+        $stModeloPuerta->bind_param('isi',$tipoModulo,$tipoPuerta,$modelo);$stModeloPuerta->execute();$mat=$stModeloPuerta->get_result()->fetch_assoc();$stModeloPuerta->close();
+        if(!$mat)throw new Exception('El modelo no tiene una configuración activa para la puerta seleccionada.');
+        $mat['tipo_puerta']=$tipoPuerta;$mat['es_modelo_puerta']=true;$mat['senal_perfil']=$perfil;
+        return $mat;
     }
 
     $borne=0;
@@ -289,7 +348,7 @@ function senalResolverMatrizBase($conexion, $post) {
         if(!$tipoModulo||!$modelo||!in_array($tipoPuerta,array('PM','PA'),true)) {
             throw new Exception('Complete tipo de módulos, puerta y modelo de la botonera ONIX.');
         }
-        $sqlOnix="SELECT m.codigo,mp.modelo_pulsador_nombre,tm.tension_modulo_nombre,b.borne_nombre,c.color_registro_nombre,t.tecla_nombre,tip.tipo_modulo_nombre
+        $sqlOnix="SELECT m.codigo,mp.modelo_pulsador_id,mp.modelo_pulsador_nombre,tm.tension_modulo_nombre,b.borne_nombre,c.color_registro_nombre,t.tecla_nombre,tip.tipo_modulo_nombre
                   FROM matriz_botoneras_cabina m
                   INNER JOIN senal_modelos_pulsador mp ON mp.modelo_pulsador_id=m.modelo_pulsador_id
                   INNER JOIN senal_tensiones_modulo tm ON tm.tension_modulo_id=m.tension_modulo_id
@@ -309,13 +368,15 @@ function senalResolverMatrizBase($conexion, $post) {
         $mat['tipo_puerta']=$tipoPuerta;
         $mat['es_onix']=true;
         $mat['onix_tipo']=$onixTipo;
+        $mat['es_pantalla']=$esPantalla;
+        $mat['senal_perfil']=$perfil;
         return $mat;
     }
 
     if(!$tipoModulo||!$modelo||!$tension||!$color||!$tecla||!in_array($tipoPuerta,array('PM','PA'),true)||!in_array($borne,array(1,2),true)) {
         throw new Exception('Complete todos los datos obligatorios de la botonera de cabina.');
     }
-    $sql="SELECT m.codigo,mp.modelo_pulsador_nombre,tm.tension_modulo_nombre,b.borne_nombre,c.color_registro_nombre,t.tecla_nombre,tip.tipo_modulo_nombre
+    $sql="SELECT m.codigo,mp.modelo_pulsador_id,mp.modelo_pulsador_nombre,tm.tension_modulo_nombre,b.borne_nombre,c.color_registro_nombre,t.tecla_nombre,tip.tipo_modulo_nombre
           FROM matriz_botoneras_cabina m
           INNER JOIN senal_modelos_pulsador mp ON mp.modelo_pulsador_id=m.modelo_pulsador_id
           INNER JOIN senal_tensiones_modulo tm ON tm.tension_modulo_id=m.tension_modulo_id
@@ -329,6 +390,7 @@ function senalResolverMatrizBase($conexion, $post) {
     $st->bind_param('isiiiii',$tipoModulo,$tipoPuerta,$modelo,$tension,$borne,$color,$tecla);$st->execute();$mat=$st->get_result()->fetch_assoc();$st->close();
     if(!$mat) throw new Exception('La combinacion elegida no existe en la matriz de botoneras.');
     $mat['tipo_puerta']=$tipoPuerta;
+    $mat['senal_perfil']=$perfil;
     return $mat;
 }
 
@@ -360,7 +422,12 @@ function senalConsultaCodigo($conexion, $tabla, $where) {
 
 function senalCodigoAdicionalParada($conexion, $mat) {
     $modelo=senalNormalizarClave($mat['modelo_pulsador_nombre']??'');
-    if($modelo==='METAL'){
+    $perfil=(array)($mat['senal_perfil']??array());
+    $regla=strtoupper(trim((string)($perfil['regla_adicional_parada']??'')));
+    $modeloReutilizado=senalNormalizarClave($perfil['modelo_adicional_parada']??'');
+    if($regla==='REUTILIZAR_MODELO' && $modeloReutilizado!==''){
+        $modelo=$modeloReutilizado;
+    }elseif($modelo==='METAL'){
         return senalConsultaCodigo($conexion,'senal_adicional_parada_cabina',array('modelo'=>'METAL','tension'=>'24V','bornes'=>'3B','color'=>'BLANCO','tecla'=>'RELIEVE'));
     }
     $tension=senalNormalizarClave($mat['tension_modulo_nombre']??'');
@@ -579,7 +646,8 @@ function senalCodigoEspecialCabina($conexion,$adicional){
     return senalConsultaCodigo($conexion,'senal_adicionales_especiales_cabina',array('adicional'=>$adicional));
 }
 
-function senalCoeficienteAcabadoV190($conexion,$acabado,$medidaEspecial){
+function senalCoeficienteAcabadoV190($conexion,$acabado,$medidaEspecial,$politica='COEFICIENTE'){
+    if(strtoupper(trim((string)$politica))==='INCLUIDO_EN_PRECIO') return 1.0;
     $acabado=strtoupper(trim((string)$acabado)); if($acabado==='')$acabado='ACERO';
     $especial=$medidaEspecial?1:0;
     if(!senalTablaExiste($conexion,'senal_acabados_coeficientes')) throw new Exception('Falta ejecutar la migracion v190 de acabados de Senalizacion.');
@@ -807,6 +875,25 @@ function senalModeloPulsadorNombrePorId($conexion,$id){
     if(!$st)return ''; $st->bind_param('i',$id);$st->execute();$f=$st->get_result()->fetch_assoc();$st->close();
     return senalNormalizarClave($f['modelo_pulsador_nombre']??'');
 }
+function senalPerfilModeloPorNombre($conexion,$nombre){
+    $nombre=strtoupper(trim((string)$nombre));
+    if($nombre==='METAL')$nombre='ROND METAL';
+    $st=$conexion->prepare('SELECT modelo_pulsador_id FROM senal_modelos_pulsador WHERE UPPER(TRIM(modelo_pulsador_nombre))=? LIMIT 1');
+    if(!$st)return array();$st->bind_param('s',$nombre);$st->execute();$f=$st->get_result()->fetch_assoc();$st->close();
+    return $f?senalPerfilModelo($conexion,(int)$f['modelo_pulsador_id']):array();
+}
+function senalAgregarPulsadorIndicadorPerfil(&$lineas,$conexion,$listaId,$concepto,$codigoPulsador,$modeloPulsador,$codigoIndicador,$modeloIndicador,$cantidad,$detalleTecnico,$coeficiente,$detalleCoef,$perfil){
+    if(empty($perfil['separar_indicador_exterior'])){
+        senalAgregarLineaPulsadorConIndicador($lineas,$conexion,$listaId,$concepto,$codigoPulsador,$modeloPulsador,$codigoIndicador,$modeloIndicador,$cantidad,$detalleTecnico,$coeficiente,$detalleCoef);
+        return;
+    }
+    $detallePulsador=trim((string)$detalleTecnico);
+    if(strtoupper(trim((string)($perfil['politica_acabado']??'')))==='INCLUIDO_EN_PRECIO'){
+        $detallePulsador=trim($detallePulsador.' · Acabado '.(string)($perfil['acabado']??'').' incluido en el precio');
+    }
+    senalAgregarLinea($lineas,$conexion,$listaId,$concepto,$codigoPulsador,$modeloPulsador.' · '.$detallePulsador,$cantidad,$cantidad.' pulsador(es)',false,$coeficiente,$detalleCoef);
+    senalAgregarLinea($lineas,$conexion,$listaId,'Indicador de posición para pulsador exterior',$codigoIndicador,$modeloIndicador.' · '.$detalleTecnico,$cantidad,$cantidad.' indicador(es) asociado(s) al pulsador exterior');
+}
 function senalResolverPulsadorExterior($conexion,$familia,$post,$matCabina){
     if(!senalTablaExiste($conexion,'senal_pulsadores_exteriores_matriz')) throw new Exception('Falta la matriz de Pulsadores exteriores. Ejecute la migracion v179.');
     $pref='senal_ext_'.strtolower($familia).'_';
@@ -818,22 +905,17 @@ function senalResolverPulsadorExterior($conexion,$familia,$post,$matCabina){
     $modelo=$mismo?senalModeloPulsadorNombrePorId($conexion,(int)($post['senal_modelo']??0)):senalNormalizarClave($post[$pref.'modelo']??'');
     if($modelo==='') throw new Exception('Seleccione el modelo de pulsador exterior para '.str_replace('_',' + ',$familia).'.');
     $tipo=senalNormalizarClave($post[$pref.'tipo']??($matCabina['tipo_modulo_nombre']??''));
-
-    // v187: ROND METAL ya posee códigos propios en la matriz existente. Para el
-    // pulsador exterior no se configuran Color/Tensión/Bornes/Tecla. SIMPLE y
-    // SIMPLE_IP usan RMET11BBA000M; DOBLE y DOBLE_IP usan RMET12BBA000M.
-    // Tipo se conserva únicamente para resolver qué indicadores +IP son compatibles.
-    if($modelo==='METAL'){
-        $codigoEsperado=in_array($familia,array('SIMPLE','SIMPLE_IP'),true)?'RMET11BBA000M':'RMET12BBA000M';
-        $sql="SELECT * FROM senal_pulsadores_exteriores_matriz WHERE familia=? AND UPPER(TRIM(modelo_pulsador))='METAL' AND UPPER(TRIM(codigo))=? AND activo=1";
-        $params=array($familia,strtoupper($codigoEsperado));
-        if($tipo!==''){$sql.=" AND UPPER(TRIM(tipo_modulos))=?";$params[]=$tipo;}
-        $sql.=" ORDER BY id LIMIT 1";
-        $st=$conexion->prepare($sql);if(!$st) throw new Exception($conexion->error);
-        if(count($params)===3)$st->bind_param('sss',$params[0],$params[1],$params[2]);else $st->bind_param('ss',$params[0],$params[1]);
-        $st->execute();$f=$st->get_result()->fetch_assoc();$st->close();
-        if(!$f) throw new Exception('No existe la regla ROND METAL para '.str_replace('_',' + ',$familia).'. Ejecute la migracion v186.');
-        $f['codigo']=$codigoEsperado;$f['cantidad']=$cantidad;$f['mismo_modelo']=$mismo;$f['es_rond_metal']=true;
+    $perfilExterior=$mismo?senalPerfilModelo($conexion,(int)($post['senal_modelo']??0)):senalPerfilModeloPorNombre($conexion,$modelo);
+    $modoExterior=strtoupper(trim((string)($perfilExterior['modo_pulsador_exterior']??'')));
+    if($modoExterior==='MODELO' || $modelo==='METAL'){
+        $tipoRequerido=strtoupper(trim((string)($perfilExterior['tipo_modulo_requerido']??'')));
+        if($tipoRequerido!=='' && $tipo!==$tipoRequerido) throw new Exception('El perfil del pulsador exterior requiere módulos '.$tipoRequerido.'.');
+        $st=$conexion->prepare('SELECT * FROM senal_pulsadores_exteriores_matriz WHERE familia=? AND UPPER(TRIM(modelo_pulsador))=? AND UPPER(TRIM(tipo_modulos))=? AND activo=1 ORDER BY orden,id LIMIT 1');
+        if(!$st)throw new Exception($conexion->error);
+        $fam=strtoupper(trim((string)$familia));$modeloDb=$modelo;$tipoDb=$tipo;$st->bind_param('sss',$fam,$modeloDb,$tipoDb);$st->execute();$f=$st->get_result()->fetch_assoc();$st->close();
+        if(!$f)throw new Exception('No existe una combinación exterior activa para '.$modelo.' / '.$fam.' / '.$tipo.'.');
+        $f['cantidad']=$cantidad;$f['mismo_modelo']=$mismo;$f['_perfil_modelo']=$perfilExterior;
+        $f['es_modelo_perfil']=true;
         return $f;
     }
 
@@ -859,6 +941,7 @@ function senalResolverIndicadorExteriorPulsador($conexion,$familia,$tipoModulos,
         $st=$conexion->prepare("SELECT modelo_indicador AS modelo,tipo_modulos,codigo FROM senal_indicadores_cabina WHERE UPPER(TRIM(tipo_modulos))=? AND UPPER(TRIM(codigo))=? AND activo=1 ORDER BY orden,id LIMIT 1");
         if(!$st) throw new Exception($conexion->error);$st->bind_param('ss',$tipo,$codigoSel);$st->execute();$f=$st->get_result()->fetch_assoc();$st->close();
         if(!$f) throw new Exception('El indicador exterior seleccionado no existe en la tabla maestra para tipo '.$tipo.'.');
+        if(!senalIndicadorPermitidoContexto($conexion,$codigoSel,'PULSADOR_EXTERIOR'))throw new Exception('El indicador seleccionado no está permitido en pulsadores exteriores.');
         return $f;
     }
     // Compatibilidad v179/v180: si no existe selección explícita, intenta heredar el IP de cabina.
@@ -866,6 +949,7 @@ function senalResolverIndicadorExteriorPulsador($conexion,$familia,$tipoModulos,
     $st=$conexion->prepare("SELECT * FROM senal_pulsadores_exteriores_indicadores WHERE familia=? AND UPPER(TRIM(tipo_modulos))=? AND BINARY depende_codigo_ip_cabina=BINARY ? AND activo=1 ORDER BY orden,id LIMIT 1");
     if(!$st) throw new Exception($conexion->error);$st->bind_param('sss',$familia,$tipo,$dep);$st->execute();$f=$st->get_result()->fetch_assoc();$st->close();
     if(!$f) throw new Exception('No existe indicador exterior para '.$familia.' con '.$tipo.' y el indicador de cabina '.$dep.'.');
+    if(!senalIndicadorPermitidoContexto($conexion,$f['codigo']??'','PULSADOR_EXTERIOR'))throw new Exception('El indicador seleccionado no está permitido en pulsadores exteriores.');
     return $f;
 }
 
@@ -891,7 +975,7 @@ function senalResolverPulsadorExteriorItemV188($conexion,$item,$post,$matCabina)
     foreach(array('modelo','tipo','color','tension','bornes','tecla') as $k) $tmp[$pref.$k]=(string)($item[$k]??'');
     if(isset($item['indicador_codigo'])) $tmp[$pref.'indicador_codigo']=(string)$item['indicador_codigo'];
     $cfg=senalResolverPulsadorExterior($conexion,$fam,$tmp,$matCabina);
-    if($cfg){$cfg['_familia']=$fam;$cfg['_indicador_codigo']=trim((string)($item['indicador_codigo']??''));$cfg['_indicador_modelo']=trim((string)($item['indicador_modelo']??''));$cfg['_indicador_rol']=senalRolIndicadorV375($item['indicador_rol']??(senalNormalizarClave($item['tipo']??'')==='ELECTROMECANICO'?'MAESTRO':'REPETIDOR'));$cfg['_paradas_maestro']=max(0,(int)($item['paradas_maestro']??0));$cfg['_nomenclatura']=trim((string)($item['nomenclatura']??''));$cfg['_medida']=trim((string)($item['medida']??''));$cfg['_acabado']=strtoupper(trim((string)($item['acabado']??'ACERO')));$cfg['_medida_especial']=!empty($item['medida_especial']);}
+    if($cfg){$cfg['_familia']=$fam;$cfg['_indicador_codigo']=trim((string)($item['indicador_codigo']??''));$cfg['_indicador_modelo']=trim((string)($item['indicador_modelo']??''));$cfg['_indicador_rol']=senalRolIndicadorV375($item['indicador_rol']??(senalNormalizarClave($item['tipo']??'')==='ELECTROMECANICO'?'MAESTRO':'REPETIDOR'));$cfg['_paradas_maestro']=max(0,(int)($item['paradas_maestro']??0));$cfg['_nomenclatura']=trim((string)($item['nomenclatura']??''));$cfg['_medida']=trim((string)($item['medida']??''));$perfil=(array)($cfg['_perfil_modelo']??array());$politica=strtoupper(trim((string)($perfil['politica_acabado']??'COEFICIENTE')));$cfg['_acabado']=$politica==='INCLUIDO_EN_PRECIO'?strtoupper(trim((string)($perfil['acabado']??'ACERO'))):strtoupper(trim((string)($item['acabado']??'ACERO')));$cfg['_politica_acabado']=$politica;$cfg['_medida_especial']=$politica==='INCLUIDO_EN_PRECIO'?false:!empty($item['medida_especial']);}
     return $cfg;
 }
 
@@ -912,6 +996,7 @@ function senalAgregarIndicadoresExteriorV190(&$lineas,&$caracteristicas,$conexio
     foreach($items as $it){
         $codigo=trim((string)($it['codigo']??''));$cant=max(0,(int)($it['cantidad']??0));$medida=trim((string)($it['medida']??''));$acabado=strtoupper(trim((string)($it['acabado']??'ACERO')));$medEsp=!empty($it['medida_especial']);
         if($codigo===''||$cant<=0)continue;
+        if(!senalIndicadorPermitidoContexto($conexion,$codigo,'EXTERIOR_INDEPENDIENTE'))throw new Exception('El indicador '.$codigo.' no está habilitado para indicadores exteriores independientes.');
         $rol=$esElectromecanico?senalRolIndicadorV375($it['rol']??(senalNormalizarClave($it['tipo']??'')==='ELECTROMECANICO'?'MAESTRO':'REPETIDOR')):'REPETIDOR';
         $row=senalResolverIndicadorRolV375($conexion,$codigo,$rol);
         $codigoReal=trim((string)$row['codigo']);$modeloReal=trim((string)$row['modelo_indicador']);$tipoReal=senalNormalizarClave($row['tipo_modulos']??'');
@@ -940,8 +1025,10 @@ function senalCalcularPulsadoresExterioresSinCabina($conexion,$listaId,$post){
         foreach($itemsV188 as $item){
             $fam=strtoupper(trim((string)($item['familia']??'')));if(!isset($familias[$fam]))continue;$nombre=$familias[$fam];
             $cfg=senalResolverPulsadorExteriorItemV188($conexion,$item,$post,null);if(!$cfg)continue;
-            $cant=(int)$cfg['cantidad'];$totalPulsadores+=$cant;$esMetalExt=!empty($cfg['es_rond_metal']);
-            $desc=$esMetalExt?($nombre.' - ROND METAL'):($nombre.' - '.$cfg['modelo_pulsador'].' - '.$cfg['color_registro'].' - '.$cfg['tension_modulos'].' - '.$cfg['bornes'].' - '.$cfg['tecla_modulos']);
+            $cant=(int)$cfg['cantidad'];$totalPulsadores+=$cant;$esMetalExt=senalNormalizarClave($cfg['modelo_pulsador']??'')==='METAL';$modoModeloExt=!empty($cfg['es_modelo_perfil']);
+            $desc=$modoModeloExt?($nombre.' - '.$cfg['modelo_pulsador']):($nombre.' - '.$cfg['modelo_pulsador'].' - '.$cfg['color_registro'].' - '.$cfg['tension_modulos'].' - '.$cfg['bornes'].' - '.$cfg['tecla_modulos']);
+            $perfilExterior=(array)($cfg['_perfil_modelo']??array());
+            if(strtoupper((string)($perfilExterior['politica_acabado']??''))==='INCLUIDO_EN_PRECIO')$desc.=' - Acabado '.(string)($perfilExterior['acabado']??'').' incluido en el precio';
             if(substr($fam,-3)==='_IP'){
                 $codigoSel=trim((string)($cfg['_indicador_codigo']??''));
                 $rolInd=senalRolIndicadorV375($cfg['_indicador_rol']??'REPETIDOR');
@@ -949,13 +1036,13 @@ function senalCalcularPulsadoresExterioresSinCabina($conexion,$listaId,$post){
                 $ind=array('codigo'=>$filaRol['codigo'],'modelo'=>$filaRol['modelo_indicador'],'tipo_modulos'=>$filaRol['tipo_modulos']);
                 $medida=trim((string)($cfg['_medida']??''));$medTxt=$medida!==''?$medida:'A CONFIRMAR';
                 $detalleCompuesto=($esMetalExt?'ROND METAL':($cfg['color_registro'].' · '.$cfg['tension_modulos'].' · '.$cfg['bornes'].' · '.$cfg['tecla_modulos'])).' · Medida '.$medTxt;
-                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp);$detCoef='Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarLineaPulsadorConIndicador($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],(string)$cfg['modelo_pulsador'],(string)$ind['codigo'],(string)$ind['modelo'],$cant,$detalleCompuesto,$coef,$detCoef);
+                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$politica=$cfg['_politica_acabado']??'COEFICIENTE';$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp,$politica);$detCoef=strtoupper((string)$politica)==='INCLUIDO_EN_PRECIO'?'Acabado '.senalTextoAcabadoV190($acabado,false).' incluido en el precio':'Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarPulsadorIndicadorPerfil($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],(string)$cfg['modelo_pulsador'],(string)$ind['codigo'],(string)$ind['modelo'],$cant,$detalleCompuesto,$coef,$detCoef,(array)($cfg['_perfil_modelo']??array()));
                 if($rolInd==='MAESTRO') senalAgregarAppindMaestroV375($lineas,$conexion,$listaId,(string)$ind['modelo'],$cant,$post,'indicador en pulsador exterior');
-                $caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo pulsador '.$cfg['modelo_pulsador'].' · Indicador '.$ind['modelo'].' ('.$ind['codigo'].') · '.($rolInd==='MAESTRO'?'MAESTRO A4000':'REPETIDOR A4400').' · Medida '.$medTxt.' · conjunto valorizado';
+                $caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo pulsador '.$cfg['modelo_pulsador'].' · Indicador '.$ind['modelo'].' ('.$ind['codigo'].') · '.($rolInd==='MAESTRO'?'MAESTRO A4000':'REPETIDOR A4400').' · Medida '.$medTxt.(empty($cfg['_perfil_modelo']['separar_indicador_exterior'])?' · conjunto valorizado':' · pulsador e indicador valorizados por separado');
             }else{
                 $medida=trim((string)($cfg['_medida']??''));$medTxt=$medida!==''?$medida:'A CONFIRMAR';
-                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp);$detCoef='Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarLinea($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],$desc.' - Medida '.$medTxt,$cant,$cant.' unidad(es) · Medida: '.$medTxt,false,$coef,$detCoef);
-                $caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo '.$cfg['modelo_pulsador'].' · Medida '.$medTxt.' (modelo exterior independiente; sin botonera de cabina)';
+                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$politica=$cfg['_politica_acabado']??'COEFICIENTE';$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp,$politica);$detCoef=strtoupper((string)$politica)==='INCLUIDO_EN_PRECIO'?'Acabado '.senalTextoAcabadoV190($acabado,false).' incluido en el precio':'Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarLinea($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],$desc.' - Medida '.$medTxt,$cant,$cant.' unidad(es) · Medida: '.$medTxt,false,$coef,$detCoef);
+                $caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo '.$cfg['modelo_pulsador'].' · Acabado '.(string)($perfilExterior['acabado']??$acabado).(strtoupper((string)$politica)==='INCLUIDO_EN_PRECIO'?' incluido en el precio':'').' · Medida '.$medTxt.' (modelo exterior independiente; sin botonera de cabina)';
             }
         }
     }else{
@@ -1019,31 +1106,41 @@ function calcularLineasSenalizacionCabina($conexion, $listaId, $post) {
     $modelo=senalNormalizarClave($mat['modelo_pulsador_nombre']??'');
     $lineas=array();$caracteristicas=array();
 
+    $perfil=(array)($mat['senal_perfil']??senalPerfilModelo($conexion,(int)($mat['modelo_pulsador_id']??0)));
     $esOnix=!empty($mat['es_onix']);
+    $esModeloPuerta=!empty($mat['es_modelo_puerta']);
     $onixTipo=(string)($mat['onix_tipo']??'');
+    $esPantalla=!empty($mat['es_pantalla']) || !empty($perfil['pantalla']);
     $indicadorOnixIncluido='';
     if($onixTipo==='TELEFONICO') $indicadorOnixIncluido='Indicador 7 pulg Beaglebond';
     elseif($onixTipo==='INDIVIDUALES') $indicadorOnixIncluido='A4830 Crystal Color';
 
-    if(!empty($mat['es_rond_metal'])){
-        $descBase='Botonera de cabina '.$mat['tipo_puerta'].', modelo ROND METAL.';
+    if($esModeloPuerta){
+        $descBase='Botonera de cabina '.$mat['tipo_puerta'].', modelo '.$mat['modelo_pulsador_nombre'].'.';
+        if(strtoupper((string)($perfil['politica_acabado']??''))==='INCLUIDO_EN_PRECIO' && trim((string)($perfil['acabado']??''))!=='') $descBase.=' Acabado '.$perfil['acabado'].' incluido en el precio.';
     } elseif($esOnix){
         $descBase='Botonera de cabina '.$mat['tipo_puerta'].', modelo '.$mat['modelo_pulsador_nombre'].'.';
-        if($onixTipo==='PANTALLA_21') $descBase.=' Sin indicador de posición.';
+        if(strtoupper((string)($perfil['politica_acabado']??''))==='INCLUIDO_EN_PRECIO' && trim((string)($perfil['acabado']??''))!=='') $descBase.=' Acabado '.$perfil['acabado'].' incluido en el precio.';
+        if($esPantalla) $descBase.=' Sin indicador de posición.';
+        elseif(trim((string)($perfil['indicador_incluido_descripcion']??''))!=='') $descBase.=' Indicador incluido: '.$perfil['indicador_incluido_descripcion'].' (incluido en el precio de la botonera, no se valoriza por separado).';
         elseif($indicadorOnixIncluido!=='') $descBase.=' Indicador incluido: '.$indicadorOnixIncluido.' (incluido en el precio de la botonera, no se valoriza por separado).';
     } else {
         $descBase='Botonera de cabina '.$mat['tipo_puerta'].', modelo '.$mat['modelo_pulsador_nombre'].', '.$mat['tension_modulo_nombre'].', '.$mat['borne_nombre'].', registro '.$mat['color_registro_nombre'].', tecla '.$mat['tecla_nombre'].'.';
     }
-    $acabadoCab=strtoupper(trim((string)($post['senal_acabado']??'ACERO')));$medEspCab=!empty($post['senal_medida_especial']);$coefCab=senalCoeficienteAcabadoV190($conexion,$acabadoCab,$medEspCab);$detCoefCab='Tapa '.senalTextoAcabadoV190($acabadoCab,$medEspCab).' × '.str_replace('.',',',(string)$coefCab);
+    $politicaAcabado=strtoupper(trim((string)($perfil['politica_acabado']??'COEFICIENTE')));
+    $acabadoCab=$politicaAcabado==='INCLUIDO_EN_PRECIO'?strtoupper(trim((string)($perfil['acabado']??'ACERO'))):strtoupper(trim((string)($post['senal_acabado']??'ACERO')));
+    $medEspCab=$politicaAcabado==='INCLUIDO_EN_PRECIO'?false:!empty($post['senal_medida_especial']);
+    $coefCab=senalCoeficienteAcabadoV190($conexion,$acabadoCab,$medEspCab,$politicaAcabado);
+    $detCoefCab=$politicaAcabado==='INCLUIDO_EN_PRECIO'?'Acabado '.senalTextoAcabadoV190($acabadoCab,false).' incluido en el precio':'Tapa '.senalTextoAcabadoV190($acabadoCab,$medEspCab).' × '.str_replace('.',',',(string)$coefCab);
     senalAgregarLinea($lineas,$conexion,$listaId,'Base botonera de cabina',$mat['codigo'],$descBase,$cantidad,$cantidad.' botonera(s)',false,$coefCab,$detCoefCab);
 
-    // BASE incluye 2 paradas POR BOTONERA. En ONIX Telefónico y Pantalla 21 no se
-    // adiciona precio por parada. ONIX Individuales conserva la regla vigente.
+    // BASE incluye 2 paradas por botonera. El perfil define si se cotiza el adicional.
     $adicionalesPorBotonera=array_map(static function($p){ return max(0,(int)$p-2); },$paradasPorBotonera);
     $paradasAdicionales=array_sum($adicionalesPorBotonera);
     $paradasIncluidasBase=array_sum(array_map(static function($p){ return min(2,max(0,(int)$p)); },$paradasPorBotonera));
     $codParada='';
-    $aplicaAdicionalParada=!$esOnix || $onixTipo==='INDIVIDUALES';
+    $reglaParada=strtoupper(trim((string)($perfil['regla_adicional_parada']??'MATRIZ')));
+    $aplicaAdicionalParada=$reglaParada!=='NINGUNA';
     if($paradasAdicionales>0 && $aplicaAdicionalParada){
         $codParada=senalCodigoAdicionalParada($conexion,$mat);
         if($codParada==='') throw new Exception('No existe adicional por parada para '.$mat['modelo_pulsador_nombre'].' / '.$mat['tension_modulo_nombre'].' / '.$mat['borne_nombre'].' / '.$mat['color_registro_nombre'].' / '.$mat['tecla_nombre'].'.');
@@ -1063,9 +1160,10 @@ function calcularLineasSenalizacionCabina($conexion, $listaId, $post) {
     $modeloIndicador=trim((string)($post['senal_indicador_modelo']??''));
     $cantIndic=max(0,(int)($post['senal_indicador_cantidad']??0));
     if(!empty($post['senal_indicador_sync_botoneras'])) $cantIndic=$cantidad;
-    if(!$esOnix && $modeloIndicador!=='' && $cantIndic>0){
+    if(!$esOnix && !empty($perfil['indicador_cabina']) && $modeloIndicador!=='' && $cantIndic>0){
         $rolCab=$tipoIndicadorDestino==='ELECTROMECANICO'?senalRolIndicadorV375($post['senal_indicador_rol']??'MAESTRO','MAESTRO'):'REPETIDOR';
         $rowIndic=senalResolverIndicadorRolV375($conexion,$modeloIndicador,$rolCab);
+        if(!senalIndicadorPermitidoContexto($conexion,$rowIndic['codigo']??'','CABINA')) throw new Exception('El indicador seleccionado no está permitido en botoneras de cabina.');
         $codIndic=trim((string)$rowIndic['codigo']);$modeloIndicReal=trim((string)$rowIndic['modelo_indicador']);
         $rolTxt=$tipoIndicadorDestino==='ELECTROMECANICO'?($rolCab==='MAESTRO'?'MAESTRO A4000':'REPETIDOR A4400'):'ELECTRONICO';
         senalAgregarLinea($lineas,$conexion,$listaId,'Indicador de posicion',$codIndic,$modeloIndicReal.' - '.$rolTxt,$cantIndic,'Cantidad de indicadores: '.$cantIndic);
@@ -1075,7 +1173,8 @@ function calcularLineasSenalizacionCabina($conexion, $listaId, $post) {
     }
     if($esOnix){
         $caracteristicas[]='ONIX: Color, Tecla, Tensión y Bornes no intervienen en el cálculo.';
-        if($onixTipo==='PANTALLA_21') $caracteristicas[]='Indicador de posición: NO LLEVA.';
+        if($esPantalla) $caracteristicas[]='Indicador de posición: NO LLEVA.';
+        elseif(trim((string)($perfil['indicador_incluido_descripcion']??''))!=='') $caracteristicas[]='Indicador incluido en botonera: '.$perfil['indicador_incluido_descripcion'].' (sin valorización separada).';
         elseif($indicadorOnixIncluido!=='') $caracteristicas[]='Indicador incluido en botonera: '.$indicadorOnixIncluido.' (sin valorización separada).';
     }
     if(trim((string)($post['senal_medidas_calado']??''))!=='') $caracteristicas[]='Medidas del calado: '.trim((string)$post['senal_medidas_calado']);
@@ -1239,8 +1338,10 @@ function calcularLineasSenalizacionCabina($conexion, $listaId, $post) {
         foreach($itemsV188 as $item){
             $fam=strtoupper(trim((string)($item['familia']??'')));if(!isset($familiasExt[$fam]))continue;$nombre=$familiasExt[$fam];
             $cfg=senalResolverPulsadorExteriorItemV188($conexion,$item,$post,$mat);if(!$cfg)continue;
-            $hayPulsadorV179=true;$cant=(int)$cfg['cantidad'];$totalPulsadores+=$cant;$esMetalExt=!empty($cfg['es_rond_metal']);
-            $descP=$esMetalExt?($nombre.' - ROND METAL'):($nombre.' - '.$cfg['modelo_pulsador'].' - '.$cfg['color_registro'].' - '.$cfg['tension_modulos'].' - '.$cfg['bornes'].' - '.$cfg['tecla_modulos']);
+            $hayPulsadorV179=true;$cant=(int)$cfg['cantidad'];$totalPulsadores+=$cant;$esMetalExt=senalNormalizarClave($cfg['modelo_pulsador']??'')==='METAL';$modoModeloExt=!empty($cfg['es_modelo_perfil']);
+            $descP=$modoModeloExt?($nombre.' - '.$cfg['modelo_pulsador']):($nombre.' - '.$cfg['modelo_pulsador'].' - '.$cfg['color_registro'].' - '.$cfg['tension_modulos'].' - '.$cfg['bornes'].' - '.$cfg['tecla_modulos']);
+            $perfilExterior=(array)($cfg['_perfil_modelo']??array());
+            if(strtoupper((string)($perfilExterior['politica_acabado']??''))==='INCLUIDO_EN_PRECIO')$descP.=' - Acabado '.(string)($perfilExterior['acabado']??'').' incluido en el precio';
             if(substr($fam,-3)==='_IP'){
                 $codigoIndSel=trim((string)($cfg['_indicador_codigo']??''));
                 $rolInd=$tipoIndicadorDestino==='ELECTROMECANICO'?senalRolIndicadorV375($cfg['_indicador_rol']??'REPETIDOR'):'REPETIDOR';
@@ -1248,13 +1349,13 @@ function calcularLineasSenalizacionCabina($conexion, $listaId, $post) {
                 $ind=array('codigo'=>$filaRol['codigo'],'modelo'=>$filaRol['modelo_indicador'],'tipo_modulos'=>$filaRol['tipo_modulos']);
                 $medida=trim((string)($cfg['_medida']??''));$medTxt=$medida!==''?$medida:'A CONFIRMAR';
                 $detalleCompuesto=($esMetalExt?'ROND METAL':($cfg['color_registro'].' · '.$cfg['tension_modulos'].' · '.$cfg['bornes'].' · '.$cfg['tecla_modulos'])).' · Medida '.$medTxt;
-                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp);$detCoef='Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarLineaPulsadorConIndicador($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],(string)$cfg['modelo_pulsador'],(string)$ind['codigo'],(string)$ind['modelo'],$cant,$detalleCompuesto,$coef,$detCoef);
+                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$politica=$cfg['_politica_acabado']??'COEFICIENTE';$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp,$politica);$detCoef=strtoupper((string)$politica)==='INCLUIDO_EN_PRECIO'?'Acabado '.senalTextoAcabadoV190($acabado,false).' incluido en el precio':'Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarPulsadorIndicadorPerfil($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],(string)$cfg['modelo_pulsador'],(string)$ind['codigo'],(string)$ind['modelo'],$cant,$detalleCompuesto,$coef,$detCoef,(array)($cfg['_perfil_modelo']??array()));
                 if($tipoIndicadorDestino==='ELECTROMECANICO' && $rolInd==='MAESTRO') senalAgregarAppindMaestroV375($lineas,$conexion,$listaId,(string)$ind['modelo'],$cant,$post,'indicador en pulsador exterior');
-                $nomIp=trim((string)($cfg['_nomenclatura']??''));$caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo pulsador '.$cfg['modelo_pulsador'].' · Indicador '.$ind['modelo'].' ('.$ind['codigo'].') · '.($tipoIndicadorDestino==='ELECTROMECANICO'?($rolInd==='MAESTRO'?'MAESTRO A4000':'REPETIDOR A4400'):'ELECTRONICO').($rolInd==='MAESTRO'&&($cfg['_paradas_maestro']??0)>0?' · '.(int)$cfg['_paradas_maestro'].' paradas':'').($nomIp!==''?' · Nomenclatura '.$nomIp:'').' · Medida '.$medTxt.' · conjunto valorizado'.(!empty($cfg['mismo_modelo'])?' · modelo igual a cabina':' · modelo exterior independiente');
+                $nomIp=trim((string)($cfg['_nomenclatura']??''));$separado=!empty($cfg['_perfil_modelo']['separar_indicador_exterior']);$caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo pulsador '.$cfg['modelo_pulsador'].' · Indicador '.$ind['modelo'].' ('.$ind['codigo'].') · '.($tipoIndicadorDestino==='ELECTROMECANICO'?($rolInd==='MAESTRO'?'MAESTRO A4000':'REPETIDOR A4400'):'ELECTRONICO').($rolInd==='MAESTRO'&&($cfg['_paradas_maestro']??0)>0?' · '.(int)$cfg['_paradas_maestro'].' paradas':'').($nomIp!==''?' · Nomenclatura '.$nomIp:'').' · Medida '.$medTxt.($separado?' · pulsador e indicador valorizados por separado':' · conjunto valorizado').(!empty($cfg['mismo_modelo'])?' · modelo igual a cabina':' · modelo exterior independiente');
             }else{
                 $medida=trim((string)($cfg['_medida']??''));$medTxt=$medida!==''?$medida:'A CONFIRMAR';
-                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp);$detCoef='Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarLinea($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],$descP.' - Medida '.$medTxt,$cant,$cant.' unidad(es) · Medida: '.$medTxt,false,$coef,$detCoef);
-                $caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo '.$cfg['modelo_pulsador'].' · Medida '.$medTxt.(!empty($cfg['mismo_modelo'])?' (igual a cabina)':' (modelo exterior independiente)');
+                $acabado=$cfg['_acabado']??'ACERO';$medEsp=!empty($cfg['_medida_especial']);$politica=$cfg['_politica_acabado']??'COEFICIENTE';$coef=senalCoeficienteAcabadoV190($conexion,$acabado,$medEsp,$politica);$detCoef=strtoupper((string)$politica)==='INCLUIDO_EN_PRECIO'?'Acabado '.senalTextoAcabadoV190($acabado,false).' incluido en el precio':'Tapa '.senalTextoAcabadoV190($acabado,$medEsp).' × '.str_replace('.',',',(string)$coef);senalAgregarLinea($lineas,$conexion,$listaId,$nombre,(string)$cfg['codigo'],$descP.' - Medida '.$medTxt,$cant,$cant.' unidad(es) · Medida: '.$medTxt,false,$coef,$detCoef);
+                $caracteristicas[]='Pulsadores exteriores - '.$nombre.': '.$cant.' · Modelo '.$cfg['modelo_pulsador'].' · Acabado '.(string)($perfilExterior['acabado']??$acabado).(strtoupper((string)$politica)==='INCLUIDO_EN_PRECIO'?' incluido en el precio':'').' · Medida '.$medTxt.(!empty($cfg['mismo_modelo'])?' (igual a cabina)':' (modelo exterior independiente)');
             }
         }
     }else{
