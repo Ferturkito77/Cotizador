@@ -351,9 +351,9 @@ function ofTituloPagina(PdfAutomac $pdf, string $titulo, string $subtitulo = '')
         if ($subtitulo !== '') $pdf->colorText($titleX + 1, 784, $subtitulo, 7, true, 92, 110, 126);
     }
 
-    $pdf->fillColorRect(480, 789, 77, 30, 18, 50, 91);
-    $pdf->colorText(493, 801, 'PRODUCCION', 8, true, 255, 255, 255);
-    $pdf->fillColorRect(28, 778, 539, 4, 25, 96, 180);
+    $pdf->fillColorRect(480, 789, 77, 30, 234, 246, 239);
+    $pdf->colorText(493, 801, 'PRODUCCION', 8, true, 13, 99, 61);
+    $pdf->fillColorRect(28, 778, 539, 3, 25, 96, 180);
     return 760;
 }
 
@@ -429,9 +429,9 @@ function ofDibujarPagina1(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
     ofCabeceraDocumento($pdf, $y, $pedido);
     $res = ofResumenTecnico($conexion, $pedido, $detalles, $datosFormulario);
 
-    $pdf->fillColorRect(38, $y - 22, 519, 24, 232, 246, 238);
-    $pdf->fillColorRect(38, $y - 22, 5, 24, 19, 135, 83);
-    $pdf->colorText(50, $y - 14, 'DATOS TECNICOS DEL CONTROL', 10, true, 13, 99, 61);
+    $pdf->fillColorRect(38, $y - 22, 519, 24, 239, 247, 252);
+    $pdf->fillColorRect(38, $y - 22, 5, 24, 25, 96, 180);
+    $pdf->colorText(50, $y - 14, 'DATOS TECNICOS DEL CONTROL', 10, true, 18, 50, 91);
     $y -= 25;
     $campos = array(
         array('Tipo control', trim($res['tipo_control'] . ($res['codigo_control'] !== '' ? ' - ' . $res['codigo_control'] : ''))),
@@ -454,17 +454,18 @@ function ofDibujarPagina1(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
     if (function_exists('mb_substr')) $adicionales = mb_substr($adicionales, 0, 600, 'UTF-8'); else $adicionales = substr($adicionales, 0, 600);
     ofFilaDato($pdf, $y, 'Adicionales tecnicos', $adicionales !== '' ? $adicionales : 'Sin adicionales tecnicos', 145, 374, 8);
     $y -= 4;
-    $pdf->fillColorRect(38, $y - 22, 519, 24, 232, 246, 238);
+    $pdf->fillColorRect(38, $y - 22, 519, 24, 236, 247, 241);
     $pdf->fillColorRect(38, $y - 22, 5, 24, 19, 135, 83);
-    $pdf->colorText(50, $y - 14, 'MATERIAL DE HUECO', 10, true, 13, 99, 61);
+    $pdf->colorText(50, $y - 14, 'MATERIAL DE HUECO', 10, true, 18, 74, 52);
     $y -= 25;
     $pdf->text(42, $y, pdfTextoMinusculas((string)($materialHueco['titulo'] ?? 'Material de hueco')), 9, true);
     $y -= 17;
     $x = 38; $totalW = 519; $headerH = 20;
-    $pdf->rect($x, $y-$headerH+4, $totalW, $headerH, true, 0.88);
-    $pdf->text($x+8, $y-9, 'Cant.', 8, true);
-    $pdf->text($x+62, $y-9, 'Verif.', 8, true);
-    $pdf->text($x+112, $y-9, 'Descripcion', 8, true);
+    $pdf->fillColorRect($x, $y-$headerH+4, $totalW, $headerH, 235, 243, 250);
+    $pdf->rect($x, $y-$headerH+4, $totalW, $headerH);
+    $pdf->colorText($x+8, $y-9, 'Cant.', 8, true, 18, 50, 91);
+    $pdf->colorText($x+62, $y-9, 'Verif.', 8, true, 18, 50, 91);
+    $pdf->colorText($x+112, $y-9, 'Descripcion', 8, true, 18, 50, 91);
     $y -= $headerH;
     foreach ((array)($materialHueco['materiales'] ?? array()) as $m) {
         $rowH = 20;
@@ -486,10 +487,12 @@ function ofDibujarPagina1(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
     $boxH = 92;
     $pdf->roundedRect(38, $boxTop - $boxH, 250, $boxH, 5);
     $pdf->roundedRect(307, $boxTop - $boxH, 250, $boxH, 5);
-    $pdf->rect(38, $boxTop - 20, 250, 20, true, 0.9);
-    $pdf->rect(307, $boxTop - 20, 250, 20, true, 0.9);
-    $pdf->text(132, $boxTop - 13, 'NOTAS', 9, true);
-    $pdf->text(365, $boxTop - 13, 'ESPECIFICACIONES CONTROLES', 9, true);
+    $pdf->fillColorRect(38, $boxTop - 20, 250, 20, 243, 247, 250);
+    $pdf->fillColorRect(307, $boxTop - 20, 250, 20, 243, 247, 250);
+    $pdf->rect(38, $boxTop - 20, 250, 20);
+    $pdf->rect(307, $boxTop - 20, 250, 20);
+    $pdf->colorText(132, $boxTop - 13, 'NOTAS', 9, true, 18, 50, 91);
+    $pdf->colorText(365, $boxTop - 13, 'ESPECIFICACIONES CONTROLES', 9, true, 18, 50, 91);
     for ($i=1; $i<=5; $i++) {
         $yy = $boxTop - 20 - ($i * 12);
         $pdf->line(44, $yy, 282, $yy, 0.25);
@@ -543,9 +546,9 @@ function ofDibujarPagina2(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
     }
 
     $y -= 4;
-    $pdf->fillColorRect(38, $y - 22, 519, 22, 232, 246, 238);
+    $pdf->fillColorRect(38, $y - 22, 519, 22, 236, 247, 241);
     $pdf->fillColorRect(38, $y - 22, 5, 22, 19, 135, 83);
-    $pdf->colorText(50, $y - 14, 'SEGUIMIENTO DE PRODUCCION Y NO CONFORMIDADES', 9, true, 13, 99, 61);
+    $pdf->colorText(50, $y - 14, 'SEGUIMIENTO DE PRODUCCION Y NO CONFORMIDADES', 9, true, 18, 74, 52);
     $y -= 26;
     $sectores = array(
         array('DOCUMENTACION ELECTRICA','DE'), array('DOCUMENTACION MECANICA','DX'),
@@ -554,11 +557,12 @@ function ofDibujarPagina2(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
         array('PRUEBA','P'), array('EMBALAJE','T'),
     );
     $rowH = 39; $x=38;
-    $pdf->fillColorRect($x, $y-24, 519, 24, 31, 55, 70);
-    $pdf->colorText($x+50,$y-15,'SECTOR',8,true,255,255,255);
-    $pdf->colorText($x+162,$y-15,'EST.',8,true,255,255,255);
-    $pdf->colorText($x+225,$y-15,'RESPONSABLE',8,true,255,255,255);
-    $pdf->colorText($x+375,$y-15,'NO CONFORMIDADES',8,true,255,255,255);
+    $pdf->fillColorRect($x, $y-24, 519, 24, 235, 243, 250);
+    $pdf->rect($x, $y-24, 519, 24);
+    $pdf->colorText($x+50,$y-15,'SECTOR',8,true,18,50,91);
+    $pdf->colorText($x+162,$y-15,'EST.',8,true,18,50,91);
+    $pdf->colorText($x+225,$y-15,'RESPONSABLE',8,true,18,50,91);
+    $pdf->colorText($x+375,$y-15,'NO CONFORMIDADES',8,true,18,50,91);
     $y -= 24;
     foreach ($sectores as $s) {
         $pdf->rect($x,$y-$rowH,150,$rowH); $tmp = $y - 12; $pdf->paragraph($x+5,$tmp,$s[0],140,7,9,true);
@@ -580,9 +584,9 @@ function ofDibujarEtiqueta(PdfAutomac $pdf, float $top, mysqli $conexion, array 
     $res = ofResumenTecnico($conexion, $pedido, $detalles, $datosFormulario);
     $bottom = $top - 350;
     $pdf->roundedRect(38, $bottom, 519, 342, 5);
-    $pdf->fillColorRect(38, $top-28, 519, 22, 232, 246, 238);
+    $pdf->fillColorRect(38, $top-28, 519, 22, 236, 247, 241);
     $pdf->fillColorRect(38, $top-28, 5, 22, 19, 135, 83);
-    $pdf->colorText(50, $top-20, 'OBLEA DE PRODUCCION - CONTROL', 9, true, 13, 99, 61);
+    $pdf->colorText(50, $top-20, 'OBLEA DE PRODUCCION - CONTROL', 9, true, 18, 74, 52);
     $pdf->text(440, $top-20, $copia, 8, true);
     $y = $top - 46;
     $pdf->text(44,$y,'Fecha: ' . date('d/m/Y', strtotime((string)$pedido['fecha_creacion'])),8,true);
@@ -618,7 +622,7 @@ function ofDibujarPagina3(PdfAutomac $pdf, mysqli $conexion, array $pedido, arra
     $pdf->fillColorRect(28, 784, 539, 40, 245, 247, 249);
     $pdf->fillColorRect(28, 784, 7, 40, 18, 50, 91);
     $pdf->automacLogo(44, 789, 72);
-    $pdf->colorText(380, 800, 'OBLEAS DE PRODUCCION', 11, true, 255,255,255);
+    $pdf->colorText(380, 800, 'OBLEAS DE PRODUCCION', 11, true, 18,50,91);
     ofDibujarEtiqueta($pdf, 782, $conexion, $pedido, $detalles, $datosFormulario, 'COPIA 1');
     ofDibujarEtiqueta($pdf, 420, $conexion, $pedido, $detalles, $datosFormulario, 'COPIA 2');
     $pdf->text(250, 24, 'Hoja 3 de 3', 7);
@@ -890,6 +894,12 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
     $nomenclaturasPorBotonera=array_values(array_map(static function($v){return trim((string)$v);},$nomenclaturasPorBotonera));
     while(count($nomenclaturasPorBotonera)<$cantidadBotoneras)$nomenclaturasPorBotonera[]='';
     $nomenclaturasPorBotonera=array_slice($nomenclaturasPorBotonera,0,$cantidadBotoneras);
+    $formatearMedidaProduccion = function($valor) {
+        $m = trim((string)$valor);
+        if ($m === '') return 'T: A CONFIRMAR';
+        if (preg_match('/^T\s*:/i', $m)) return $m;
+        return 'T: ' . $m;
+    };
     $medidasPorBotonera=$datosFormulario['senal_medidas_equipo']??array();
     if(!is_array($medidasPorBotonera))$medidasPorBotonera=array($medidasPorBotonera);
     $medidasPorBotonera=array_values(array_map(static function($v){return trim((string)$v);},$medidasPorBotonera));
@@ -898,6 +908,45 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
     while(count($medidasPorBotonera)<$cantidadBotoneras)$medidasPorBotonera[]='';
     $medidasPorBotonera=array_slice($medidasPorBotonera,0,$cantidadBotoneras);
     $acabado = trim((string)($datosFormulario['senal_acabado'] ?? ''));
+
+    /* v396 - Medidas dentro de cada item de Produccion.
+     * No se usa un bloque separado: cada botonera de cabina, elemento de piso
+     * e indicador muestra su propia medida en el renglon correspondiente. */
+    $medidasPisoPorItem = array();
+    $itemsPiso = array();
+    if (array_key_exists('senal_pulsadores_items_json', $datosFormulario)) {
+        $raw = trim((string)($datosFormulario['senal_pulsadores_items_json'] ?? ''));
+        $dec = $raw !== '' ? json_decode($raw, true) : array();
+        if (is_array($dec)) $itemsPiso = $dec;
+    }
+    foreach ($itemsPiso as $it) {
+        if (!is_array($it) || (int)($it['cantidad'] ?? 0) <= 0) continue;
+        $med = trim((string)($it['medida'] ?? ''));
+        $medidasPisoPorItem[] = $med !== '' ? $med : 'A CONFIRMAR';
+    }
+    if (!$medidasPisoPorItem) {
+        $medPiso = trim((string)($datosFormulario['senal_pulsador_exterior_medidas'] ?? ($datosFormulario['senal_elemento_medidas'] ?? '')));
+        $medidasPisoPorItem[] = $medPiso !== '' ? $medPiso : 'A CONFIRMAR';
+    }
+
+    $medidasIndicPorItem = array();
+    $itemsIndic = array();
+    if (array_key_exists('senal_indicadores_exteriores_items_json', $datosFormulario)) {
+        $raw = trim((string)($datosFormulario['senal_indicadores_exteriores_items_json'] ?? ''));
+        $dec = $raw !== '' ? json_decode($raw, true) : array();
+        if (is_array($dec)) $itemsIndic = $dec;
+    }
+    foreach ($itemsIndic as $it) {
+        if (!is_array($it) || (int)($it['cantidad'] ?? 0) <= 0) continue;
+        $med = trim((string)($it['medida'] ?? ''));
+        $medidasIndicPorItem[] = $med !== '' ? $med : 'A CONFIRMAR';
+    }
+    if (!$medidasIndicPorItem) {
+        $medInd = trim((string)($datosFormulario['senal_indicador_exterior_medidas'] ?? ''));
+        if ($medInd !== '' || trim((string)($datosFormulario['senal_indicador_exterior_modelo'] ?? '')) !== '') {
+            $medidasIndicPorItem[] = $medInd !== '' ? $medInd : 'A CONFIRMAR';
+        }
+    }
 
     // Producción necesita una línea inequívoca por coche: misma cantidad de paradas
     // no implica misma nomenclatura. En baterías, nunca agrupar las botoneras.
@@ -911,9 +960,10 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
                     $nom=trim((string)($nomenclaturasPorBotonera[$i]??'')); if($nom==='')$nom='A CONFIRMAR';
                     $med=trim((string)($medidasPorBotonera[$i]??''));
                     $baseDesc=trim((string)($d['descripcion']??'Botonera de cabina'));
-                    $baseDesc=preg_replace('/\s*·\s*Coche\s+1.*$/ui','',$baseDesc)?:$baseDesc;
-                    $copia['descripcion']='Coche '.($i+1).' - '.$p.' paradas - Nomenclatura: '.$nom.($med!==''?' - Medida: '.$med:'').' - '.$baseDesc;
-                    $copia['formula_aplicada']='Botonera individual del coche '.($i+1).' · '.$p.' paradas · '.$nom.($med!==''?' · medida '.$med:'');
+                    $baseDesc=preg_replace('/\s*·\s*Coche\s+\d+\s+medida\s+T\s*:\s*[^+·]+/ui','',$baseDesc)?:$baseDesc;
+                    $baseDesc=trim(preg_replace('/\s{2,}/u',' ',$baseDesc));
+                    $copia['descripcion']='Coche '.($i+1).' - '.$p.' paradas - Nomenclatura: '.$nom.' - '.$formatearMedidaProduccion($med).' - '.$baseDesc;
+                    $copia['formula_aplicada']='Botonera individual del coche '.($i+1).' · '.$p.' paradas · '.$nom.' · '.$formatearMedidaProduccion($med);
                     $detalleExpandido[]=$copia;
                 }
             } else $detalleExpandido[]=$d;
@@ -925,7 +975,10 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
             $nom=trim((string)($nomenclaturasPorBotonera[0]??'')); if($nom==='')$nom='A CONFIRMAR';
             $p=(int)($paradasPorBotonera[0]??$paradas);
             $med=trim((string)($medidasPorBotonera[0]??''));
-            $d['descripcion']='Coche 1 - '.$p.' paradas - Nomenclatura: '.$nom.($med!==''?' - Medida: '.$med:'').' - '.trim((string)($d['descripcion']??'Botonera de cabina'));
+            $baseDesc=trim((string)($d['descripcion']??'Botonera de cabina'));
+            $baseDesc=preg_replace('/\s*·\s*Coche\s+\d+\s+medida\s+T\s*:\s*[^+·]+/ui','',$baseDesc)?:$baseDesc;
+            $baseDesc=trim(preg_replace('/\s{2,}/u',' ',$baseDesc));
+            $d['descripcion']='Coche 1 - '.$p.' paradas - Nomenclatura: '.$nom.' - '.$formatearMedidaProduccion($med).' - '.$baseDesc;
         }
         unset($d);
     }
@@ -965,17 +1018,26 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
         }
     }
 
+    /* La OF de Senalizacion debe permanecer en una sola hoja A4. Se usa una
+     * densidad adaptativa segun la cantidad de renglones, sin eliminar datos. */
+    $totalRenglones = 0;
+    foreach ($grupos as $g) $totalRenglones += count($g);
+    $densidad = $totalRenglones > 13 ? 2 : ($totalRenglones > 8 ? 1 : 0);
+    $fontFila = $densidad === 2 ? 6.4 : ($densidad === 1 ? 7.1 : 8.0);
+    $lineaFila = $densidad === 2 ? 7.1 : ($densidad === 1 ? 8.2 : 9.6);
+    $minFila = $densidad === 2 ? 17 : ($densidad === 1 ? 20 : 24);
+    $gapGrupo = $densidad === 2 ? 3 : ($densidad === 1 ? 5 : 8);
     $pagina = 1;
-    $cabecera = function(bool $continuacion=false) use ($pdf,$pedido,$modelo,$color,$tecla,$paradas,$paradasPorBotonera,$nomenclaturasPorBotonera,$medidasPorBotonera,$cantidadBotoneras,$acabado,&$pagina): float {
+    $cabecera = function(bool $continuacion=false) use ($pdf,$pedido,$modelo,$color,$tecla,$paradas,$paradasPorBotonera,$nomenclaturasPorBotonera,$medidasPorBotonera,$cantidadBotoneras,$acabado,$densidad,&$pagina): float {
         $y = ofTituloPagina($pdf, 'ORDEN DE FABRICACION - SENALIZACION, ACCESORIOS Y REPUESTOS', $continuacion ? 'Continuacion - mismo pedido' : 'Pulsadores · Senalizacion · Accesorios · Repuestos');
         ofCabeceraDocumento($pdf, $y, $pedido);
 
-        $pdf->fillColorRect(38, $y-22, 519, 24, 255, 245, 228);
-        $pdf->fillColorRect(38, $y-22, 5, 24, 193, 116, 0);
-        $pdf->colorText(50, $y-14, 'CONFIGURACION DE SENALIZACION', 10, true, 136, 80, 0);
+        $pdf->fillColorRect(38, $y-22, 519, 24, 239, 247, 252);
+        $pdf->fillColorRect(38, $y-22, 5, 24, 25, 96, 180);
+        $pdf->colorText(50, $y-14, 'CONFIGURACION DE SENALIZACION', 10, true, 18, 50, 91);
         $y -= 29;
 
-        $partesParadas=array(); foreach($paradasPorBotonera as $i=>$p){if((int)$p>0){$nom=trim((string)($nomenclaturasPorBotonera[$i]??''));if($nom==='')$nom='A CONFIRMAR';$med=trim((string)($medidasPorBotonera[$i]??''));$partesParadas[]='Coche '.($i+1).': '.(int)$p.' paradas ['.$nom.']'.($med!==''?' · medida '.$med:'');}}
+        $partesParadas=array(); foreach($paradasPorBotonera as $i=>$p){if((int)$p>0){$nom=trim((string)($nomenclaturasPorBotonera[$i]??''));if($nom==='')$nom='A CONFIRMAR';$med=trim((string)($medidasPorBotonera[$i]??''));$partesParadas[]='Coche '.($i+1).': '.(int)$p.' paradas ['.$nom.']';}}
         $textoParadas=$partesParadas?implode(' / ',$partesParadas):($paradas>0?$paradas.' paradas [A CONFIRMAR]':'');
         $config = array_filter(array(
             $cantidadBotoneras>0 ? $cantidadBotoneras . ' botonera(s)' : 'Sin botonera de cabina',
@@ -986,32 +1048,35 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
             $acabado !== '' ? 'Acabado ' . $acabado : '',
         ));
         $textoConfig = implode(' · ', $config);
-        $pdf->rect(38, $y-33, 519, 33);
-        $yConfig = $y - 10;
-        $pdf->paragraph(47, $yConfig, pdfTextoMinusculas($textoConfig !== '' ? $textoConfig : 'Configuracion segun pedido confirmado.'), 500, 8, 10, false);
-        $y -= 43;
+        $altoConfig = $densidad === 2 ? 25 : 29;
+        $pdf->rect(38, $y-$altoConfig, 519, $altoConfig);
+        $yConfig = $y - 9;
+        $pdf->paragraph(47, $yConfig, pdfTextoMinusculas($textoConfig !== '' ? $textoConfig : 'Configuracion segun pedido confirmado.'), 500, $densidad === 2 ? 6.8 : 7.5, $densidad === 2 ? 8 : 9, false);
+        $y -= $altoConfig + 6;
+
+
         return $y;
     };
 
     $y = $cabecera(false);
     $itemGlobal = 0;
-    $imprimirEncabezado = function(string $titulo) use ($pdf,&$y): void {
-        $pdf->fillColorRect(38, $y-21, 519, 22, 241, 244, 246);
-        $pdf->fillColorRect(38, $y-21, 4, 22, 193, 116, 0);
-        $pdf->colorText(49, $y-13, $titulo, 9, true, 70, 82, 90);
+    $imprimirEncabezado = function(string $titulo) use ($pdf,&$y,$densidad): void {
+        $pdf->fillColorRect(38, $y-21, 519, 22, 236, 247, 241);
+        $pdf->fillColorRect(38, $y-21, 4, 22, 19, 135, 83);
+        $pdf->colorText(49, $y-13, $titulo, 9, true, 18, 74, 52);
         $y -= 26;
-        $pdf->fillColorRect(38, $y-22, 519, 22, 31, 55, 70);
-        $pdf->colorText(45,$y-14,'#',7,true,255,255,255);
-        $pdf->colorText(69,$y-14,'Cant.',7,true,255,255,255);
-        $pdf->colorText(112,$y-14,'Codigo',7,true,255,255,255);
-        $pdf->colorText(205,$y-14,'Descripcion / especificacion',7,true,255,255,255);
-        $pdf->colorText(510,$y-14,'Verif.',7,true,255,255,255);
+        $pdf->fillColorRect(38, $y-22, 519, 22, 235, 243, 250);
+        $pdf->rect(38, $y-22, 519, 22);
+        $pdf->colorText(45,$y-14,'#',7,true,18,50,91);
+        $pdf->colorText(69,$y-14,'Cant.',7,true,18,50,91);
+        $pdf->colorText(112,$y-14,'Codigo',7,true,18,50,91);
+        $pdf->colorText(205,$y-14,'Descripcion / especificacion',7,true,18,50,91);
+        $pdf->colorText(510,$y-14,'Verif.',7,true,18,50,91);
         $y -= 22;
     };
 
     foreach ($grupos as $titulo=>$items) {
         if (!$items) continue;
-        if ($y < 180) { $pdf->colorText(472,28,'Pagina '.$pagina,7,true,95,111,122); $pdf->newPage(); $pagina++; $y=$cabecera(true); }
         $imprimirEncabezado($titulo);
         foreach ($items as $d) {
             $desc = trim((string)($d['descripcion'] ?? ''));
@@ -1035,31 +1100,44 @@ function ofDibujarOrdenSenalizacionAccesorios(PdfAutomac $pdf, mysqli $conexion,
             } elseif ($concepto !== '' && oftNormalizar($concepto) !== oftNormalizar($desc)) {
                 $desc = $concepto . ': ' . $desc;
             }
-            $lineas = $pdf->wrap(pdfTextoMinusculas($desc), 292, 8);
-            $rowH = max(25, count($lineas)*10 + 10);
-            if ($y-$rowH < 115) {
-                $pdf->colorText(472,28,'Pagina '.$pagina,7,true,95,111,122); $pdf->newPage(); $pagina++; $y=$cabecera(true); $imprimirEncabezado($titulo.' (CONT.)');
+
+            /* v396 - La medida queda en el mismo renglon del item. */
+            $tituloNorm = oftNormalizar($titulo);
+            if (strpos($tituloNorm, 'PULSADORES EXTERIORES') !== false) {
+                if (!isset($indiceMedidaPiso)) $indiceMedidaPiso = 0;
+                $med = (string)($medidasPisoPorItem[$indiceMedidaPiso] ?? ($medidasPisoPorItem[count($medidasPisoPorItem)-1] ?? 'A CONFIRMAR'));
+                $indiceMedidaPiso++;
+                $desc = preg_replace('/\s*[·-]?\s*Medida\s+(?:a\s+confirmar|[^·.]+)(?=\s*·|\.)/iu', '', $desc) ?? $desc;
+                $desc = rtrim(trim($desc), ' .') . ' · ' . $formatearMedidaProduccion($med) . '.';
+            } elseif (strpos($tituloNorm, 'INDICADORES') !== false && strpos($tituloNorm, 'MATERIAL DE HUECO') === false) {
+                if (!isset($indiceMedidaIndic)) $indiceMedidaIndic = 0;
+                $med = (string)($medidasIndicPorItem[$indiceMedidaIndic] ?? ($medidasIndicPorItem[count($medidasIndicPorItem)-1] ?? 'A CONFIRMAR'));
+                $indiceMedidaIndic++;
+                $desc = preg_replace('/\s*[·-]?\s*Medida\s+(?:a\s+confirmar|[^·.]+)(?=\s*·|\.)/iu', '', $desc) ?? $desc;
+                $desc = rtrim(trim($desc), ' .') . ' · ' . $formatearMedidaProduccion($med) . '.';
             }
+            $lineas = $pdf->wrap(pdfTextoMinusculas($desc), 292, $fontFila);
+            $rowH = max($minFila, count($lineas)*$lineaFila + ($densidad===2?5:7));
             $itemGlobal++;
             if ($itemGlobal % 2 === 0) $pdf->fillColorRect(38,$y-$rowH,519,$rowH,250,251,252);
             $pdf->rect(38,$y-$rowH,519,$rowH);
             foreach(array(25,68,158,472) as $off)$pdf->line(38+$off,$y-$rowH,38+$off,$y,0.25);
-            $pdf->colorText(46,$y-17,(string)$itemGlobal,8,true,95,111,122);
-            $pdf->text(72,$y-17,ofCantidad((float)$d['cantidad']),9,true);
-            $pdf->text(112,$y-17,trim((string)($d['codigo']??''))!==''?(string)$d['codigo']:'-',7,true);
-            foreach($lineas as $i=>$ln)$pdf->text(202,$y-16-($i*10),$ln,8);
-            $pdf->rect(525,$y-20,14,14);
+            $baseY=$y-($densidad===2?12:15);
+            $pdf->colorText(46,$baseY,(string)$itemGlobal,$densidad===2?6.3:7.2,true,95,111,122);
+            $pdf->text(72,$baseY,ofCantidad((float)$d['cantidad']),$densidad===2?7.0:8.0,true);
+            $pdf->text(112,$baseY,trim((string)($d['codigo']??''))!==''?(string)$d['codigo']:'-',$densidad===2?6.0:6.8,true);
+            foreach($lineas as $i=>$ln)$pdf->text(202,$baseY-($i*$lineaFila),$ln,$fontFila);
+            $check=$densidad===2?11:13; $pdf->rect(526,$y-$check-4,$check,$check);
             $y -= $rowH;
         }
-        $y -= 10;
+        $y -= $gapGrupo;
     }
 
     if ($itemGlobal === 0) {
         $pdf->rect(38,$y-42,519,42); $pdf->text(50,$y-25,'Sin renglones de senalizacion, accesorios o repuestos para esta orden.',9,true); $y-=50;
     }
 
-    if ($y < 210) { $pdf->colorText(472,28,'Pagina '.$pagina,7,true,95,111,122); $pdf->newPage(); $pagina++; $y=$cabecera(true); }
-    $pdf->fillColorRect(38,$y-21,519,22,241,244,246); $pdf->colorText(50,$y-13,'NOTAS / PREPARACION',9,true,70,82,90); $y-=27;
+    $pdf->fillColorRect(38,$y-21,519,22,243,247,250); $pdf->colorText(50,$y-13,'NOTAS / PREPARACION',9,true,18,50,91); $y-=27;
     for($i=0;$i<4;$i++){$pdf->line(38,$y-($i*16),557,$y-($i*16),0.3);} $y-=74;
     $pdf->roundedRect(38,$y-54,250,54,5); $pdf->roundedRect(307,$y-54,250,54,5);
     $pdf->text(77,$y-15,'CANTIDAD TOTAL DE BULTOS',8,true); $pdf->text(365,$y-15,'UBICACION EN DEPOSITO',8,true);

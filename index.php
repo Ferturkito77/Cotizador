@@ -1824,7 +1824,7 @@ function generarParadasSenalizacion(valoresForzados,nomenclaturasForzadas){
       '<input type="text" name="senal_nomenclatura_equipo[]" maxlength="500" value="'+escaparHtml(n)+'" '+(usaControl?'readonly':'')+' placeholder="Ej.: PB al 7 / -1, 0 al 5" oninput="actualizarEstadoNomenclaturaSenalizacion(this); actualizarResumenRapidoSenalizacion()">'+ 
       '<small class="senal-nomenclatura-estado '+(String(n).trim()!==''?'confirmada':'pendiente')+'">'+estadoNomenclatura+'</small></label>'+ 
       '<label class="senal-coche-campo senal-coche-medida"><span>Medida (Ancho × Alto)</span>'+ 
-      '<input type="text" name="senal_medidas_equipo[]" maxlength="120" value="'+escaparHtml(m)+'" placeholder="Ej.: 180 x 1000 mm" oninput="sincronizarMedidasLegacySenalizacion(); actualizarResumenRapidoSenalizacion()">'+ 
+      '<input type="text" name="senal_medidas_equipo[]" maxlength="120" value="'+escaparHtml(m)+'" placeholder="T: ancho x alto (mm)" oninput="sincronizarMedidasLegacySenalizacion(); actualizarResumenRapidoSenalizacion()">'+ 
       '<small>Medida propia de este coche</small></label>'+ 
       '</div>';
   }

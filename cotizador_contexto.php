@@ -137,13 +137,16 @@ for ($iGuardado=0; $iGuardado<$totalItemsGuardados; $iGuardado++) {
 $detalleEdicionTablaV461 = '';
 $detalleEdicionCampoV461 = '';
 $detalleEdicionIdV461 = 0;
+$detalleEdicionPkV461 = '';
 if ($cotizacionEdicionId > 0) {
     $detalleEdicionTablaV461 = 'cotizaciones_detalle';
     $detalleEdicionCampoV461 = 'cotizacion_id';
+    $detalleEdicionPkV461 = 'detalle_id';
     $detalleEdicionIdV461 = $cotizacionEdicionId;
 } elseif ($pedidoEdicionId > 0) {
     $detalleEdicionTablaV461 = 'pedidos_detalle';
     $detalleEdicionCampoV461 = 'pedido_id';
+    $detalleEdicionPkV461 = 'pedido_detalle_id';
     $detalleEdicionIdV461 = $pedidoEdicionId;
 }
 if ($detalleEdicionIdV461 > 0) {
@@ -151,7 +154,7 @@ if ($detalleEdicionIdV461 > 0) {
     foreach ($itemsModularesGuardados['ACCESORIOS'] as $itV461) {
         $firmasV461[strtoupper(trim((string)($itV461['codigo'] ?? ''))) . '|' . strtoupper(trim((string)($itV461['concepto'] ?? '')))] = true;
     }
-    $sqlV461 = "SELECT concepto,codigo,descripcion,cantidad,precio_unitario FROM {$detalleEdicionTablaV461} WHERE {$detalleEdicionCampoV461}=? AND UPPER(COALESCE(modulo,''))='ACCESORIOS' ORDER BY orden_visual, detalle_id";
+    $sqlV461 = "SELECT concepto,codigo,descripcion,cantidad,precio_unitario FROM {$detalleEdicionTablaV461} WHERE {$detalleEdicionCampoV461}=? AND UPPER(COALESCE(modulo,''))='ACCESORIOS' ORDER BY orden_visual, {$detalleEdicionPkV461}";
     $stV461 = $conexion->prepare($sqlV461);
     if ($stV461) {
         $stV461->bind_param('i', $detalleEdicionIdV461);
