@@ -266,6 +266,7 @@
                 <option value="HP"<?= (($datos['dato_motor_tipo'] ?? 'HP') === 'HP') ? ' selected' : '' ?>>HP</option>
                 <option value="AMP"<?= (($datos['dato_motor_tipo'] ?? '') === 'AMP') ? ' selected' : '' ?>>Amp</option>
                 <option value="KW"<?= (($datos['dato_motor_tipo'] ?? '') === 'KW') ? ' selected' : '' ?>>kW</option>
+                <option value="CV"<?= (($datos['dato_motor_tipo'] ?? '') === 'CV') ? ' selected' : '' ?>>CV</option>
             </select>
             <label for="dato_motor_valor">Valor informado:</label>
             <input type="number" step="0.01" min="0.01" name="dato_motor_valor" id="dato_motor_valor" value="<?= escapar((string)($datos['dato_motor_valor'] ?? '')) ?>" disabled>
@@ -280,32 +281,54 @@
             <small>Se puede elegir cualquier fila compatible con corriente nominal igual o superior a la requerida.</small>
         </div>
 
-        <div class="campo">
-            <label for="id_tipo_control">Tipo de control:</label>
-            <select name="id_tipo_control" id="id_tipo_control"
-                    onchange="cargarSubtipos(this.value, document.getElementById('id_subtipo').value); actualizarCentral(); actualizarOpcionesHidraulicas(); actualizarVelocidad(); actualizarPosicionamientoEncoder(); actualizarAdicionalesVisibles();" required>
-                <option value="">Seleccione tipo de control...</option>
-                <?php
-                $sqlTipoOpciones = ctrlTablaExiste($conexion, 'control_tipo_capacidades')
-                    ? "SELECT t.ctrltipo_id,t.ctrltipo_name,cap.requiere_central,cap.permite_tandem,cap.requiere_velocidad,cap.velocidad_fija_mmin,cap.familia_rescate,cap.es_mrl FROM tipos_control t LEFT JOIN control_tipo_capacidades cap ON cap.ctrltipo_id=t.ctrltipo_id WHERE COALESCE(cap.activo,'SI')='SI' ORDER BY t.ctrltipo_id"
-                    : "SELECT ctrltipo_id,ctrltipo_name,NULL requiere_central,NULL permite_tandem,NULL requiere_velocidad,NULL velocidad_fija_mmin,NULL familia_rescate,NULL es_mrl FROM tipos_control ORDER BY ctrltipo_id";
-                $resultado = $conexion->query($sqlTipoOpciones);
-                if ($resultado) {
-                    while ($fila = $resultado->fetch_assoc()) {
-                        echo '<option value="' . (int)$fila['ctrltipo_id'] . '"'
-                            . ' data-requiere-central="' . escapar((string)($fila['requiere_central'] ?? '')) . '"'
-                            . ' data-permite-tandem="' . escapar((string)($fila['permite_tandem'] ?? '')) . '"'
-                            . ' data-requiere-velocidad="' . escapar((string)($fila['requiere_velocidad'] ?? '')) . '"'
-                            . ' data-velocidad-fija="' . escapar((string)($fila['velocidad_fija_mmin'] ?? '')) . '"'
-                            . ' data-familia-rescate="' . escapar((string)($fila['familia_rescate'] ?? '')) . '"'
-                            . ' data-es-mrl="' . escapar((string)($fila['es_mrl'] ?? '')) . '"'
-                            . valorSeleccionado($datos, 'id_tipo_control', $fila['ctrltipo_id']) . '>'
-                            . escapar($fila['ctrltipo_name']) . '</option>';
+        <div class="control-columna-derecha-vf" style="grid-column:2; align-self:start; display:flex; flex-direction:column; gap:12px;">
+            <div class="campo">
+                <label for="id_tipo_control">Tipo de control:</label>
+                <select name="id_tipo_control" id="id_tipo_control"
+                        onchange="cargarSubtipos(this.value, document.getElementById('id_subtipo').value); actualizarCentral(); actualizarOpcionesHidraulicas(); actualizarVelocidad(); actualizarPosicionamientoEncoder(); actualizarAdicionalesVisibles();" required>
+                    <option value="">Seleccione tipo de control...</option>
+                    <?php
+                    $sqlTipoOpciones = ctrlTablaExiste($conexion, 'control_tipo_capacidades')
+                        ? "SELECT t.ctrltipo_id,t.ctrltipo_name,cap.requiere_central,cap.permite_tandem,cap.requiere_velocidad,cap.velocidad_fija_mmin,cap.familia_rescate,cap.es_mrl FROM tipos_control t LEFT JOIN control_tipo_capacidades cap ON cap.ctrltipo_id=t.ctrltipo_id WHERE COALESCE(cap.activo,'SI')='SI' ORDER BY t.ctrltipo_id"
+                        : "SELECT ctrltipo_id,ctrltipo_name,NULL requiere_central,NULL permite_tandem,NULL requiere_velocidad,NULL velocidad_fija_mmin,NULL familia_rescate,NULL es_mrl FROM tipos_control ORDER BY ctrltipo_id";
+                    $resultado = $conexion->query($sqlTipoOpciones);
+                    if ($resultado) {
+                        while ($fila = $resultado->fetch_assoc()) {
+                            echo '<option value="' . (int)$fila['ctrltipo_id'] . '"'
+                                . ' data-requiere-central="' . escapar((string)($fila['requiere_central'] ?? '')) . '"'
+                                . ' data-permite-tandem="' . escapar((string)($fila['permite_tandem'] ?? '')) . '"'
+                                . ' data-requiere-velocidad="' . escapar((string)($fila['requiere_velocidad'] ?? '')) . '"'
+                                . ' data-velocidad-fija="' . escapar((string)($fila['velocidad_fija_mmin'] ?? '')) . '"'
+                                . ' data-familia-rescate="' . escapar((string)($fila['familia_rescate'] ?? '')) . '"'
+                                . ' data-es-mrl="' . escapar((string)($fila['es_mrl'] ?? '')) . '"'
+                                . valorSeleccionado($datos, 'id_tipo_control', $fila['ctrltipo_id']) . '>'
+                                . escapar($fila['ctrltipo_name']) . '</option>';
+                        }
                     }
-                }
-                ?>
-            </select>
-        </div>
+                    ?>
+                </select>
+            </div>
+
+            <div class="campo">
+                <label for="id_subtipo">Subtipo:</label>
+                <select name="id_subtipo" id="id_subtipo" onchange="actualizarVelocidad(); actualizarAdicionalesVisibles();" required>
+                    <option value="">Seleccione CPU y tipo de control...</option>
+                </select>
+            </div>
+
+            <div class="campo" id="grupo_velocidad" style="display:none;">
+                <label for="velocidad_vf">Velocidad del ascensor:</label>
+                <select name="velocidad_vf" id="velocidad_vf" onchange="actualizarEncoderObligatorioPorVelocidad(); actualizarVelocidad();">
+                    <option value="">Seleccione velocidad...</option>
+                    <option value="30"<?= valorSeleccionado($datos, 'velocidad_vf', '30') ?>>30 m/min</option>
+                    <option value="45"<?= valorSeleccionado($datos, 'velocidad_vf', '45') ?>>45 m/min</option>
+                    <option value="60"<?= valorSeleccionado($datos, 'velocidad_vf', '60') ?>>60 m/min</option>
+                    <option value="75"<?= valorSeleccionado($datos, 'velocidad_vf', '75') ?>>75 m/min</option>
+                    <option value="90"<?= valorSeleccionado($datos, 'velocidad_vf', '90') ?>>90 m/min</option>
+                    <option value="105"<?= valorSeleccionado($datos, 'velocidad_vf', '105') ?>>105 m/min</option>
+                    <option value="120"<?= valorSeleccionado($datos, 'velocidad_vf', '120') ?>>120 m/min</option>
+                </select>
+            </div>        </div>
 
         <div class="campo" id="grupo_tipo_gabinete_mrl" style="display:none;">
             <label for="tipo_gabinete_mrl">Tipo de gabinete MRL:</label>
@@ -315,13 +338,6 @@
                 <option value="WITTUR"<?= valorSeleccionado($datos, 'tipo_gabinete_mrl', 'WITTUR') ?>>MRL Wittur</option>
             </select>
             <div class="ayuda">La opción estándar adopta automáticamente la identidad de la CPU seleccionada: MRL AUTOMAC, MRL CLEX o MRL DANGELICA. Wittur mantiene su gabinete específico.</div>
-        </div>
-
-        <div class="campo">
-            <label for="id_subtipo">Subtipo:</label>
-            <select name="id_subtipo" id="id_subtipo" onchange="actualizarVelocidad(); actualizarAdicionalesVisibles();" required>
-                <option value="">Seleccione CPU y tipo de control...</option>
-            </select>
         </div>
 
         <div class="campo" id="grupo_central" style="display:none;">
@@ -358,19 +374,7 @@
                    placeholder="Ingrese el nombre de la central">
         </div>
 
-        <div class="campo" id="grupo_velocidad" style="display:none;">
-            <label for="velocidad_vf">Velocidad del ascensor:</label>
-            <select name="velocidad_vf" id="velocidad_vf" onchange="actualizarEncoderObligatorioPorVelocidad(); actualizarVelocidad();">
-                <option value="">Seleccione velocidad...</option>
-                <option value="30"<?= valorSeleccionado($datos, 'velocidad_vf', '30') ?>>30 m/min</option>
-                <option value="45"<?= valorSeleccionado($datos, 'velocidad_vf', '45') ?>>45 m/min</option>
-                <option value="60"<?= valorSeleccionado($datos, 'velocidad_vf', '60') ?>>60 m/min</option>
-                <option value="75"<?= valorSeleccionado($datos, 'velocidad_vf', '75') ?>>75 m/min</option>
-                <option value="90"<?= valorSeleccionado($datos, 'velocidad_vf', '90') ?>>90 m/min</option>
-                <option value="105"<?= valorSeleccionado($datos, 'velocidad_vf', '105') ?>>105 m/min</option>
-                <option value="120"<?= valorSeleccionado($datos, 'velocidad_vf', '120') ?>>120 m/min</option>
-            </select>
-        </div>
+
 
 
         <div class="campo">
