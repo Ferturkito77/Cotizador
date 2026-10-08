@@ -1,0 +1,150 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 5408 >>
+stream
+0.09 0.19 0.25 rg 28 776 539 48 re f 0 g
+0.07 0.53 0.33 rg 28 776 7 48 re f 0 g
+1 1 1 rg BT /F2 20 Tf 1 0 0 1 46 801 Tm (AUTOMAC) Tj ET 0 g
+0.69 0.78 0.83 rg BT /F2 7 Tf 1 0 0 1 46 788 Tm (PRODUCCION) Tj ET 0 g
+1 1 1 rg BT /F2 11 Tf 1 0 0 1 285 801 Tm (ORDEN DE PREPARACION - SUMINISTROS) Tj ET 0 g
+0.75 0.83 0.87 rg BT /F2 7 Tf 1 0 0 1 285 788 Tm (Preparacion ∑ Control ∑ Despacho) Tj ET 0 g
+0.97 0.98 0.99 rg 38 694 519 68 re f 0 g
+0.15 0.44 0.82 rg 38 694 6 68 re f 0 g
+0.36 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 50 745 Tm (PEDIDO) Tj ET 0 g
+BT /F2 12 Tf 1 0 0 1 50 731 Tm (P.9  ∑  Rev. 0) Tj ET
+0.36 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 190 745 Tm (CLIENTE) Tj ET 0 g
+BT /F2 10 Tf 1 0 0 1 190 731 Tm (9999 - 6M) Tj ET
+0.36 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 390 745 Tm (FECHA) Tj ET 0 g
+BT /F2 10 Tf 1 0 0 1 390 731 Tm (09/08/2026) Tj ET
+0.36 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 50 713 Tm (REFERENCIA) Tj ET 0 g
+BT /F1 8 Tf 1 0 0 1 112 713 Tm (-) Tj ET
+0.36 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 330 713 Tm (ORIGEN) Tj ET 0 g
+BT /F1 8 Tf 1 0 0 1 374 713 Tm (R.9) Tj ET
+0.92 0.95 0.99 rg 38 654 519 24 re f 0 g
+0.15 0.44 0.82 rg 38 654 5 24 re f 0 g
+0.1 0.34 0.62 rg BT /F2 10 Tf 1 0 0 1 50 662 Tm (MATERIALES A PREPARAR) Tj ET 0 g
+0.35 0.42 0.47 rg BT /F2 7 Tf 1 0 0 1 430 662 Tm (PICKING / CONTROL) Tj ET 0 g
+0.12 0.2 0.26 rg 38 622 519 24 re f 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 45 631 Tm (#) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 68 631 Tm (Cant.) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 112 631 Tm (Codigo) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 205 631 Tm (Descripcion) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 452 631 Tm (Prep.) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 505 631 Tm (Ctrl.) Tj ET 0 g
+0.6 G 0.5 w 38 594 519 28 re S 0 G
+0.25 w 63 594 m 63 622 l S
+0.25 w 106 594 m 106 622 l S
+0.25 w 196 594 m 196 622 l S
+0.25 w 443 594 m 443 622 l S
+0.25 w 496 594 m 496 622 l S
+0.36 0.42 0.47 rg BT /F2 8 Tf 1 0 0 1 46 604 Tm (1) Tj ET 0 g
+BT /F2 10 Tf 1 0 0 1 72 604 Tm (1) Tj ET
+BT /F2 8 Tf 1 0 0 1 114 604 Tm (GA50U4023ABA) Tj ET
+BT /F1 8 Tf 1 0 0 1 204 605 Tm (Variador yaskawa GA500 18A \(Sn18A/Sp23A\)) Tj ET
+0.6 G 0.5 w 462 600 15 15 re S 0 G
+0.6 G 0.5 w 515 600 15 15 re S 0 G
+0.98 0.98 0.99 rg 38 566 519 28 re f 0 g
+0.6 G 0.5 w 38 566 519 28 re S 0 G
+0.25 w 63 566 m 63 594 l S
+0.25 w 106 566 m 106 594 l S
+0.25 w 196 566 m 196 594 l S
+0.25 w 443 566 m 443 594 l S
+0.25 w 496 566 m 496 594 l S
+0.36 0.42 0.47 rg BT /F2 8 Tf 1 0 0 1 46 576 Tm (2) Tj ET 0 g
+BT /F2 10 Tf 1 0 0 1 72 576 Tm (1) Tj ET
+BT /F2 8 Tf 1 0 0 1 114 576 Tm (A6XRVFS7575.1) Tj ET
+BT /F1 8 Tf 1 0 0 1 204 577 Tm (Conjunto de resistencias 1 x 75 ohms 750 w hasta 18A) Tj ET
+0.6 G 0.5 w 462 572 15 15 re S 0 G
+0.6 G 0.5 w 515 572 15 15 re S 0 G
+0.6 G 0.5 w 38 538 519 28 re S 0 G
+0.25 w 63 538 m 63 566 l S
+0.25 w 106 538 m 106 566 l S
+0.25 w 196 538 m 196 566 l S
+0.25 w 443 538 m 443 566 l S
+0.25 w 496 538 m 496 566 l S
+0.36 0.42 0.47 rg BT /F2 8 Tf 1 0 0 1 46 548 Tm (3) Tj ET 0 g
+BT /F2 10 Tf 1 0 0 1 72 548 Tm (1) Tj ET
+BT /F2 8 Tf 1 0 0 1 114 548 Tm (8LC1D18F7) Tj ET
+BT /F1 8 Tf 1 0 0 1 204 549 Tm (Contactor 18 amp. 3P+NA+NC) Tj ET
+0.6 G 0.5 w 462 544 15 15 re S 0 G
+0.6 G 0.5 w 515 544 15 15 re S 0 G
+0.98 0.98 0.99 rg 38 510 519 28 re f 0 g
+0.6 G 0.5 w 38 510 519 28 re S 0 G
+0.25 w 63 510 m 63 538 l S
+0.25 w 106 510 m 106 538 l S
+0.25 w 196 510 m 196 538 l S
+0.25 w 443 510 m 443 538 l S
+0.25 w 496 510 m 496 538 l S
+0.36 0.42 0.47 rg BT /F2 8 Tf 1 0 0 1 46 520 Tm (4) Tj ET 0 g
+BT /F2 10 Tf 1 0 0 1 72 520 Tm (1) Tj ET
+BT /F2 8 Tf 1 0 0 1 114 520 Tm (A338) Tj ET
+BT /F1 8 Tf 1 0 0 1 204 521 Tm (Filtro para variadores yaskawa) Tj ET
+0.6 G 0.5 w 462 516 15 15 re S 0 G
+0.6 G 0.5 w 515 516 15 15 re S 0 G
+0.92 0.96 0.94 rg 38 470 519 24 re f 0 g
+0.07 0.48 0.29 rg 38 470 5 24 re f 0 g
+0.05 0.39 0.24 rg BT /F2 10 Tf 1 0 0 1 50 478 Tm (CONTROL FINAL DE PREPARACION Y DESPACHO) Tj ET 0 g
+0.6 G 0.5 w 38 434 255 24 re S 0 G
+0.6 G 0.5 w 47 440 13 13 re S 0 G
+BT /F1 8 Tf 1 0 0 1 69 444 Tm (Material completo segun pedido) Tj ET
+0.6 G 0.5 w 302 434 255 24 re S 0 G
+0.6 G 0.5 w 311 440 13 13 re S 0 G
+BT /F1 8 Tf 1 0 0 1 333 444 Tm (Cantidades verificadas) Tj ET
+0.6 G 0.5 w 38 410 255 24 re S 0 G
+0.6 G 0.5 w 47 416 13 13 re S 0 G
+BT /F1 8 Tf 1 0 0 1 69 420 Tm (Codigos / modelos verificados) Tj ET
+0.6 G 0.5 w 302 410 255 24 re S 0 G
+0.6 G 0.5 w 311 416 13 13 re S 0 G
+BT /F1 8 Tf 1 0 0 1 333 420 Tm (Embalaje realizado) Tj ET
+0.6 G 0.5 w 38 386 255 24 re S 0 G
+0.6 G 0.5 w 47 392 13 13 re S 0 G
+BT /F1 8 Tf 1 0 0 1 69 396 Tm (Documentacion / remito preparado) Tj ET
+0.6 G 0.5 w 302 386 255 24 re S 0 G
+0.6 G 0.5 w 311 392 13 13 re S 0 G
+BT /F1 8 Tf 1 0 0 1 333 396 Tm (Pedido listo para despacho) Tj ET
+BT /F2 8 Tf 1 0 0 1 38 374 Tm (OBSERVACIONES) Tj ET
+0.3 w 38 364 m 557 364 l S
+0.3 w 38 348 m 557 348 l S
+0.3 w 38 332 m 557 332 l S
+0.6 w 38 79 m 557 79 l S
+0.37 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 42 63 Tm (Responsable comercial) Tj ET 0 g
+BT /F2 8 Tf 1 0 0 1 42 51 Tm (Fernando) Tj ET
+0.37 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 215 63 Tm (Preparado por) Tj ET 0 g
+BT /F1 8 Tf 1 0 0 1 215 51 Tm (____________________) Tj ET
+0.37 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 365 63 Tm (Controlado por) Tj ET 0 g
+BT /F1 8 Tf 1 0 0 1 365 51 Tm (____________________) Tj ET
+0.37 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 485 63 Tm (Fecha) Tj ET 0 g
+BT /F1 8 Tf 1 0 0 1 485 51 Tm (__/__/____) Tj ET
+0.37 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 470 28 Tm (Pagina 1) Tj ET 0 g
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000462 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+5922
+%%EOF

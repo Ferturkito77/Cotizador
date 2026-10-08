@@ -1,0 +1,144 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 5733 >>
+stream
+BT /F2 20 Tf 1 0 0 1 42 795 Tm (AUTOMAC) Tj ET
+BT /F2 16 Tf 1 0 0 1 355 795 Tm (ORDEN DE FABRICACION) Tj ET
+1 w 42 771 m 553 771 l S
+BT /F2 10 Tf 1 0 0 1 42 747 Tm (Pedido: #13) Tj ET
+BT /F2 10 Tf 1 0 0 1 340 747 Tm (Revision: 0) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 730 Tm (Cliente: 9999 - 6M) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 715 Tm (Referencia / obra: ) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 700 Tm (Cotizacion origen: PEDIDO DIRECTO) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 685 Tm (Estado: CONFIRMADO) Tj ET
+BT /F1 9 Tf 1 0 0 1 340 685 Tm (Fecha: 05/08/2026 19:39) Tj ET
+0.86 g 42 641 511 24 re f 0 g
+BT /F2 8 Tf 1 0 0 1 46 650 Tm (Concepto) Tj ET
+BT /F2 8 Tf 1 0 0 1 128 650 Tm (Codigo) Tj ET
+BT /F2 8 Tf 1 0 0 1 200 650 Tm (Descripcion tecnica) Tj ET
+BT /F2 8 Tf 1 0 0 1 415 650 Tm (Cant.) Tj ET
+BT /F2 8 Tf 1 0 0 1 467 650 Tm (Observacion / formula) Tj ET
+0.6 G 0.5 w 42 519 511 120 re S 0 G
+BT /F1 7 Tf 1 0 0 1 46 625 Tm (Base) Tj ET
+BT /F1 7 Tf 1 0 0 1 128 625 Tm (A633I1GD39MRL) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 625 Tm (Control A6300V4, maniobra SD, regulador INVT) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 615 Tm (GD390L de 14 A, contactor de 18 A, potencia 7 HP,) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 605 Tm (alimentacion 3X380, velocidad 60 m/min, para 5) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 595 Tm (paradas, puerta de cabina manual, puertas de piso) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 585 Tm (cont.doble, comunicacion paralelo, Gabinete) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 575 Tm (aproximado 460x2000x200 mm en pintura epoxi gris) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 565 Tm (/ Llaves termomagnéticas trifásicas y) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 555 Tm (monofásicas, para iluminación de cabina y hueco /) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 545 Tm (Bornera para IEP / Llave de rearme para limitador) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 535 Tm (de velocidad / Espacio para UCM / Resistencias) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 525 Tm (con protección y cable blindad) Tj ET
+BT /F1 7 Tf 1 0 0 1 435.32 625 Tm (1) Tj ET
+BT /F1 7 Tf 1 0 0 1 467 625 Tm (1 equipo\(s\)) Tj ET
+0.6 G 0.5 w 42 489 511 30 re S 0 G
+BT /F1 7 Tf 1 0 0 1 46 505 Tm (Adicional por) Tj ET
+BT /F1 7 Tf 1 0 0 1 46 495 Tm (paradas) Tj ET
+BT /F1 7 Tf 1 0 0 1 128 505 Tm (APVFMEI) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 505 Tm (ADIC P/PAR. VF <75 <105 P/IMANES) Tj ET
+BT /F1 7 Tf 1 0 0 1 435.32 505 Tm (5) Tj ET
+BT /F1 7 Tf 1 0 0 1 467 505 Tm (5 paradas totales) Tj ET
+0.6 G 0.5 w 42 459 511 30 re S 0 G
+BT /F1 7 Tf 1 0 0 1 46 475 Tm (Cabezales y) Tj ET
+BT /F1 7 Tf 1 0 0 1 46 465 Tm (soportes) Tj ET
+BT /F1 7 Tf 1 0 0 1 128 475 Tm (APCS02I) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 475 Tm (ADIC CAB Y SOP P/2V-HD-VF<75<105 IMANES) Tj ET
+BT /F1 7 Tf 1 0 0 1 435.32 475 Tm (1) Tj ET
+BT /F1 7 Tf 1 0 0 1 467 475 Tm (1 por equipo) Tj ET
+0.6 G 0.5 w 42 429 511 30 re S 0 G
+BT /F1 7 Tf 1 0 0 1 46 445 Tm (Repuesto -) Tj ET
+BT /F1 7 Tf 1 0 0 1 46 435 Tm (descuento 30%) Tj ET
+BT /F1 7 Tf 1 0 0 1 128 445 Tm (A3700LU) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 445 Tm (Llave De Usuario por Chip de Contacto) Tj ET
+BT /F1 7 Tf 1 0 0 1 435.32 445 Tm (1) Tj ET
+BT /F1 7 Tf 1 0 0 1 467 445 Tm (Ítem cargado en) Tj ET
+BT /F1 7 Tf 1 0 0 1 467 435 Tm (REPUESTOS) Tj ET
+BT /F2 12 Tf 1 0 0 1 42 403 Tm (MATERIAL DE HUECO) Tj ET
+BT /F2 9 Tf 1 0 0 1 42 387 Tm (Imanes y cabezales magnéticos) Tj ET
+BT /F1 8 Tf 1 0 0 1 42 374 Tm (Configuracion: Imanes - VF hasta 75 m/min - sin posicionamiento) Tj ET
+0.86 g 42 338 511 24 re f 0 g
+BT /F2 8 Tf 1 0 0 1 46 347 Tm (Cant.) Tj ET
+BT /F2 8 Tf 1 0 0 1 106 347 Tm (Descripcion) Tj ET
+BT /F2 8 Tf 1 0 0 1 421 347 Tm (Unidad) Tj ET
+BT /F2 8 Tf 1 0 0 1 491 347 Tm (Formula) Tj ET
+0.6 G 0.5 w 42 311 511 25 re S 0 G
+BT /F1 7 Tf 1 0 0 1 70.32 322 Tm (6) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 322 Tm (Imán corto 10 cm) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 322 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 322 Tm (\(2*N-4\)*C) Tj ET
+0.6 G 0.5 w 42 286 511 25 re S 0 G
+BT /F1 7 Tf 1 0 0 1 68.64 297 Tm (10) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 297 Tm (Imán largo 20 cm) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 297 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 297 Tm (\(2*N\)*C) Tj ET
+0.6 G 0.5 w 42 261 511 25 re S 0 G
+BT /F1 7 Tf 1 0 0 1 70.32 272 Tm (2) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 272 Tm (Cabezal magnético A2140) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 272 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 272 Tm (2*C) Tj ET
+0.6 G 0.5 w 42 236 511 25 re S 0 G
+BT /F1 7 Tf 1 0 0 1 70.32 247 Tm (1) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 247 Tm (Soporte H2142S) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 247 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 247 Tm (1*C) Tj ET
+0.6 G 0.5 w 42 206 511 30 re S 0 G
+BT /F1 7 Tf 1 0 0 1 70.32 222 Tm (6) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 222 Tm (Límite Honeywell con soporte) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 222 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 222 Tm (\(6*C\)+\(2*CONT) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 212 Tm (\)) Tj ET
+0.6 G 0.5 w 42 181 511 25 re S 0 G
+BT /F1 7 Tf 1 0 0 1 70.32 192 Tm (2) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 192 Tm (Tornillo 3/16 x 1 1/4 para límites) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 192 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 192 Tm (L*2) Tj ET
+0.6 G 0.5 w 42 156 511 25 re S 0 G
+BT /F1 7 Tf 1 0 0 1 70.32 167 Tm (2) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 167 Tm (Banquito para hueco por imanes) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 167 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 167 Tm (2*L*C) Tj ET
+0.6 G 0.5 w 42 131 511 25 re S 0 G
+BT /F1 7 Tf 1 0 0 1 70.32 142 Tm (2) Tj ET
+BT /F1 7 Tf 1 0 0 1 106 142 Tm (Tornillo 1 x 1/4 con arandela Grower) Tj ET
+BT /F1 7 Tf 1 0 0 1 441.92 142 Tm (unidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 491 142 Tm (BAN) Tj ET
+BT /F2 9 Tf 1 0 0 1 42 109 Tm (Documento tecnico sin precios ni descuentos.) Tj ET
+0.5 w 42 81 m 230 81 l S
+0.5 w 365 81 m 553 81 l S
+BT /F1 8 Tf 1 0 0 1 82 68 Tm (Produccion) Tj ET
+BT /F1 8 Tf 1 0 0 1 410 68 Tm (Administracion) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000462 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+6247
+%%EOF

@@ -1280,10 +1280,11 @@ $agregarOtroAdicional = function ($clave, $cantidad, $nota = '') use ($conexion,
     $articulo = buscarAdicionalConfigurado($conexion, $clave);
     $unitario = (float)$articulo['precios_costo'];
     $totalLinea = $unitario * $cantidad;
+    $descripcion = $clave === 'LUZ_CORTESIA' ? 'adic luz de cortesía' : $articulo['precios_descripcion'];
     $otrosAdicionales[] = array(
         'clave' => $clave,
         'codigo' => $articulo['precios_codigo'],
-        'descripcion' => $articulo['precios_descripcion'],
+        'descripcion' => $descripcion,
         'cantidad' => $cantidad,
         'unitario' => $unitario,
         'total' => $totalLinea,
@@ -1977,11 +1978,11 @@ if ($esHidraulicoDescripcion) {
 if ($contactorDescripcion !== '' && (float)$contactorDescripcion > 0) $partesDescripcionControl[] = 'contactor de ' . $contactorDescripcion . 'A';
 if ($potenciaDescripcion !== '') $partesDescripcionControl[] = 'potencia ' . $potenciaDescripcion . ' HP';
 if ($motorVFNuevo) {
-    $unidadesMotor = array('HP'=>'HP','AMP'=>'A','KW'=>'kW');
+    $unidadesMotor = array('HP'=>'HP','AMP'=>'A','KW'=>'kW','CV'=>'CV');
     $valorMotorDescripcion = $numeroLimpio($motorVFNormalizado['dato_original_valor']);
     $unidadMotorDescripcion = $unidadesMotor[$motorVFNormalizado['dato_original_tipo']];
     $partesDescripcionControl[] = 'motor informado ' . $valorMotorDescripcion . ' ' . $unidadMotorDescripcion;
-    if ($motorVFNormalizado['hp_equivalente'] !== null && $motorVFNormalizado['dato_original_tipo'] === 'KW') {
+    if ($motorVFNormalizado['hp_equivalente'] !== null && in_array($motorVFNormalizado['dato_original_tipo'], array('KW','CV'), true)) {
         $partesDescripcionControl[] = 'potencia equivalente ' . $numeroLimpio($motorVFNormalizado['hp_equivalente']) . ' HP';
     }
     $partesDescripcionControl[] = 'corriente requerida ' . $numeroLimpio($motorVFNormalizado['corriente_normalizada']) . ' A';
@@ -2411,7 +2412,7 @@ body{font-family:Arial,sans-serif;background:#f4f4f9;margin:40px}
 <?php if ($usaMatrizCpuBase): ?><p class="advertencia"><strong>Matriz de cálculo:</strong> la CPU <?= escapar($nombreCpuCompat) ?> utiliza la matriz base A6300V4; conserva sus límites propios de paradas y maniobras.</p><?php endif; ?>
 <p><strong>Código:</strong> <?= escapar($equipo['control_codigo']) ?></p>
 <?php if ($motorVFNuevo): ?>
-<?php $unidadMotorResultado=$motorVFNormalizado['dato_original_tipo']==='AMP'?'A':($motorVFNormalizado['dato_original_tipo']==='KW'?'kW':'HP'); ?>
+<?php $unidadMotorResultado=$motorVFNormalizado['dato_original_tipo']==='AMP'?'A':($motorVFNormalizado['dato_original_tipo']==='KW'?'kW':($motorVFNormalizado['dato_original_tipo']==='CV'?'CV':'HP')); ?>
 <p><strong>Dato de motor informado:</strong> <?= escapar($numeroLimpio($motorVFNormalizado['dato_original_valor'])) ?> <?= escapar($unidadMotorResultado) ?></p>
 <p><strong>Corriente requerida:</strong> <?= escapar($numeroLimpio($motorVFNormalizado['corriente_normalizada'])) ?> A</p>
 <p><strong>Variador seleccionado:</strong> <?= escapar($nombreSubtipo) ?> · <?= escapar((string)$equipo['control_corriente']) ?> A · <?= escapar($equipo['control_codigo']) ?></p>

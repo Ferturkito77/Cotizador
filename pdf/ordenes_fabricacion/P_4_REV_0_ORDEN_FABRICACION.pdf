@@ -1,0 +1,66 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1549 >>
+stream
+BT /F2 20 Tf 1 0 0 1 42 795 Tm (AUTOMAC) Tj ET
+BT /F2 16 Tf 1 0 0 1 355 795 Tm (ORDEN DE FABRICACION) Tj ET
+1 w 42 771 m 553 771 l S
+BT /F2 10 Tf 1 0 0 1 42 747 Tm (Pedido: P.4) Tj ET
+BT /F2 10 Tf 1 0 0 1 340 747 Tm (Revision: 0) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 730 Tm (Cliente: 9999 - 6M) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 715 Tm (Referencia / obra: ddasdasdas) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 700 Tm (Cotizacion origen: R.5) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 685 Tm (Estado: CONFIRMADO) Tj ET
+BT /F1 9 Tf 1 0 0 1 340 685 Tm (Fecha: 03/08/2026 23:54) Tj ET
+0.86 g 42 641 511 24 re f 0 g
+BT /F2 8 Tf 1 0 0 1 46 650 Tm (Concepto) Tj ET
+BT /F2 8 Tf 1 0 0 1 128 650 Tm (Codigo) Tj ET
+BT /F2 8 Tf 1 0 0 1 200 650 Tm (Descripcion tecnica) Tj ET
+BT /F2 8 Tf 1 0 0 1 415 650 Tm (Cant.) Tj ET
+BT /F2 8 Tf 1 0 0 1 467 650 Tm (Observacion / formula) Tj ET
+0.6 G 0.5 w 42 609 511 30 re S 0 G
+BT /F1 7 Tf 1 0 0 1 46 625 Tm (Repuesto -) Tj ET
+BT /F1 7 Tf 1 0 0 1 46 615 Tm (descuento 30%) Tj ET
+BT /F1 7 Tf 1 0 0 1 128 625 Tm (A3700LU) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 625 Tm (Llave De Usuario por Chip de Contacto cantidad) Tj ET
+BT /F1 7 Tf 1 0 0 1 200 615 Tm (pedida por el cliente) Tj ET
+BT /F1 7 Tf 1 0 0 1 433.64 625 Tm (40) Tj ET
+BT /F1 7 Tf 1 0 0 1 467 625 Tm (Õtem cargado en) Tj ET
+BT /F1 7 Tf 1 0 0 1 467 615 Tm (REPUESTOS) Tj ET
+BT /F2 9 Tf 1 0 0 1 42 587 Tm (Documento tecnico sin precios ni descuentos.) Tj ET
+0.5 w 42 559 m 230 559 l S
+0.5 w 365 559 m 553 559 l S
+BT /F1 8 Tf 1 0 0 1 82 546 Tm (Produccion) Tj ET
+BT /F1 8 Tf 1 0 0 1 410 546 Tm (Administracion) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000462 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2063
+%%EOF

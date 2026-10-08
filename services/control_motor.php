@@ -4,7 +4,7 @@ function normalizarDatoMotorACorriente($tipo, $valor, $tension)
 {
     $tipo = strtoupper(trim((string)$tipo));
     $valorTexto = trim(str_replace(',', '.', (string)$valor));
-    if (!in_array($tipo, array('HP', 'AMP', 'KW'), true) || !is_numeric($valorTexto) || (float)$valorTexto <= 0) {
+    if (!in_array($tipo, array('HP', 'AMP', 'KW', 'CV'), true) || !is_numeric($valorTexto) || (float)$valorTexto <= 0) {
         throw new InvalidArgumentException('Ingrese un tipo y un valor de motor válidos.');
     }
 
@@ -22,7 +22,7 @@ function normalizarDatoMotorACorriente($tipo, $valor, $tension)
     if ($tipo === 'AMP') {
         $corriente = $valorNumerico;
     } else {
-        $hpEquivalente = $tipo === 'KW' ? $valorNumerico * 1.341 : $valorNumerico;
+        $hpEquivalente = $tipo === 'KW' ? $valorNumerico * 1.341 : ($tipo === 'CV' ? ($valorNumerico * 0.7355) * 1.341 : $valorNumerico);
         $corriente = $hpEquivalente * $factorCorriente;
     }
 

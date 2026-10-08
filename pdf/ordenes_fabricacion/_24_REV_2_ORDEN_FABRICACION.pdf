@@ -1,0 +1,459 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 7440 >>
+stream
+0.09 0.19 0.25 rg 28 776 539 48 re f 0 g
+0.07 0.53 0.33 rg 28 776 7 48 re f 0 g
+1 1 1 rg BT /F2 20 Tf 1 0 0 1 46 801 Tm (AUTOMAC) Tj ET 0 g
+0.69 0.78 0.83 rg BT /F2 7 Tf 1 0 0 1 46 788 Tm (PRODUCCION) Tj ET 0 g
+1 1 1 rg BT /F2 11 Tf 1 0 0 1 285 801 Tm (ORDEN DE FABRICACION - CONTROLES) Tj ET 0 g
+0.75 0.83 0.87 rg BT /F2 7 Tf 1 0 0 1 285 788 Tm (Hoja 1 de 3 - Datos tecnicos y material de hueco) Tj ET 0 g
+0.97 0.98 0.98 rg 38 697 519 65 re f 0 g
+0.07 0.53 0.33 rg 38 697 5 65 re f 0 g
+0.38 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 50 746 Tm (ORDEN) Tj ET 0 g
+BT /F2 14 Tf 1 0 0 1 50 730 Tm (#24) Tj ET
+0.38 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 118 746 Tm (REVISION) Tj ET 0 g
+BT /F2 12 Tf 1 0 0 1 118 730 Tm (2) Tj ET
+0.38 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 175 746 Tm (CLIENTE) Tj ET 0 g
+BT /F2 10 Tf 1 0 0 1 175 730 Tm (9999 - 6M) Tj ET
+0.38 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 438 746 Tm (FECHA) Tj ET 0 g
+BT /F2 9 Tf 1 0 0 1 438 730 Tm (06/08/2026) Tj ET
+0.38 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 50 711 Tm (REFERENCIA / OBRA) Tj ET 0 g
+BT /F1 8 Tf 1 0 0 1 142 711 Tm (-) Tj ET
+0.38 0.44 0.48 rg BT /F2 7 Tf 1 0 0 1 344 711 Tm (ORIGEN) Tj ET 0 g
+BT /F1 8 Tf 1 0 0 1 389 711 Tm (C.37) Tj ET
+0.91 0.96 0.93 rg 38 659 519 24 re f 0 g
+0.07 0.53 0.33 rg 38 659 5 24 re f 0 g
+0.05 0.39 0.24 rg BT /F2 10 Tf 1 0 0 1 50 667 Tm (DATOS TECNICOS DEL CONTROL) Tj ET 0 g
+0.6 G 0.5 w 38 628 255 28 re S 0 G
+0.07 0.53 0.33 rg 38 628 4 28 re f 0 g
+0.97 g 42 628 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 47 639 Tm (Tipo control) Tj ET
+BT /F1 8 Tf 1 0 0 1 136 640 Tm (A6300V4 - A63FI2MD00) Tj ET
+0.6 G 0.5 w 302 628 255 28 re S 0 G
+0.07 0.53 0.33 rg 302 628 4 28 re f 0 g
+0.97 g 306 628 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 311 639 Tm (Ascensores) Tj ET
+BT /F1 8 Tf 1 0 0 1 400 640 Tm (1 individual) Tj ET
+0.6 G 0.5 w 38 600 255 28 re S 0 G
+0.07 0.53 0.33 rg 38 600 4 28 re f 0 g
+0.97 g 42 600 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 47 611 Tm (Maniobra) Tj ET
+BT /F1 8 Tf 1 0 0 1 136 612 Tm (SD) Tj ET
+0.6 G 0.5 w 302 600 255 28 re S 0 G
+0.07 0.53 0.33 rg 302 600 4 28 re f 0 g
+0.97 g 306 600 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 311 611 Tm (Paradas) Tj ET
+BT /F1 8 Tf 1 0 0 1 400 612 Tm (12) Tj ET
+0.6 G 0.5 w 38 572 255 28 re S 0 G
+0.07 0.53 0.33 rg 38 572 4 28 re f 0 g
+0.97 g 42 572 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 47 583 Tm (Motor / tension) Tj ET
+BT /F1 8 Tf 1 0 0 1 136 589 Tm (VF / INVT GD200L / 18.00 A / Sin) Tj ET
+BT /F1 8 Tf 1 0 0 1 136 579 Tm (encoder / 60 m/min / 3X380) Tj ET
+0.6 G 0.5 w 302 572 255 28 re S 0 G
+0.07 0.53 0.33 rg 302 572 4 28 re f 0 g
+0.97 g 306 572 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 311 583 Tm (Potencia) Tj ET
+BT /F1 8 Tf 1 0 0 1 400 584 Tm (10 HP) Tj ET
+0.6 G 0.5 w 38 544 255 28 re S 0 G
+0.07 0.53 0.33 rg 38 544 4 28 re f 0 g
+0.97 g 42 544 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 47 555 Tm (Corriente) Tj ET
+BT /F1 8 Tf 1 0 0 1 136 556 Tm (18.00 A) Tj ET
+0.6 G 0.5 w 302 544 255 28 re S 0 G
+0.07 0.53 0.33 rg 302 544 4 28 re f 0 g
+0.97 g 306 544 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 311 555 Tm (Contactores) Tj ET
+BT /F1 8 Tf 1 0 0 1 400 556 Tm (18 A) Tj ET
+0.6 G 0.5 w 38 516 255 28 re S 0 G
+0.07 0.53 0.33 rg 38 516 4 28 re f 0 g
+0.97 g 42 516 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 47 527 Tm (Termicos) Tj ET
+BT /F1 8 Tf 1 0 0 1 136 528 Tm (Incluidos segun configuracion) Tj ET
+0.6 G 0.5 w 302 516 255 28 re S 0 G
+0.07 0.53 0.33 rg 302 516 4 28 re f 0 g
+0.97 g 306 516 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 311 527 Tm (Puerta cabina) Tj ET
+BT /F1 8 Tf 1 0 0 1 400 528 Tm (MANUAL) Tj ET
+0.6 G 0.5 w 38 488 255 28 re S 0 G
+0.07 0.53 0.33 rg 38 488 4 28 re f 0 g
+0.97 g 42 488 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 47 499 Tm (Puertas piso) Tj ET
+BT /F1 8 Tf 1 0 0 1 136 500 Tm (CONT.DOBLE) Tj ET
+0.6 G 0.5 w 302 488 255 28 re S 0 G
+0.07 0.53 0.33 rg 302 488 4 28 re f 0 g
+0.97 g 306 488 88 28 re f 0 g
+BT /F2 8 Tf 1 0 0 1 311 499 Tm (Servicios) Tj ET
+BT /F1 8 Tf 1 0 0 1 400 500 Tm (Según pedido confirmado) Tj ET
+0.94 g 38 474 145 18 re f 0 g
+0.6 G 0.5 w 183 474 374 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 480 Tm (Adicionales tecnicos) Tj ET
+BT /F1 8 Tf 1 0 0 1 188 480 Tm (Botonera de cabina PM, modelo A3160, 24V, 3B, registro ROJO, tecla AR/AC.) Tj ET
+0.91 0.96 0.93 rg 38 444 519 24 re f 0 g
+0.07 0.53 0.33 rg 38 444 5 24 re f 0 g
+0.05 0.39 0.24 rg BT /F2 10 Tf 1 0 0 1 50 452 Tm (MATERIAL DE HUECO) Tj ET 0 g
+BT /F2 9 Tf 1 0 0 1 42 441 Tm (Imanes y cabezales magnéticos) Tj ET
+0.88 g 38 408 519 20 re f 0 g
+BT /F2 8 Tf 1 0 0 1 46 415 Tm (Cant.) Tj ET
+BT /F2 8 Tf 1 0 0 1 100 415 Tm (Verif.) Tj ET
+BT /F2 8 Tf 1 0 0 1 150 415 Tm (Descripcion) Tj ET
+0.6 G 0.5 w 38 388 519 20 re S 0 G
+0.25 w 90 388 m 90 408 l S
+0.25 w 140 388 m 140 408 l S
+BT /F2 9 Tf 1 0 0 1 54 395 Tm (20) Tj ET
+0.6 G 0.5 w 106 391 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 395 Tm (Imán corto 10 cm) Tj ET
+0.6 G 0.5 w 38 368 519 20 re S 0 G
+0.25 w 90 368 m 90 388 l S
+0.25 w 140 368 m 140 388 l S
+BT /F2 9 Tf 1 0 0 1 54 375 Tm (24) Tj ET
+0.6 G 0.5 w 106 371 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 375 Tm (Imán largo 20 cm) Tj ET
+0.6 G 0.5 w 38 348 519 20 re S 0 G
+0.25 w 90 348 m 90 368 l S
+0.25 w 140 348 m 140 368 l S
+BT /F2 9 Tf 1 0 0 1 54 355 Tm (2) Tj ET
+0.6 G 0.5 w 106 351 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 355 Tm (Cabezal magnético A2140) Tj ET
+0.6 G 0.5 w 38 328 519 20 re S 0 G
+0.25 w 90 328 m 90 348 l S
+0.25 w 140 328 m 140 348 l S
+BT /F2 9 Tf 1 0 0 1 54 335 Tm (1) Tj ET
+0.6 G 0.5 w 106 331 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 335 Tm (Soporte H2142S) Tj ET
+0.6 G 0.5 w 38 308 519 20 re S 0 G
+0.25 w 90 308 m 90 328 l S
+0.25 w 140 308 m 140 328 l S
+BT /F2 9 Tf 1 0 0 1 54 315 Tm (6) Tj ET
+0.6 G 0.5 w 106 311 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 315 Tm (LÍMITE C/SOPORTE HONEYWELL) Tj ET
+0.6 G 0.5 w 38 288 519 20 re S 0 G
+0.25 w 90 288 m 90 308 l S
+0.25 w 140 288 m 140 308 l S
+BT /F2 9 Tf 1 0 0 1 54 295 Tm (12) Tj ET
+0.6 G 0.5 w 106 291 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 295 Tm (Tornillo 3/16 x 1 1/4 para límites) Tj ET
+0.6 G 0.5 w 38 268 519 20 re S 0 G
+0.25 w 90 268 m 90 288 l S
+0.25 w 140 268 m 140 288 l S
+BT /F2 9 Tf 1 0 0 1 54 275 Tm (12) Tj ET
+0.6 G 0.5 w 106 271 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 275 Tm (Banquito para hueco por imanes) Tj ET
+0.6 G 0.5 w 38 248 519 20 re S 0 G
+0.25 w 90 248 m 90 268 l S
+0.25 w 140 248 m 140 268 l S
+BT /F2 9 Tf 1 0 0 1 54 255 Tm (12) Tj ET
+0.6 G 0.5 w 106 251 11 11 re S 0 G
+BT /F1 9 Tf 1 0 0 1 148 255 Tm (Tornillo 1 x 1/4 con arandela Grower) Tj ET
+0.6 G 0.5 w 38 228 519 20 re S 0 G
+0.25 w 90 228 m 90 248 l S
+0.25 w 140 228 m 140 248 l S
+0.6 G 0.5 w 106 231 11 11 re S 0 G
+0.6 G 0.5 w 38 122 250 92 re S 0 G
+0.6 G 0.5 w 307 122 250 92 re S 0 G
+0.9 g 38 194 250 20 re f 0 g
+0.9 g 307 194 250 20 re f 0 g
+BT /F2 9 Tf 1 0 0 1 132 201 Tm (NOTAS) Tj ET
+BT /F2 9 Tf 1 0 0 1 365 201 Tm (ESPECIFICACIONES CONTROLES) Tj ET
+0.25 w 44 182 m 282 182 l S
+0.25 w 313 182 m 551 182 l S
+0.25 w 44 170 m 282 170 l S
+0.25 w 313 170 m 551 170 l S
+0.25 w 44 158 m 282 158 l S
+0.25 w 313 158 m 551 158 l S
+0.25 w 44 146 m 282 146 l S
+0.25 w 313 146 m 551 146 l S
+0.25 w 44 134 m 282 134 l S
+0.25 w 313 134 m 551 134 l S
+0.6 G 0.5 w 38 63 250 45 re S 0 G
+0.6 G 0.5 w 307 63 250 45 re S 0 G
+BT /F2 9 Tf 1 0 0 1 88 95 Tm (CODIGO PLANO MECANICO) Tj ET
+BT /F2 9 Tf 1 0 0 1 359 95 Tm (CODIGO PLANO ELECTRICO) Tj ET
+0.6 w 38 54 m 557 54 l S
+BT /F1 8 Tf 1 0 0 1 42 39 Tm (Responsable comercial: Fernando) Tj ET
+BT /F1 8 Tf 1 0 0 1 300 39 Tm (Responsable técnico: ____________________) Tj ET
+BT /F1 8 Tf 1 0 0 1 411 39 Tm (UE: ________) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 6547 >>
+stream
+0.09 0.19 0.25 rg 28 776 539 48 re f 0 g
+0.07 0.53 0.33 rg 28 776 7 48 re f 0 g
+1 1 1 rg BT /F2 20 Tf 1 0 0 1 46 801 Tm (AUTOMAC) Tj ET 0 g
+0.69 0.78 0.83 rg BT /F2 7 Tf 1 0 0 1 46 788 Tm (PRODUCCION) Tj ET 0 g
+1 1 1 rg BT /F2 11 Tf 1 0 0 1 285 801 Tm (OBLEA DE PRODUCCION - PRUEBA CONTROL) Tj ET 0 g
+0.75 0.83 0.87 rg BT /F2 7 Tf 1 0 0 1 285 788 Tm (Hoja 2 de 3 - Seguimiento de produccion) Tj ET 0 g
+BT /F2 8 Tf 1 0 0 1 38 758 Tm (Fecha: 06/08/2026) Tj ET
+BT /F2 8 Tf 1 0 0 1 385 758 Tm (Pedido: #24) Tj ET
+0.94 g 38 720 150 18 re f 0 g
+0.6 G 0.5 w 188 720 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 726 Tm (Tipo Control) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 726 Tm (A6300V4 A63FI2MD00) Tj ET
+0.94 g 38 702 150 18 re f 0 g
+0.6 G 0.5 w 188 702 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 708 Tm (Numero de ascensores) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 708 Tm (1 individual) Tj ET
+0.94 g 38 684 150 18 re f 0 g
+0.6 G 0.5 w 188 684 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 690 Tm (Maniobra) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 690 Tm (SD) Tj ET
+0.94 g 38 666 150 18 re f 0 g
+0.6 G 0.5 w 188 666 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 672 Tm (Paradas) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 672 Tm (12) Tj ET
+0.94 g 38 648 150 18 re f 0 g
+0.6 G 0.5 w 188 648 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 654 Tm (Tipo y tension de motor) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 654 Tm (VF / INVT GD200L / 18.00 A / Sin encoder / 60 m/min / 3X380) Tj ET
+0.94 g 38 630 150 18 re f 0 g
+0.6 G 0.5 w 188 630 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 636 Tm (Potencia del motor) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 636 Tm (10 HP) Tj ET
+0.94 g 38 612 150 18 re f 0 g
+0.6 G 0.5 w 188 612 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 618 Tm (Corriente nominal) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 618 Tm (18.00 A) Tj ET
+0.94 g 38 594 150 18 re f 0 g
+0.6 G 0.5 w 188 594 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 600 Tm (Contactores) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 600 Tm (18 A) Tj ET
+0.94 g 38 576 150 18 re f 0 g
+0.6 G 0.5 w 188 576 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 582 Tm (Puerta de cabina) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 582 Tm (MANUAL) Tj ET
+0.94 g 38 558 150 18 re f 0 g
+0.6 G 0.5 w 188 558 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 564 Tm (Puertas de piso) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 564 Tm (CONT.DOBLE) Tj ET
+0.94 g 38 540 150 18 re f 0 g
+0.6 G 0.5 w 188 540 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 546 Tm (Termicos y protecciones) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 546 Tm (Incluidos segun configuracion) Tj ET
+0.94 g 38 522 150 18 re f 0 g
+0.6 G 0.5 w 188 522 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 528 Tm (Servicios) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 528 Tm (Según pedido confirmado) Tj ET
+0.94 g 38 504 150 18 re f 0 g
+0.6 G 0.5 w 188 504 369 18 re S 0 G
+BT /F2 8 Tf 1 0 0 1 43 510 Tm (Adicionales) Tj ET
+BT /F1 8 Tf 1 0 0 1 193 510 Tm (Botonera de cabina PM, modelo A3160, 24V, 3B, registro ROJO, tecla AR/AC.) Tj ET
+BT /F2 8 Tf 1 0 0 1 38 496 Tm (Observaciones:) Tj ET
+0.35 w 155 494 m 557 494 l S
+BT /F2 8 Tf 1 0 0 1 38 478 Tm (Chapa Base:) Tj ET
+0.35 w 155 476 m 557 476 l S
+BT /F2 8 Tf 1 0 0 1 38 460 Tm (Gabinete:) Tj ET
+0.35 w 155 458 m 557 458 l S
+0.91 0.96 0.93 rg 38 420 519 22 re f 0 g
+0.07 0.53 0.33 rg 38 420 5 22 re f 0 g
+0.05 0.39 0.24 rg BT /F2 9 Tf 1 0 0 1 50 428 Tm (SEGUIMIENTO DE PRODUCCION Y NO CONFORMIDADES) Tj ET 0 g
+0.12 0.22 0.27 rg 38 392 519 24 re f 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 88 401 Tm (SECTOR) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 200 401 Tm (EST.) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 263 401 Tm (RESPONSABLE) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 413 401 Tm (NO CONFORMIDADES) Tj ET 0 g
+0.6 G 0.5 w 38 353 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 380 Tm (DOCUMENTACION ELECTRICA) Tj ET
+0.6 G 0.5 w 188 353 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 370 Tm (DE) Tj ET
+0.6 G 0.5 w 230 353 150 39 re S 0 G
+0.6 G 0.5 w 380 353 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 379 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 367 m 550 367 l S
+0.25 w 386 358 m 550 358 l S
+0.6 G 0.5 w 38 314 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 341 Tm (DOCUMENTACION MECANICA) Tj ET
+0.6 G 0.5 w 188 314 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 331 Tm (DX) Tj ET
+0.6 G 0.5 w 230 314 150 39 re S 0 G
+0.6 G 0.5 w 380 314 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 340 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 328 m 550 328 l S
+0.25 w 386 319 m 550 319 l S
+0.6 G 0.5 w 38 275 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 302 Tm (SEPARACION DE MATERIALES) Tj ET
+0.6 G 0.5 w 188 275 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 292 Tm (SM) Tj ET
+0.6 G 0.5 w 230 275 150 39 re S 0 G
+0.6 G 0.5 w 380 275 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 301 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 289 m 550 289 l S
+0.25 w 386 280 m 550 280 l S
+0.6 G 0.5 w 38 236 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 263 Tm (MONTAJE EN CHAPA BASE) Tj ET
+0.6 G 0.5 w 188 236 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 253 Tm (M) Tj ET
+0.6 G 0.5 w 230 236 150 39 re S 0 G
+0.6 G 0.5 w 380 236 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 262 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 250 m 550 250 l S
+0.25 w 386 241 m 550 241 l S
+0.6 G 0.5 w 38 197 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 224 Tm (CABLEADO) Tj ET
+0.6 G 0.5 w 188 197 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 214 Tm (C) Tj ET
+0.6 G 0.5 w 230 197 150 39 re S 0 G
+0.6 G 0.5 w 380 197 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 223 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 211 m 550 211 l S
+0.25 w 386 202 m 550 202 l S
+0.6 G 0.5 w 38 158 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 185 Tm (MONTAJE EN GABINETE) Tj ET
+0.6 G 0.5 w 188 158 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 175 Tm (MX) Tj ET
+0.6 G 0.5 w 230 158 150 39 re S 0 G
+0.6 G 0.5 w 380 158 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 184 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 172 m 550 172 l S
+0.25 w 386 163 m 550 163 l S
+0.6 G 0.5 w 38 119 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 146 Tm (PRUEBA) Tj ET
+0.6 G 0.5 w 188 119 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 136 Tm (P) Tj ET
+0.6 G 0.5 w 230 119 150 39 re S 0 G
+0.6 G 0.5 w 380 119 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 145 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 133 m 550 133 l S
+0.25 w 386 124 m 550 124 l S
+0.6 G 0.5 w 38 80 150 39 re S 0 G
+BT /F2 7 Tf 1 0 0 1 43 107 Tm (EMBALAJE) Tj ET
+0.6 G 0.5 w 188 80 42 39 re S 0 G
+BT /F2 8 Tf 1 0 0 1 202 97 Tm (T) Tj ET
+0.6 G 0.5 w 230 80 150 39 re S 0 G
+0.6 G 0.5 w 380 80 177 39 re S 0 G
+BT /F1 7 Tf 1 0 0 1 386 106 Tm ([ ] OK   [ ] Observado) Tj ET
+0.25 w 386 94 m 550 94 l S
+0.25 w 386 85 m 550 85 l S
+BT /F1 7 Tf 1 0 0 1 38 56 Tm (Responsable comercial: Fernando) Tj ET
+BT /F1 7 Tf 1 0 0 1 365 56 Tm (Fecha cierre: ____/____/________) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 4221 >>
+stream
+0.09 0.19 0.25 rg 28 784 539 40 re f 0 g
+0.07 0.53 0.33 rg 28 784 7 40 re f 0 g
+1 1 1 rg BT /F2 18 Tf 1 0 0 1 46 800 Tm (AUTOMAC) Tj ET 0 g
+1 1 1 rg BT /F2 11 Tf 1 0 0 1 380 800 Tm (OBLEAS DE PRODUCCION) Tj ET 0 g
+0.6 G 0.5 w 38 432 519 342 re S 0 G
+0.91 0.96 0.93 rg 38 754 519 22 re f 0 g
+0.07 0.53 0.33 rg 38 754 5 22 re f 0 g
+0.05 0.39 0.24 rg BT /F2 9 Tf 1 0 0 1 50 762 Tm (OBLEA DE PRODUCCION - CONTROL) Tj ET 0 g
+BT /F2 8 Tf 1 0 0 1 440 762 Tm (COPIA 1) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 736 Tm (Fecha: 06/08/2026) Tj ET
+BT /F2 8 Tf 1 0 0 1 360 736 Tm (Pedido: #24) Tj ET
+BT /F1 8 Tf 1 0 0 1 44 718 Tm (Empresa: 6M) Tj ET
+BT /F1 8 Tf 1 0 0 1 44 702 Tm (Referencia: ) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 682 Tm (Tipo Control:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 682 Tm (A6300V4 A63FI2MD00) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 666 Tm (Numero de ascensores:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 666 Tm (1 individual) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 650 Tm (Maniobra:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 650 Tm (SD) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 634 Tm (Paradas:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 634 Tm (12) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 618 Tm (Tipo y tension de motor:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 618 Tm (VF / INVT GD200L / 18.00 A / Sin encoder / 60 m/min / 3X380) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 602 Tm (Potencia:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 602 Tm (10 HP) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 586 Tm (Corriente nominal:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 586 Tm (18.00 A) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 570 Tm (Contactores:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 570 Tm (18 A) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 554 Tm (Puerta cabina:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 554 Tm (MANUAL) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 538 Tm (Puertas pisos:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 538 Tm (CONT.DOBLE) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 522 Tm (Termicos:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 522 Tm (Incluidos segun configuracion) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 506 Tm (Servicios:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 506 Tm (Según pedido confirmado) Tj ET
+BT /F2 7 Tf 1 0 0 1 44 479 Tm (Observaciones:) Tj ET
+0.3 w 130 477 m 548 477 l S
+BT /F2 7 Tf 1 0 0 1 44 463 Tm (Chapa Base:) Tj ET
+0.3 w 130 461 m 548 461 l S
+BT /F2 7 Tf 1 0 0 1 44 447 Tm (Gabinete:) Tj ET
+0.3 w 130 445 m 548 445 l S
+0.6 G 0.5 w 38 70 519 342 re S 0 G
+0.91 0.96 0.93 rg 38 392 519 22 re f 0 g
+0.07 0.53 0.33 rg 38 392 5 22 re f 0 g
+0.05 0.39 0.24 rg BT /F2 9 Tf 1 0 0 1 50 400 Tm (OBLEA DE PRODUCCION - CONTROL) Tj ET 0 g
+BT /F2 8 Tf 1 0 0 1 440 400 Tm (COPIA 2) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 374 Tm (Fecha: 06/08/2026) Tj ET
+BT /F2 8 Tf 1 0 0 1 360 374 Tm (Pedido: #24) Tj ET
+BT /F1 8 Tf 1 0 0 1 44 356 Tm (Empresa: 6M) Tj ET
+BT /F1 8 Tf 1 0 0 1 44 340 Tm (Referencia: ) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 320 Tm (Tipo Control:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 320 Tm (A6300V4 A63FI2MD00) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 304 Tm (Numero de ascensores:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 304 Tm (1 individual) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 288 Tm (Maniobra:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 288 Tm (SD) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 272 Tm (Paradas:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 272 Tm (12) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 256 Tm (Tipo y tension de motor:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 256 Tm (VF / INVT GD200L / 18.00 A / Sin encoder / 60 m/min / 3X380) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 240 Tm (Potencia:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 240 Tm (10 HP) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 224 Tm (Corriente nominal:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 224 Tm (18.00 A) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 208 Tm (Contactores:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 208 Tm (18 A) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 192 Tm (Puerta cabina:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 192 Tm (MANUAL) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 176 Tm (Puertas pisos:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 176 Tm (CONT.DOBLE) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 160 Tm (Termicos:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 160 Tm (Incluidos segun configuracion) Tj ET
+BT /F2 8 Tf 1 0 0 1 44 144 Tm (Servicios:) Tj ET
+BT /F1 8 Tf 1 0 0 1 180 144 Tm (Según pedido confirmado) Tj ET
+BT /F2 7 Tf 1 0 0 1 44 117 Tm (Observaciones:) Tj ET
+0.3 w 130 115 m 548 115 l S
+BT /F2 7 Tf 1 0 0 1 44 101 Tm (Chapa Base:) Tj ET
+0.3 w 130 99 m 548 99 l S
+BT /F2 7 Tf 1 0 0 1 44 85 Tm (Gabinete:) Tj ET
+0.3 w 130 83 m 548 83 l S
+BT /F1 7 Tf 1 0 0 1 250 24 Tm (Hoja 3 de 3) Tj ET
+endstream
+endobj
+xref
+0 11
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000133 00000 n 
+0000000230 00000 n 
+0000000332 00000 n 
+0000000474 00000 n 
+0000007966 00000 n 
+0000008108 00000 n 
+0000014707 00000 n 
+0000014850 00000 n 
+trailer
+<< /Size 11 /Root 1 0 R >>
+startxref
+19124
+%%EOF

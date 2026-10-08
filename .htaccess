@@ -1,0 +1,9 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteRule (^|/)\. - [F,END]
+RewriteRule ^historicos_pdf/.*\.(php[0-9]?|phps|phtml|phar|cgi|pl|py|rb|sh|asp|aspx|shtml)$ - [F,END,NC]
+
+<FilesMatch "(?i)\.(sql|zip|exe|winmd|txt|log|bak|old|orig|save)(\.[0-9]+)?$">
+    Require all denied
+</FilesMatch>

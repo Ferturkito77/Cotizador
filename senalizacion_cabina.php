@@ -657,6 +657,13 @@ function senalCoeficienteAcabadoV190($conexion,$acabado,$medidaEspecial,$politic
     return (float)$f['coeficiente'];
 }
 function senalTextoAcabadoV190($acabado,$especial){$a=strtoupper(trim((string)$acabado));if($a==='')$a='ACERO';return $a.($especial?' · MEDIDA ESPECIAL':'');}
+function senalTextoAcabadoComercialV190($acabado,$especial,$modelo,$perfil=array()){
+    $nombre=senalNormalizarClave($modelo);$familia=strtoupper(trim((string)($perfil['familia_comercial']??'')));$modo=strtoupper(trim((string)($perfil['modo_base']??'')));
+    $esOnix=in_array($modo,array('ONIX_TELEFONICO','ONIX_INDIVIDUALES'),true)||strpos($nombre,'ONIX TELEFONICO')===0||strpos($nombre,'ONIX INDIVIDUALES')===0||strpos($nombre,'ONIX PULS')===0;
+    $esPantalla21=$familia==='PANTALLA 21'||strpos($nombre,'PANTALLA 21')!==false||strpos($nombre,'PANTALLA TOUCH 21')!==false;
+    if($esOnix||$esPantalla21)return 'VIDRIO'.($especial?' · MEDIDA ESPECIAL':'');
+    return senalTextoAcabadoV190($acabado,$especial);
+}
 function senalAgregarLinea(&$lineas, $conexion, $listaId, $concepto, $codigo, $descripcion, $cantidad, $formula='', $bonificado=false, $coeficiente=1.0, $detalleCoef='') {
     $cantidad=(float)$cantidad;
     if ($cantidad <= 0 || trim((string)$codigo)==='') return;

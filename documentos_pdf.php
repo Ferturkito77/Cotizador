@@ -249,9 +249,12 @@ class PdfAutomac
     public function tableHeaderCompact(float &$y, array $columns, int $r=18, int $g=50, int $b=91): void
     {
         $x = $this->margin; $h = 16;
-        $this->fillColorRect($x, $y - $h + 3, array_sum(array_column($columns, 'w')), $h, $r, $g, $b);
+        $totalW = array_sum(array_column($columns, 'w'));
+        // v459: cabecera suave, legible en pantalla y en impresion B/N.
+        $this->fillColorRect($x, $y - $h + 3, $totalW, $h, 235, 242, 247);
+        $this->fillColorRect($x, $y - $h + 3, 3.5, $h, 18, 50, 91);
         foreach ($columns as $col) {
-            $this->colorText($x + 3, $y - 6.4, $col['label'], 7.5, true, 255, 255, 255);
+            $this->colorText($x + 5, $y - 6.4, $col['label'], 7.8, true, 18, 50, 91);
             $x += $col['w'];
         }
         $y -= $h;
@@ -945,7 +948,7 @@ function pdfDescripcionControl(array $base, array $t): string
 
     if ($t['contactor'] !== '') $partes[] = 'contactor de ' . $t['contactor'] . ' A';
     if ($t['dato_motor_tipo'] !== '' && $t['dato_motor_valor'] !== '') {
-        $unidad = $t['dato_motor_tipo'] === 'AMP' ? 'A' : ($t['dato_motor_tipo'] === 'KW' ? 'kW' : 'HP');
+        $unidad = $t['dato_motor_tipo'] === 'AMP' ? 'A' : ($t['dato_motor_tipo'] === 'KW' ? 'kW' : ($t['dato_motor_tipo'] === 'CV' ? 'CV' : 'HP'));
         $partes[] = 'motor informado ' . $t['dato_motor_valor'] . ' ' . $unidad;
         if ($t['corriente_requerida'] !== '') $partes[] = 'corriente requerida ' . $t['corriente_requerida'] . ' A';
     }
@@ -1252,14 +1255,29 @@ function pdfItemsComerciales(mysqli $conexion, array $cotizacion, array $detalle
 function pdfTemaModulo(string $modulo): array
 {
     $m = strtoupper(trim($modulo));
+    // v459: paleta unificada con la interfaz del cotizador.
+    // Se evita depender de colores intensos para conservar lectura en B/N.
     $temas = array(
-        'CONTROL' => array('CONTROL', 25, 96, 180, ''),
-        'SENALIZACION' => array('SENALIZACION', 232, 104, 12, ''),
-        'ACCESORIOS' => array('ACCESORIOS', 22, 143, 79, ''),
-        'IEP' => array('IEP', 104, 76, 170, ''),
-        'REPUESTOS' => array('REPUESTOS', 28, 139, 164, ''),
+        'CONTROL' => array('CONTROL', 18, 50, 91, ''),
+        'SENALIZACION' => array('SENALIZACION', 74, 132, 164, ''),
+        'ACCESORIOS' => array('ACCESORIOS', 19, 135, 83, ''),
+        'IEP' => array('IEP', 91, 116, 139, ''),
+        'REPUESTOS' => array('REPUESTOS', 58, 126, 145, ''),
     );
     return $temas[$m] ?? array($m !== '' ? $m : 'OTROS', 78, 95, 108, 'O');
+}
+
+function pdfTemaModuloClaro(string $modulo): array
+{
+    $m = strtoupper(trim($modulo));
+    $fondos = array(
+        'CONTROL' => array(237, 243, 249),
+        'SENALIZACION' => array(240, 247, 250),
+        'ACCESORIOS' => array(238, 248, 243),
+        'IEP' => array(243, 246, 248),
+        'REPUESTOS' => array(239, 247, 249),
+    );
+    return $fondos[$m] ?? array(245, 247, 248);
 }
 
 function pdfModuloOrden(string $modulo): int
@@ -1368,12 +1386,17 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
     $pdf->colorText(414, 812, $esPedido ? 'PEDIDO Nro.' : 'COTIZACION Nro.', 7.4, true, 63, 79, 94);
     $pdf->colorText(414, 794, $numero . ($revisionDoc > 0 ? '  R.' . $revisionDoc : ''), 15.2, true, 18, 50, 91);
     $pdf->colorText(414, 780, 'EMISION  ' . $fecha, 7.2, true, 63, 79, 94);
-    $pdf->line(38, 773, 557, 773, .8);
+    $pdf->fillColorRect(38, 771, 519, 2.4, 18, 50, 91);
 
     /* v400: cabecera compacta en dos grupos: Cliente / Obra y condiciones. */
     $top = 764; $hDatos = 48;
-    $gapDatos = 6; $grupoW = (519-$gapDatos)/2;
-    $xCliente=38; $xObra=38+$grupoW+$gapDatos;
+    /* v455: eje visual unico. Todos los bloques comerciales comparten
+     * exactamente los mismos bordes laterales para conservar simetria. */
+    $contenidoX = 42; $contenidoW = 511;
+    $gapDatos = 6; $grupoW = ($contenidoW-$gapDatos)/2;
+    $xCliente=$contenidoX; $xObra=$contenidoX+$grupoW+$gapDatos;
+    $pdf->fillColorRect($xCliente,$top-$hDatos,$grupoW,$hDatos,244,248,251);
+    $pdf->fillColorRect($xObra,$top-$hDatos,$grupoW,$hDatos,244,248,251);
     $pdf->roundedRect($xCliente,$top-$hDatos,$grupoW,$hDatos,5);
     $pdf->roundedRect($xObra,$top-$hDatos,$grupoW,$hDatos,5);
 
@@ -1422,11 +1445,16 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
     $modsResumen=array('CONTROL','SENALIZACION','ACCESORIOS','IEP','REPUESTOS');
 
     /* Resumen compacto en una fila. Ajustado para evitar solapes entre icono y precio. */
-    $gap=3; $miniW=(519-($gap*4))/5; $miniH=28; $x=38;
+    /* v455: cinco modulos de ancho identico, centrados sobre el mismo eje
+     * que las tablas y las bandas de seccion. */
+    $gap=3; $miniW=($contenidoW-($gap*4))/5; $miniH=28; $x=$contenidoX;
     foreach($modsResumen as $m){
         [$lab,$rr,$gg,$bb,$ico]=pdfTemaModulo($m);
+        [$fr,$fg,$fb]=pdfTemaModuloClaro($m);
+        $pdf->fillColorRect($x,$y-$miniH,$miniW,$miniH,$fr,$fg,$fb);
         $pdf->roundedRect($x,$y-$miniH,$miniW,$miniH,4);
-        $pdf->moduleIcon($x+5,$y-9,$m,6.8,$rr,$gg,$bb);
+        $pdf->fillColorRect($x,$y-$miniH,3.2,$miniH,$rr,$gg,$bb);
+        $pdf->moduleIcon($x+6,$y-9,$m,6.8,$rr,$gg,$bb);
         $pdf->colorText($x+15,$y-7,$lab,6.0,true,$rr,$gg,$bb);
         if(count($grupos[$m])>0){
             $pdf->text($x+4,$y-20,pdfDinero($sumas[$m]),7.1,true);
@@ -1443,11 +1471,14 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
     /* v454: columnas pensadas para lectura real en papel/A4. El codigo gana ancho
      * para evitar microtipografia; la descripcion conserva la mayor superficie. */
     $columns=array(
+        /* v459: el ancho total de las columnas debe coincidir exactamente con
+         * $contenidoW (511 pt). Así bandas, tablas, resumen y total comparten
+         * el mismo eje y los mismos márgenes izquierdo/derecho. */
         array('label'=>'Cant.','w'=>22,'align'=>'center','nowrap'=>true),
-        array('label'=>'Codigo','w'=>106),
-        array('label'=>'Descripcion','w'=>271),
-        array('label'=>'Unit.','w'=>59,'align'=>'right','nowrap'=>true),
-        array('label'=>'Total','w'=>61,'align'=>'right','nowrap'=>true),
+        array('label'=>'Codigo','w'=>104),
+        array('label'=>'Descripcion','w'=>267),
+        array('label'=>'Unit.','w'=>58,'align'=>'right','nowrap'=>true),
+        array('label'=>'Total','w'=>60,'align'=>'right','nowrap'=>true),
     );
 
     /*
@@ -1487,8 +1518,8 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
     /* v454: tipografia profesional adaptativa. Se usa la fuente MAS GRANDE
      * que entra en una sola hoja; solo documentos excepcionalmente densos
      * bajan de 8 pt. La prioridad es legibilidad, no llenar la pagina. */
-    $candidatosFuente=array(8.7,8.5,8.3,8.1,7.9,7.7,7.5,7.3);
-    $tamDescripcionPdf=7.3;
+    $candidatosFuente=array(9.2,9.0,8.8,8.6,8.4,8.2,8.0,7.8,7.6,7.4,7.2,7.0,6.8);
+    $tamDescripcionPdf=6.8;
     $alturaDisponible=max(330.0,$y-112.0);
     foreach($candidatosFuente as $cand){
         if($estimarAlturaTablas($cand) <= $alturaDisponible){
@@ -1508,10 +1539,18 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
     foreach($modsResumen as $moduloActual){
         if(!$grupos[$moduloActual])continue;
         [$lab,$rr,$gg,$bb,$ico]=pdfTemaModulo($moduloActual);
-        $pdf->fillColorRect(42,$y-14,511,15,$rr,$gg,$bb);
-        $pdf->moduleIcon(48,$y-12,$moduloActual,9.5,255,255,255);
-        $pdf->colorText(62,$y-8,$lab,8.2,true,255,255,255);
-        $pdf->colorText(432,$y-8,'Subt. '.pdfDinero($sumas[$moduloActual]),7.2,true,255,255,255);
+        [$fr,$fg,$fb]=pdfTemaModuloClaro($moduloActual);
+        /* v455: banda unica de extremo a extremo. El subtotal forma parte
+         * de la misma fila y queda alineado al margen derecho. */
+        $pdf->fillColorRect($contenidoX,$y-14,$contenidoW,15,$fr,$fg,$fb);
+        $pdf->fillColorRect($contenidoX,$y-14,4,15,$rr,$gg,$bb);
+        $pdf->moduleIcon($contenidoX+7,$y-12,$moduloActual,9.5,$rr,$gg,$bb);
+        $pdf->colorText($contenidoX+21,$y-8,$lab,8.5,true,18,50,91);
+        $subTexto='Subt. '.pdfDinero($sumas[$moduloActual]);
+        $tamSub=7.2;
+        $anchoSub=strlen($subTexto)*$tamSub*0.58;
+        $xSub=max($contenidoX+170,$contenidoX+$contenidoW-8-$anchoSub);
+        $pdf->colorText($xSub,$y-8,$subTexto,$tamSub,true,18,50,91);
         $y-=16;
         $pdf->tableHeaderCompact($y,$columns);
         foreach($grupos[$moduloActual] as $item){
@@ -1525,7 +1564,10 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
     if($y<105){$y=105;}
 
     /* v403: condiciones a la izquierda y total independiente a la derecha. Sin superposiciones. */
-    $totalBoxW=174; $condX=42; $totalX=379;
+    /* v455: condiciones y total comparten la misma grilla horizontal. */
+    $totalBoxW=174; $gapInferior=12; $condX=$contenidoX;
+    $condW=$contenidoW-$totalBoxW-$gapInferior;
+    $totalX=$condX+$condW+$gapInferior;
 
     if($esPedido){
         $fechaEntregaTexto='A confirmar';
@@ -1537,39 +1579,43 @@ function pdfCrearDocumento(mysqli $conexion, string $tipo, int $id, string $dest
         $condiciones=array(array('E','ENTREGA','Sujeta a disponibilidad de insumos'),array('$','FORMA DE PAGO','A convenir'),array('%','IVA','Precios NO incluyen IVA'));
     }
 
-    $pdf->colorText($condX,$y-7,'CONDICIONES COMERCIALES',8.2,true,18,50,91);
+    $pdf->fillColorRect($condX,$y-12,$condW,16,244,248,251);
+    $pdf->fillColorRect($condX,$y-12,4,16,19,135,83);
+    $pdf->colorText($condX+9,$y-7,'CONDICIONES COMERCIALES',8.2,true,18,50,91);
     $cy=$y-20;
     foreach($condiciones as $c){
         $tipoIcono = ($c[1]==='ENTREGA') ? 'ENTREGA' : (($c[1]==='FORMA DE PAGO') ? 'PAGO' : 'IVA');
         $pdf->commercialIcon($condX,$cy-11,$tipoIcono);
         $pdf->colorText($condX+25,$cy+1,$c[1],7.8,true,18,50,91);
-        $lineasCond=$pdf->wrap($c[2],245,7.6);
+        $lineasCond=$pdf->wrap($c[2],$condW-55,7.6);
         $pdf->text($condX+25,$cy-8,$lineasCond[0]??'',7.6);
         if(isset($lineasCond[1]))$pdf->text($condX+25,$cy-15,$lineasCond[1],7.0);
         $cy-=24;
     }
 
+    $pdf->fillColorRect($totalX,$y-58,$totalBoxW,58,241,249,245);
     $pdf->roundedRect($totalX,$y-58,$totalBoxW,58,5);
+    $pdf->fillColorRect($totalX,$y-58,4,58,19,135,83);
     /* v457: total comercial alineado a la derecha y sin leyenda de moneda redundante. */
     $tituloTotal=$esPedido?'TOTAL PEDIDO':'TOTAL GENERAL';
     $tamTituloTotal=9.0;
     /* v458: margen derecho conservador para que el texto quede siempre dentro del recuadro. */
-    $anchoTituloTotal=strlen($tituloTotal)*$tamTituloTotal*0.60;
+    $anchoTituloTotal=strlen($tituloTotal)*$tamTituloTotal*0.48;
     $xTituloTotal=max($totalX+12,$totalX+$totalBoxW-16-$anchoTituloTotal);
     $pdf->colorText($xTituloTotal,$y-14,$tituloTotal,$tamTituloTotal,true,18,50,91);
     /* v456: el total general debe destacarse sin dominar el documento.
      * Se mantiene entre 1 y 2 puntos por encima del cuerpo de importes. */
     $tamTotalGeneral=max(9.0,min(10.2,$tamDescripcionPdf+1.5));
     $importeTotalTexto=pdfDinero((float)$doc['total']);
-    $anchoImporteTotal=strlen($importeTotalTexto)*$tamTotalGeneral*0.60;
+    $anchoImporteTotal=strlen($importeTotalTexto)*$tamTotalGeneral*0.48;
     $xImporteTotal=max($totalX+12,$totalX+$totalBoxW-16-$anchoImporteTotal);
     $pdf->colorText($xImporteTotal,$y-37,$importeTotalTexto,$tamTotalGeneral,true,18,50,91);
     $y-=72;
 
     /* Pie de hoja comercial. */
-    $pdf->line(42,48,553,48,.55);
+    $pdf->line($contenidoX,48,$contenidoX+$contenidoW,48,.55);
     /* v458: una sola firma de marca en el pie, sin repetir AUTOMAC. */
-    $pdf->text(42,36,'AUTOMAC, Electrónica para Ascensores Confiables',5.7);
+    $pdf->text($contenidoX,36,'AUTOMAC, Electrónica para Ascensores Confiables',5.7);
     $pdf->text(430,36,'Resp.: '.((string)$doc['ejecutado_por'] ?: '-'),5.7);
 
     /* v398: sin hoja tecnica adicional. La configuracion comercial relevante

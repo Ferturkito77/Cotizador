@@ -1,0 +1,20 @@
+RECUPERACION COTIZADOR - 08/10/2026
+
+Base usada: copia funcional del 05/10.
+Se reincorporaron desde la copia del 08/10 los cambios posteriores confirmados:
+- CV como unidad de motor VF.
+- Reubicacion de Subtipo y Velocidad en Control.
+- Correccion al editar pedidos (pedido_detalle_id).
+- Rediseño de PDFs de cotizacion/pedido.
+- Rediseño de Ordenes de Fabricacion.
+- Medidas T: ancho x alto (mm) por item en OF de Senalizacion.
+- Placeholder T: ancho x alto (mm) en Señalizacion.
+- Resumen V1.5 para CV.
+
+Se conservo desde la copia del 05/10:
+- resto del programa y archivos no modificados posteriormente;
+- migracion ZERO BLACK / Pantalla 15 / rescates;
+- recuperacion de administrador;
+- descripcion comercial corta de luz de cortesia.
+
+No se modifico ninguna base de datos.

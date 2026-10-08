@@ -1,0 +1,116 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 1169 >>
+stream
+0.09 0.17 0.23 rg 32 778 531 44 re f 0 g
+0.07 0.48 0.29 rg 32 778 8 44 re f 0 g
+1 1 1 rg BT /F2 20 Tf 1 0 0 1 52 794 Tm (AUTOMAC) Tj ET 0 g
+1 1 1 rg BT /F2 12 Tf 1 0 0 1 278 794 Tm (HOJA DE MODIFICACIÓN DE PEDIDO) Tj ET 0 g
+0.95 0.96 0.96 rg 42 727 511 30 re f 0 g
+0.09 0.17 0.23 rg BT /F2 12 Tf 1 0 0 1 50 737 Tm (COPIA: ADMINISTRACIóN) Tj ET 0 g
+BT /F2 11 Tf 1 0 0 1 42 707 Tm (Pedido: P.9) Tj ET
+BT /F2 11 Tf 1 0 0 1 350 707 Tm (Revisión vigente: 2) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 687 Tm (Fecha de modificación: 10/08/2026 00:11) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 670 Tm (Cliente: 9999 - 6M) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 653 Tm (Obra / referencia: -) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 636 Tm (Modificado por: Fernando) Tj ET
+0.91 0.96 0.93 rg 42 586 511 24 re f 0 g
+0.05 0.39 0.24 rg BT /F2 10 Tf 1 0 0 1 50 593 Tm (DETALLE DE LA MODIFICACIÓN) Tj ET 0 g
+BT /F1 10 Tf 1 0 0 1 50 572 Tm (se agrega 1 supresor) Tj ET
+0.5 w 42 521 m 250 521 l S
+0.5 w 345 521 m 553 521 l S
+BT /F1 8 Tf 1 0 0 1 95 507 Tm (Firma Producción) Tj ET
+BT /F1 8 Tf 1 0 0 1 402 507 Tm (Firma Administración) Tj ET
+0.5 w 42 58 m 553 58 l S
+BT /F1 7 Tf 1 0 0 1 42 43 Tm (AUTOMAC - Modificación de pedido) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 2581 >>
+stream
+0.09 0.17 0.23 rg 32 778 531 44 re f 0 g
+0.07 0.48 0.29 rg 32 778 8 44 re f 0 g
+1 1 1 rg BT /F2 20 Tf 1 0 0 1 52 794 Tm (AUTOMAC) Tj ET 0 g
+1 1 1 rg BT /F2 11 Tf 1 0 0 1 330 794 Tm (PEDIDO ACTUALIZADO - VALORIZADO) Tj ET 0 g
+BT /F2 11 Tf 1 0 0 1 42 752 Tm (Pedido: P.9) Tj ET
+BT /F2 10 Tf 1 0 0 1 420 752 Tm (Revisión: 2) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 734 Tm (Cliente: 9999 - 6M) Tj ET
+BT /F1 9 Tf 1 0 0 1 42 719 Tm (Referencia: -) Tj ET
+0.09 0.17 0.23 rg 42 677 511 24 re f 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 46 686 Tm (Cant.) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 88 686 Tm (Código) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 166 686 Tm (Descripción) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 431 686 Tm (Unitario) Tj ET 0 g
+1 1 1 rg BT /F2 8 Tf 1 0 0 1 494 686 Tm (Total) Tj ET 0 g
+0.6 G 0.5 w 42 650 511 25 re S 0 G
+BT /F1 8 Tf 1 0 0 1 61.08 661 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 88 661 Tm (GA50U4023ABA) Tj ET
+BT /F1 8 Tf 1 0 0 1 166 661 Tm (Variador yaskawa GA500 18A \(Sn18A/Sp23A\)) Tj ET
+BT /F1 8 Tf 1 0 0 1 451.44 661 Tm ($ 905.800) Tj ET
+BT /F1 8 Tf 1 0 0 1 514.44 661 Tm ($ 905.800) Tj ET
+0.6 G 0.5 w 42 625 511 25 re S 0 G
+BT /F1 8 Tf 1 0 0 1 61.08 636 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 88 636 Tm (A6XRVFS7575.1) Tj ET
+BT /F1 8 Tf 1 0 0 1 166 636 Tm (Conjunto de resistencias 1 x 75 ohms 750 w hasta 18A) Tj ET
+BT /F1 8 Tf 1 0 0 1 451.44 636 Tm ($ 194.046) Tj ET
+BT /F1 8 Tf 1 0 0 1 514.44 636 Tm ($ 194.046) Tj ET
+0.6 G 0.5 w 42 600 511 25 re S 0 G
+BT /F1 8 Tf 1 0 0 1 61.08 611 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 88 611 Tm (8LC1D18F7) Tj ET
+BT /F1 8 Tf 1 0 0 1 166 611 Tm (Contactor 18 amp. 3P+NA+NC) Tj ET
+BT /F1 8 Tf 1 0 0 1 455.28 611 Tm ($ 76.316) Tj ET
+BT /F1 8 Tf 1 0 0 1 518.28 611 Tm ($ 76.316) Tj ET
+0.6 G 0.5 w 42 575 511 25 re S 0 G
+BT /F1 8 Tf 1 0 0 1 61.08 586 Tm (1) Tj ET
+BT /F1 8 Tf 1 0 0 1 88 586 Tm (A338) Tj ET
+BT /F1 8 Tf 1 0 0 1 166 586 Tm (Filtro para variadores yaskawa) Tj ET
+BT /F1 8 Tf 1 0 0 1 451.44 586 Tm ($ 111.714) Tj ET
+BT /F1 8 Tf 1 0 0 1 514.44 586 Tm ($ 111.714) Tj ET
+0.6 G 0.5 w 42 550 511 25 re S 0 G
+BT /F1 8 Tf 1 0 0 1 61.08 561 Tm (2) Tj ET
+BT /F1 8 Tf 1 0 0 1 88 561 Tm (P102) Tj ET
+BT /F1 8 Tf 1 0 0 1 166 561 Tm (Supresor contactor 110 ca) Tj ET
+BT /F1 8 Tf 1 0 0 1 459.12 561 Tm ($ 4.531) Tj ET
+BT /F1 8 Tf 1 0 0 1 522.12 561 Tm ($ 9.062) Tj ET
+0.91 0.96 0.93 rg 350 506 203 34 re f 0 g
+0.05 0.39 0.24 rg BT /F2 11 Tf 1 0 0 1 385 516 Tm (TOTAL GENERAL) Tj ET 0 g
+0.05 0.39 0.24 rg BT /F2 11 Tf 1 0 0 1 480 516 Tm ($ 1.296.938) Tj ET 0 g
+0.5 w 42 58 m 553 58 l S
+BT /F1 7 Tf 1 0 0 1 42 43 Tm (AUTOMAC - Copia para Administración) Tj ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000127 00000 n 
+0000000224 00000 n 
+0000000326 00000 n 
+0000000468 00000 n 
+0000001689 00000 n 
+0000001831 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+4464
+%%EOF
