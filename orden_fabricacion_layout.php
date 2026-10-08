@@ -264,7 +264,7 @@ function ofResumenTecnico(mysqli $conexion, array $pedido, array $detalles, arra
     $cantidadEquipos = max(1, (int)($tecnico['cantidad'] ?? 1));
     $encoder = strtoupper(trim((string)($datosFormulario['encoder'] ?? ''))) === 'SI' ? 'Preparado para encoder' : 'Sin encoder';
     $esDatoMotorVF = (int)($datosFormulario['id_tipo_control'] ?? 0) === 4 && array_key_exists('dato_motor_tipo', $datosFormulario);
-    $unidadDatoMotor = strtoupper((string)($datosFormulario['dato_motor_tipo'] ?? '')) === 'AMP' ? 'A' : (strtoupper((string)($datosFormulario['dato_motor_tipo'] ?? '')) === 'KW' ? 'kW' : 'HP');
+    $unidadDatoMotor = strtoupper((string)($datosFormulario['dato_motor_tipo'] ?? '')) === 'AMP' ? 'A' : (strtoupper((string)($datosFormulario['dato_motor_tipo'] ?? '')) === 'KW' ? 'kW' : (strtoupper((string)($datosFormulario['dato_motor_tipo'] ?? '')) === 'CV' ? 'CV' : 'HP'));
     $datoMotorTexto = $esDatoMotorVF ? trim((string)($datosFormulario['dato_motor_valor'] ?? '')).' '.$unidadDatoMotor : '';
     $corrienteRequeridaTexto = $esDatoMotorVF ? trim((string)($tecnico['corriente_requerida'] ?? '')) : '';
     $motor = trim(implode(' / ', array_filter(array(

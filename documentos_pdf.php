@@ -948,7 +948,7 @@ function pdfDescripcionControl(array $base, array $t): string
 
     if ($t['contactor'] !== '') $partes[] = 'contactor de ' . $t['contactor'] . ' A';
     if ($t['dato_motor_tipo'] !== '' && $t['dato_motor_valor'] !== '') {
-        $unidad = $t['dato_motor_tipo'] === 'AMP' ? 'A' : ($t['dato_motor_tipo'] === 'KW' ? 'kW' : 'HP');
+        $unidad = $t['dato_motor_tipo'] === 'AMP' ? 'A' : ($t['dato_motor_tipo'] === 'KW' ? 'kW' : ($t['dato_motor_tipo'] === 'CV' ? 'CV' : 'HP'));
         $partes[] = 'motor informado ' . $t['dato_motor_valor'] . ' ' . $unidad;
         if ($t['corriente_requerida'] !== '') $partes[] = 'corriente requerida ' . $t['corriente_requerida'] . ' A';
     }
